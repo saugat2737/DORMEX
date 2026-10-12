@@ -1,0 +1,54 @@
+{
+  "name": "dormex",
+  "version": "1.0.0",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "build": "tsc && vite build",
+    "build:server": "tsc",
+    "build:client": "vite build",
+    "start": "tsx src/server.ts",
+    "dev": "tsx src/server.ts",
+    "dev:client": "vite",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@types/node": "^26.6.5",
+    "@types/pg": "^8.23.1",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@types/supertest": "^7.2.1",
+    "@vitejs/plugin-react": "^6.1.2",
+    "supertest": "^7.3.1",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.4",
+    "vitest": "^5.0.4"
+  },
+  "dependencies": {
+    "@fastify/cookie": "^11.1.3",
+    "@fastify/cors": "^11.3.1",
+    "@fastify/jwt": "^10.2.4",
+    "@fastify/static": "^10.1.6",
+    "clsx": "^2.1.1",
+    "dotenv": "^18.0.7",
+    "fastify": "^5.12.5",
+    "konva": "^10.7.1",
+    "lucide-react": "^1.55.0",
+    "pg": "^8.23.1",
+    "pg-mem": "^3.0.14",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "react-konva": "^19.3.0",
+    "tailwindcss-merge": "^0.0.1-security",
+    "zod": "^4.6.6",
+    "zoid": "^9.0.86"
+  }
+}
