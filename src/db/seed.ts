@@ -46,6 +46,32 @@ export async function seedDatabase(db: DatabaseService): Promise<void> {
     );
   }
 
+  // 2b. Published Terms & Conditions Document (Version 1)
+  const termsText = `### DORMEX College Hostel Room Responsibility & Allocation Agreement
+(Approved College Policy - Pilot Version 1)
+
+1. **Room & Property Responsibility**:
+Each admitted student is responsible for the assigned room, cot, study desk, chair, wardrobe, fixtures, electrical fittings, and keys. Any pre-existing damage must be documented within 48 hours of move-in.
+
+2. **Responsible Use & Code of Conduct**:
+Hostel facilities must be used responsibly. Unauthorized alteration of electrical fittings, damage to walls or furniture, and subletting or swapping of beds without official written approval are strictly prohibited.
+
+3. **Maintenance & Repairs**:
+All maintenance issues and repair needs must be reported promptly via the DORMEX Complaint Desk. Negligence resulting in property damage may lead to institutional repair recovery as per approved college regulations.
+
+4. **Allocation & Roommate Acknowledgement**:
+Preference submission and roommate group coordination do not guarantee a specific room or seat. Allocation decisions are deterministic based on verified fee priority and institutional quota policies.
+
+5. **Room Change & Vacating Policy**:
+Students who wish to request a room change must apply within the official 48-hour post-allocation change window. Room moves are subject to verified availability and administrative approval.`;
+
+  await db.query(
+    `INSERT INTO terms_documents (id, version, title, content, content_hash, is_published, published_by)
+     VALUES ($1, $2, $3, $4, $5, TRUE, 'usr_admin')
+     ON CONFLICT (id) DO UPDATE SET content = EXCLUDED.content, is_published = TRUE`,
+    ['terms_v1', 1, 'Hostel Room Responsibility & Allocation Agreement (2026-27)', termsText, 'hash_terms_v1_pilot']
+  );
+
   // 3. Exactly 30 Synthetic Demo Students (DEMO-001 through DEMO-030)
   // Non-real names, reproducible seed priority 1..30, Year 2 General/Merit for Fall 2026 pilot cycle
   const syntheticNames = [
@@ -71,6 +97,11 @@ export async function seedDatabase(db: DatabaseService): Promise<void> {
     // Demo eligibility: first 28 are ELIGIBLE, 29 is PENDING, 30 is FEE_PENDING to demonstrate staff verification
     const eligibility = i <= 28 ? 'ELIGIBLE' : (i === 29 ? 'PENDING' : 'FEE_PENDING');
     const priority = i; // Authoritative priority 1..30
+    const feeStatus = i <= 28 ? 'VERIFIED' : (i === 29 ? 'SUBMITTED' : 'UNPAID');
+    const feeRef = i <= 29 ? `FEE-2026-BVB-${pad}` : null;
+    const feeTimestamp = i <= 29 ? new Date(Date.UTC(2026, 7, 10, 9, i, 0)).toISOString() : null;
+    const verifiedBy = i <= 28 ? 'usr_office' : null;
+    const verifiedAt = i <= 28 ? new Date(Date.UTC(2026, 7, 10, 12, 0, 0)).toISOString() : null;
 
     await db.query(
       `INSERT INTO users (id, college_id, email, full_name, password_hash)
@@ -86,9 +117,19 @@ export async function seedDatabase(db: DatabaseService): Promise<void> {
 
     await db.query(
       `INSERT INTO student_profiles (
-        id, user_id, college_id, full_name, academic_year, department, gender, quota_category, eligibility_status, assigned_priority, proctor_user_id
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) ON CONFLICT (id) DO UPDATE 
-        SET assigned_priority = EXCLUDED.assigned_priority, eligibility_status = EXCLUDED.eligibility_status`,
+        id, user_id, college_id, full_name, academic_year, department, gender, quota_category, 
+        eligibility_status, assigned_priority, proctor_user_id, proctor_name, proctor_department,
+        parent_name, parent_relationship, parent_phone, parent_email,
+        local_guardian_name, local_guardian_relationship, local_guardian_phone,
+        fee_status, fee_receipt_ref, fee_payment_timestamp, fee_verified_by, fee_verified_at,
+        priority_assignment_source, profile_submitted, profile_submitted_at
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28)
+      ON CONFLICT (id) DO UPDATE 
+        SET assigned_priority = EXCLUDED.assigned_priority, 
+            eligibility_status = EXCLUDED.eligibility_status,
+            fee_status = EXCLUDED.fee_status,
+            fee_receipt_ref = EXCLUDED.fee_receipt_ref,
+            fee_payment_timestamp = EXCLUDED.fee_payment_timestamp`,
       [
         profileId,
         userId,
@@ -100,9 +141,36 @@ export async function seedDatabase(db: DatabaseService): Promise<void> {
         quota,
         eligibility,
         priority,
-        'usr_proctor_1'
+        'usr_proctor_1',
+        'Dr. Mehta',
+        'Computer Science',
+        `Parent of ${fullName}`,
+        'Father',
+        `+91 98765 432${pad.slice(-2)}`,
+        `parent.${pad.toLowerCase()}@example.com`,
+        `Guardian of ${fullName}`,
+        'Uncle',
+        `+91 91234 567${pad.slice(-2)}`,
+        feeStatus,
+        feeRef,
+        feeTimestamp,
+        verifiedBy,
+        verifiedAt,
+        'AUTOMATIC_FEE',
+        true,
+        new Date(Date.UTC(2026, 7, 10, 8, 30, 0)).toISOString()
       ]
     );
+
+    // Seed terms acknowledgement for demo students 1..28
+    if (i <= 28) {
+      await db.query(
+        `INSERT INTO terms_acknowledgements (id, student_id, terms_document_id, terms_version, accepted_at)
+         VALUES ($1, $2, 'terms_v1', 1, $3)
+         ON CONFLICT (student_id, terms_version) DO NOTHING`,
+        [`ack_demo_${pad}_v1`, profileId, new Date(Date.UTC(2026, 7, 10, 8, 45, 0)).toISOString()]
+      );
+    }
   }
 
   // Backward compatibility alias for tests targeting usr_student_1..4
@@ -126,9 +194,19 @@ export async function seedDatabase(db: DatabaseService): Promise<void> {
     );
     await db.query(
       `INSERT INTO student_profiles (
-        id, user_id, college_id, full_name, academic_year, department, gender, quota_category, eligibility_status, assigned_priority, proctor_user_id
-      ) VALUES ($1, $2, $3, $4, 2, 'CSE', 'MALE', 'GENERAL', 'ELIGIBLE', NULL, 'usr_proctor_1') ON CONFLICT (id) DO NOTHING`,
+        id, user_id, college_id, full_name, academic_year, department, gender, quota_category, eligibility_status, assigned_priority, proctor_user_id,
+        fee_status, fee_receipt_ref, fee_payment_timestamp, fee_verified_at, profile_submitted
+      ) VALUES ($1, $2, $3, $4, 2, 'CSE', 'MALE', 'GENERAL', 'ELIGIBLE', NULL, 'usr_proctor_1', 'VERIFIED', 'FEE-ALIAS-1', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, TRUE) 
+      ON CONFLICT (id) DO UPDATE SET eligibility_status = 'ELIGIBLE', fee_status = 'VERIFIED'`,
       [pid, uid, cid, name]
+    );
+
+    // Seed terms acknowledgement for test alias
+    await db.query(
+      `INSERT INTO terms_acknowledgements (id, student_id, terms_document_id, terms_version, accepted_at)
+       VALUES ($1, $2, 'terms_v1', 1, CURRENT_TIMESTAMP)
+       ON CONFLICT (student_id, terms_version) DO NOTHING`,
+      [`ack_${pid}_v1`, pid]
     );
   }
 
@@ -287,9 +365,10 @@ export async function seedDatabase(db: DatabaseService): Promise<void> {
   const cycleId = 'cyc_bvb_pilot_2026';
   await db.query(
     `INSERT INTO allocation_cycles (
-      id, name, academic_year, status, turn_duration_seconds, waiting_room_threshold, late_grace_seconds, max_penalty_turns
-    ) VALUES ($1, $2, 2, 'READY', 120, 30, 360, 10) ON CONFLICT (id) DO UPDATE 
-      SET waiting_room_threshold = 30, status = 'READY'`,
+      id, name, academic_year, status, turn_duration_seconds, waiting_room_threshold, late_grace_seconds, max_penalty_turns,
+      room_change_enabled, room_change_window_hours, results_published_at
+    ) VALUES ($1, $2, 2, 'READY', 120, 30, 360, 10, TRUE, 48, CURRENT_TIMESTAMP) ON CONFLICT (id) DO UPDATE 
+      SET waiting_room_threshold = 30, status = 'READY', room_change_enabled = TRUE, room_change_window_hours = 48`,
     [cycleId, 'BVB Block Floor 2 Pilot Allocation (30 Students)']
   );
 

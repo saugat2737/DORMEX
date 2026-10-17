@@ -26,8 +26,8 @@ export const StudentRegistryView: React.FC = () => {
   const [editEligibility, setEditEligibility] = useState<string>('ELIGIBLE');
   const [actionMsg, setActionMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
-  const isStaff = ['WARDEN', 'CHIEF_WARDEN', 'HOSTEL_OFFICE', 'SUPER_ADMIN'].includes(session.role);
-  const canEditPriority = ['HOSTEL_OFFICE', 'SUPER_ADMIN'].includes(session.role);
+  const isStaff = session?.role ? ['WARDEN', 'CHIEF_WARDEN', 'HOSTEL_OFFICE', 'SUPER_ADMIN'].includes(session.role) : false;
+  const canEditPriority = session?.role ? ['HOSTEL_OFFICE', 'SUPER_ADMIN'].includes(session.role) : false;
 
   const fetchStudents = async () => {
     try {
@@ -55,6 +55,49 @@ export const StudentRegistryView: React.FC = () => {
     setEditPriority(stu.assigned_priority ?? stu.live_priority ?? 1);
     setEditEligibility(stu.eligibility_status);
     setActionMsg(null);
+  };
+
+  const handleVerifyFee = async (stuId: string, status: 'VERIFIED' | 'REJECTED') => {
+    setActionMsg(null);
+    try {
+      const res = await apiFetch(`/api/students/${stuId}/verify-fee`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          status,
+          verifiedPaymentTimestamp: new Date().toISOString(),
+          eligibilityStatus: status === 'VERIFIED' ? 'ELIGIBLE' : 'FEE_PENDING',
+        }),
+      });
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.error || 'Fee verification failed');
+      }
+      setActionMsg({ type: 'success', text: `Fee status successfully updated to ${status}!` });
+      fetchStudents();
+    } catch (err: any) {
+      setActionMsg({ type: 'error', text: err.message });
+    }
+  };
+
+  const handleRecalculatePriorities = async () => {
+    setActionMsg(null);
+    try {
+      const res = await apiFetch('/api/students/recalculate-priorities', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ academicYear: 2, quotaCategory: 'GENERAL' }),
+      });
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.error || 'Priority recalculation failed');
+      }
+      const data = await res.json();
+      setActionMsg({ type: 'success', text: `Chronological fee priority ordering applied to ${data.updatedCount} records!` });
+      fetchStudents();
+    } catch (err: any) {
+      setActionMsg({ type: 'error', text: err.message });
+    }
   };
 
   const handleSaveEdit = async () => {
@@ -115,6 +158,15 @@ export const StudentRegistryView: React.FC = () => {
         </div>
 
         <div className="flex items-center gap-2">
+          {canEditPriority && (
+            <button
+              onClick={handleRecalculatePriorities}
+              className="px-3 py-1.5 bg-brand-teal hover:bg-brand-tealHover text-white text-xs font-bold rounded-lg shadow-sm transition-colors flex items-center gap-1.5"
+            >
+              <ShieldCheck className="w-4 h-4" />
+              Recalculate Priorities by Fee Timestamp
+            </button>
+          )}
           <span className="text-xs font-semibold px-3 py-1 bg-slate-100 text-slate-700 rounded-lg border border-slate-200 font-mono">
             Active Dataset: DEMO-001 - DEMO-030
           </span>
@@ -170,6 +222,7 @@ export const StudentRegistryView: React.FC = () => {
                 <th className="py-3 px-4">Priority Rank</th>
                 <th className="py-3 px-4">College ID</th>
                 <th className="py-3 px-4">Full Name</th>
+                <th className="py-3 px-4">Fee Status</th>
                 <th className="py-3 px-4">Dept / Year</th>
                 <th className="py-3 px-4">Quota</th>
                 <th className="py-3 px-4">Eligibility</th>
@@ -182,6 +235,7 @@ export const StudentRegistryView: React.FC = () => {
                 const priority = stu.assigned_priority ?? stu.live_priority ?? '—';
                 const isEligible = stu.eligibility_status === 'ELIGIBLE';
                 const isAllocated = stu.allocated_seat_id;
+                const isFeeVerified = stu.fee_status === 'VERIFIED';
 
                 return (
                   <tr key={stu.id} className="hover:bg-slate-50/80 transition-colors">
@@ -196,6 +250,17 @@ export const StudentRegistryView: React.FC = () => {
                     <td className="py-3 px-4 font-bold text-navy-900">
                       {stu.full_name}
                       <div className="text-[10px] text-slate-400 font-normal font-mono">{stu.email}</div>
+                    </td>
+                    <td className="py-3 px-4">
+                      <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded ${
+                        isFeeVerified 
+                          ? 'bg-emerald-50 text-emerald-800 border border-emerald-200' 
+                          : (stu.fee_status === 'SUBMITTED' 
+                              ? 'bg-amber-50 text-amber-800 border border-amber-200' 
+                              : 'bg-rose-50 text-rose-800 border border-rose-200')
+                      }`}>
+                        {stu.fee_status || 'UNPAID'}
+                      </span>
                     </td>
                     <td className="py-3 px-4">
                       {stu.department} • Year {stu.academic_year}
@@ -226,7 +291,15 @@ export const StudentRegistryView: React.FC = () => {
                         <span className="text-slate-400 italic">Not Allocated</span>
                       )}
                     </td>
-                    <td className="py-3 px-4 text-right">
+                    <td className="py-3 px-4 text-right space-x-1.5">
+                      {isStaff && stu.fee_status !== 'VERIFIED' && (
+                        <button
+                          onClick={() => handleVerifyFee(stu.id, 'VERIFIED')}
+                          className="px-2 py-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 text-[11px] font-bold rounded transition-colors"
+                        >
+                          Verify Fee
+                        </button>
+                      )}
                       {isStaff && (
                         <button
                           onClick={() => handleStartEdit(stu)}

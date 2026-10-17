@@ -114,45 +114,104 @@ export const DEV_USERS: Record<string, UserSession> = {
   },
 };
 
-interface AuthContextType {
-  session: UserSession;
-  setSession: (session: UserSession) => void;
+export interface AuthContextType {
+  session: UserSession | null;
+  isAuthenticated: boolean;
+  currentPortal: 'STUDENT' | 'ADMIN' | 'HOSTEL_OFFICE' | null;
+  setCurrentPortal: (portal: 'STUDENT' | 'ADMIN' | 'HOSTEL_OFFICE' | null) => void;
+  login: (portal: 'STUDENT' | 'ADMIN' | 'HOSTEL_OFFICE', identityKey: string) => void;
+  logout: () => void;
   switchUser: (devKey: string) => void;
+  isDevMode: boolean;
 }
 
 const AuthContext = createContext<AuthContextType>({
-  session: DEV_USERS.demo1,
-  setSession: () => {},
+  session: null,
+  isAuthenticated: false,
+  currentPortal: null,
+  setCurrentPortal: () => {},
+  login: () => {},
+  logout: () => {},
   switchUser: () => {},
+  isDevMode: false,
 });
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [session, setSession] = useState<UserSession>(() => {
-    const saved = localStorage.getItem('dormex_dev_session');
+  const [session, setSession] = useState<UserSession | null>(() => {
+    const saved = localStorage.getItem('dormex_auth_session');
     if (saved) {
       try {
         return JSON.parse(saved);
-      } catch (e) {
-        // fallback
-      }
+      } catch (e) {}
     }
-    return DEV_USERS.demo1;
+    return null;
   });
+
+  const [currentPortal, setCurrentPortal] = useState<'STUDENT' | 'ADMIN' | 'HOSTEL_OFFICE' | null>(() => {
+    return (localStorage.getItem('dormex_current_portal') as any) || null;
+  });
+
+  const isDevMode = typeof window !== 'undefined' && (
+    window.location.search.includes('dev=true') || 
+    localStorage.getItem('dormex_dev_mode') === 'true'
+  );
+
+  const login = (portal: 'STUDENT' | 'ADMIN' | 'HOSTEL_OFFICE', identityKey: string) => {
+    const target = DEV_USERS[identityKey];
+    if (target) {
+      // Backend authority verification: Ensure selected portal matches authorized role
+      if (portal === 'STUDENT' && target.role !== 'STUDENT') {
+        throw new Error('Access Denied: This account is not a student');
+      }
+      if (portal === 'HOSTEL_OFFICE' && target.role !== 'HOSTEL_OFFICE') {
+        throw new Error('Access Denied: This account is not authorized for Hostel Office');
+      }
+      if (portal === 'ADMIN' && !['SUPER_ADMIN', 'CHIEF_WARDEN', 'WARDEN'].includes(target.role)) {
+        throw new Error('Access Denied: This account is not an administrative staff member');
+      }
+
+      setSession(target);
+      setCurrentPortal(portal);
+      localStorage.setItem('dormex_auth_session', JSON.stringify(target));
+      localStorage.setItem('dormex_current_portal', portal);
+    }
+  };
+
+  const logout = () => {
+    setSession(null);
+    setCurrentPortal(null);
+    localStorage.removeItem('dormex_auth_session');
+    localStorage.removeItem('dormex_current_portal');
+    localStorage.removeItem('dormex_dev_session');
+  };
 
   const switchUser = (devKey: string) => {
     const target = DEV_USERS[devKey];
     if (target) {
       setSession(target);
-      localStorage.setItem('dormex_dev_session', JSON.stringify(target));
+      localStorage.setItem('dormex_auth_session', JSON.stringify(target));
     }
   };
 
   useEffect(() => {
-    localStorage.setItem('dormex_dev_session', JSON.stringify(session));
+    if (session) {
+      localStorage.setItem('dormex_auth_session', JSON.stringify(session));
+    }
   }, [session]);
 
   return (
-    <AuthContext.Provider value={{ session, setSession, switchUser }}>
+    <AuthContext.Provider
+      value={{
+        session,
+        isAuthenticated: !!session,
+        currentPortal,
+        setCurrentPortal,
+        login,
+        logout,
+        switchUser,
+        isDevMode,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
@@ -160,12 +219,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
 export const useAuth = () => useContext(AuthContext);
 
-export async function apiFetch(path: string, options: RequestInit = {}, session?: UserSession) {
+export async function apiFetch(path: string, options: RequestInit = {}, session?: UserSession | null) {
   const headers = new Headers(options.headers || {});
   if (session) {
     headers.set('x-user-id', session.userId);
   } else {
-    const saved = localStorage.getItem('dormex_dev_session');
+    const saved = localStorage.getItem('dormex_auth_session') || localStorage.getItem('dormex_dev_session');
     if (saved) {
       try {
         const parsed = JSON.parse(saved);

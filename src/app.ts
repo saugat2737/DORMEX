@@ -438,6 +438,17 @@ export async function buildApp(db?: DatabaseService): Promise<FastifyInstance> {
     }
   });
 
+  app.put('/api/complaints/:id', async (req: any, reply) => {
+    try {
+      const actor = await extractActor(req);
+      await operationsService.updateComplaint(req.params.id, req.body as any, actor);
+      return reply.send({ success: true, message: 'Complaint updated' });
+    } catch (err: any) {
+      const code = err.message?.startsWith('FORBIDDEN') ? 403 : 400;
+      return reply.code(code).send({ error: err.message });
+    }
+  });
+
   app.post('/api/complaints/:id/vote', async (req: any, reply) => {
     try {
       const actor = await extractActor(req);
@@ -454,6 +465,159 @@ export async function buildApp(db?: DatabaseService): Promise<FastifyInstance> {
       const { cycleId, studentProfileId, targetRoomId, reason } = req.body as any;
       const res = await operationsService.requestRoomChange(cycleId, studentProfileId, targetRoomId, reason, actor);
       return reply.code(201).send(res);
+    } catch (err: any) {
+      return reply.code(400).send({ error: err.message });
+    }
+  });
+
+  app.get('/api/room-change-requests', async (req: any, reply) => {
+    try {
+      const actor = await extractActor(req);
+      const requests = await operationsService.listRoomChangeRequests(actor, req.query?.cycleId);
+      return reply.send(requests);
+    } catch (err: any) {
+      const code = err.message?.startsWith('FORBIDDEN') ? 403 : 400;
+      return reply.code(code).send({ error: err.message });
+    }
+  });
+
+  app.put('/api/room-change-requests/:id/review', async (req: any, reply) => {
+    try {
+      const actor = await extractActor(req);
+      const { decision, notes, targetSeatId } = req.body as any;
+      await operationsService.reviewRoomChange(req.params.id, decision, notes, actor, targetSeatId);
+      return reply.send({ success: true, message: `Room change request ${decision.toLowerCase()} successfully` });
+    } catch (err: any) {
+      const code = err.message?.startsWith('FORBIDDEN') ? 403 : 400;
+      return reply.code(code).send({ error: err.message });
+    }
+  });
+
+  app.post('/api/room-change-requests/in-person', async (req: any, reply) => {
+    try {
+      const actor = await extractActor(req);
+      const { cycleId, studentProfileId, targetRoomId, reason, autoApprove } = req.body as any;
+      const res = await operationsService.recordInPersonRoomChange(cycleId, studentProfileId, targetRoomId, reason, actor, autoApprove);
+      return reply.code(201).send(res);
+    } catch (err: any) {
+      const code = err.message?.startsWith('FORBIDDEN') ? 403 : 400;
+      return reply.code(code).send({ error: err.message });
+    }
+  });
+
+  // Terms and Conditions Endpoints
+  app.get('/api/terms/latest', async () => {
+    return studentRegistry.getLatestTerms();
+  });
+
+  app.get('/api/students/:id/terms-status', async (req: any, reply) => {
+    try {
+      const status = await studentRegistry.getStudentTermsStatus(req.params.id);
+      return reply.send(status);
+    } catch (err: any) {
+      return reply.code(400).send({ error: err.message });
+    }
+  });
+
+  app.post('/api/students/:id/accept-terms', async (req: any, reply) => {
+    try {
+      const actor = await extractActor(req);
+      const { termsVersion } = req.body as any;
+      await studentRegistry.acceptTerms(req.params.id, termsVersion, actor, req.ip);
+      return reply.send({ success: true, message: 'Hostel Responsibility terms accepted successfully' });
+    } catch (err: any) {
+      const code = err.message?.startsWith('FORBIDDEN') ? 403 : 400;
+      return reply.code(code).send({ error: err.message });
+    }
+  });
+
+  // Student Onboarding Profile Endpoints
+  app.put('/api/students/:id/profile', async (req: any, reply) => {
+    try {
+      const actor = await extractActor(req);
+      await studentRegistry.updateStudentProfile(req.params.id, req.body as any, actor);
+      return reply.send({ success: true, message: 'Profile updated successfully' });
+    } catch (err: any) {
+      const code = err.message?.startsWith('FORBIDDEN') ? 403 : 400;
+      return reply.code(code).send({ error: err.message });
+    }
+  });
+
+  app.post('/api/students/:id/submit-profile', async (req: any, reply) => {
+    try {
+      const actor = await extractActor(req);
+      await studentRegistry.submitStudentProfile(req.params.id, actor);
+      return reply.send({ success: true, message: 'Profile submitted for Hostel Office review' });
+    } catch (err: any) {
+      const code = err.message?.startsWith('FORBIDDEN') ? 403 : 400;
+      return reply.code(code).send({ error: err.message });
+    }
+  });
+
+  // Fee Verification & Priority Recalculation Endpoints (Hostel Office)
+  app.put('/api/students/:id/verify-fee', async (req: any, reply) => {
+    try {
+      const actor = await extractActor(req);
+      await studentRegistry.verifyFeePayment(req.params.id, req.body as any, actor);
+      return reply.send({ success: true, message: 'Fee payment verified successfully' });
+    } catch (err: any) {
+      const code = err.message?.startsWith('FORBIDDEN') ? 403 : 400;
+      return reply.code(code).send({ error: err.message });
+    }
+  });
+
+  app.post('/api/students/recalculate-priorities', async (req: any, reply) => {
+    try {
+      const actor = await extractActor(req);
+      const { academicYear, quotaCategory } = req.body as any;
+      const res = await studentRegistry.recalculatePrioritiesByPayment(academicYear || 2, quotaCategory || 'GENERAL', actor);
+      return reply.send({ success: true, updatedCount: res.updatedCount });
+    } catch (err: any) {
+      const code = err.message?.startsWith('FORBIDDEN') ? 403 : 400;
+      return reply.code(code).send({ error: err.message });
+    }
+  });
+
+  // Roommate Group Coordination Endpoints
+  app.post('/api/roommate-groups', async (req: any, reply) => {
+    try {
+      const actor = await extractActor(req);
+      const { cycleId, leaderStudentId, roomId, peerPriorityNumbers } = req.body as any;
+      const res = await preferencesService.createRoommateGroup(cycleId, leaderStudentId, roomId, peerPriorityNumbers, actor);
+      return reply.code(201).send(res);
+    } catch (err: any) {
+      const code = err.message?.startsWith('FORBIDDEN') ? 403 : 400;
+      return reply.code(code).send({ error: err.message });
+    }
+  });
+
+  app.post('/api/roommate-groups/:id/respond', async (req: any, reply) => {
+    try {
+      const actor = await extractActor(req);
+      const { studentProfileId, accept } = req.body as any;
+      const res = await preferencesService.respondToRoommateInvite(req.params.id, studentProfileId, accept, actor);
+      return reply.send(res);
+    } catch (err: any) {
+      const code = err.message?.startsWith('FORBIDDEN') ? 403 : 400;
+      return reply.code(code).send({ error: err.message });
+    }
+  });
+
+  app.get('/api/roommate-groups/student/:id', async (req: any, reply) => {
+    try {
+      const cycleId = req.query?.cycleId || 'cyc_bvb_pilot_2026';
+      const groups = await preferencesService.getStudentRoommateGroups(req.params.id, cycleId);
+      return reply.send(groups);
+    } catch (err: any) {
+      return reply.code(400).send({ error: err.message });
+    }
+  });
+
+  app.get('/api/floors/:id/roommate-intent', async (req: any, reply) => {
+    try {
+      const cycleId = req.query?.cycleId || 'cyc_bvb_pilot_2026';
+      const map = await preferencesService.getRoommateIntentSeats(req.params.id, cycleId);
+      return reply.send(map);
     } catch (err: any) {
       return reply.code(400).send({ error: err.message });
     }

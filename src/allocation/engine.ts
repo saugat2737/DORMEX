@@ -85,6 +85,21 @@ export class AllocationEngineService {
         throw new Error(`INELIGIBLE: Student eligibility status is ${student.eligibility_status}`);
       }
 
+      // 2b. Mandatory terms acknowledgement check (Section 5)
+      const latestTermsRes = await client.query(
+        `SELECT version FROM terms_documents WHERE is_published = TRUE ORDER BY version DESC LIMIT 1`
+      );
+      if (latestTermsRes.rows.length > 0) {
+        const reqVer = latestTermsRes.rows[0].version;
+        const ackRes = await client.query(
+          `SELECT id FROM terms_acknowledgements WHERE student_id = $1 AND terms_version = $2`,
+          [studentProfileId, reqVer]
+        );
+        if (ackRes.rows.length === 0) {
+          throw new Error('TERMS_NOT_ACCEPTED: You must review and accept the Hostel Room Responsibility Agreement before entering allocation');
+        }
+      }
+
       // 3. Find matching allocation pool
       const poolRes = await client.query(
         `SELECT id FROM allocation_pools WHERE cycle_id = $1 AND academic_year = $2 AND quota_category = $3 LIMIT 1`,
@@ -362,6 +377,11 @@ export class AllocationEngineService {
       await client.query(
         `UPDATE invites SET status = 'INVALIDATED' WHERE cycle_id = $1 AND seat_id = $2 AND status = 'PENDING'`,
         [session.cycle_id, seatId]
+      );
+
+      await client.query(
+        `UPDATE roommate_group_members SET status = 'INVALIDATED' WHERE preferred_seat_id = $1 AND status = 'PENDING'`,
+        [seatId]
       );
 
       // 6. Record outbox event for asynchronous notification / projections

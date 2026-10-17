@@ -54,6 +54,26 @@ CREATE TABLE IF NOT EXISTS student_profiles (
     eligibility_status TEXT NOT NULL DEFAULT 'PENDING', -- 'PENDING', 'ELIGIBLE', 'INELIGIBLE', 'FEE_PENDING'
     assigned_priority INT, -- Staff assigned priority rank (1 = highest priority)
     proctor_user_id TEXT REFERENCES users(id),
+    proctor_name TEXT,
+    proctor_department TEXT,
+    parent_name TEXT,
+    parent_relationship TEXT,
+    parent_phone TEXT,
+    parent_email TEXT,
+    local_guardian_name TEXT,
+    local_guardian_relationship TEXT,
+    local_guardian_phone TEXT,
+    local_guardian_email TEXT,
+    local_guardian_address TEXT,
+    fee_status TEXT NOT NULL DEFAULT 'UNPAID', -- 'UNPAID', 'SUBMITTED', 'VERIFIED', 'REJECTED'
+    fee_receipt_ref TEXT,
+    fee_payment_timestamp TIMESTAMP WITH TIME ZONE,
+    fee_verified_by TEXT REFERENCES users(id),
+    fee_verified_at TIMESTAMP WITH TIME ZONE,
+    priority_assignment_source TEXT DEFAULT 'MANUAL', -- 'AUTOMATIC_FEE', 'MANUAL', 'OVERRIDE'
+    priority_override_reason TEXT,
+    profile_submitted BOOLEAN NOT NULL DEFAULT FALSE,
+    profile_submitted_at TIMESTAMP WITH TIME ZONE,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
@@ -112,13 +132,15 @@ CREATE TABLE IF NOT EXISTS allocation_cycles (
     id TEXT PRIMARY KEY,
     name TEXT NOT NULL,
     academic_year INT NOT NULL,
-    status TEXT NOT NULL DEFAULT 'DRAFT', -- 'DRAFT', 'SIMULATING', 'READY', 'PUBLISHED', 'LOCKED'
+    status TEXT NOT NULL DEFAULT 'DRAFT', -- 'DRAFT', 'SIMULATING', 'READY', 'PUBLISHED', 'LOCKED', 'PAUSED', 'CLOSED'
     turn_duration_seconds INT NOT NULL DEFAULT 120, -- 2 minutes
     waiting_room_threshold INT NOT NULL DEFAULT 45,
     late_grace_seconds INT NOT NULL DEFAULT 360, -- 6 minutes
     max_penalty_turns INT NOT NULL DEFAULT 10,
     peer_room_view_mode TEXT NOT NULL DEFAULT 'OFF', -- 'OFF', 'AFTER_OWN_CONFIRM', 'LIVE'
     room_change_enabled BOOLEAN NOT NULL DEFAULT FALSE,
+    room_change_window_hours INT NOT NULL DEFAULT 48,
+    results_published_at TIMESTAMP WITH TIME ZONE,
     config_frozen_at TIMESTAMP WITH TIME ZONE,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
@@ -203,6 +225,51 @@ CREATE TABLE IF NOT EXISTS invites (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Terms Documents & Versioned Acknowledgements
+CREATE TABLE IF NOT EXISTS terms_documents (
+    id TEXT PRIMARY KEY,
+    version INT NOT NULL UNIQUE,
+    title TEXT NOT NULL,
+    content TEXT NOT NULL,
+    content_hash TEXT NOT NULL,
+    is_published BOOLEAN NOT NULL DEFAULT TRUE,
+    published_by TEXT REFERENCES users(id),
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS terms_acknowledgements (
+    id TEXT PRIMARY KEY,
+    student_id TEXT NOT NULL REFERENCES student_profiles(id) ON DELETE CASCADE,
+    terms_document_id TEXT NOT NULL REFERENCES terms_documents(id) ON DELETE CASCADE,
+    terms_version INT NOT NULL,
+    accepted_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    ip_address TEXT,
+    UNIQUE(student_id, terms_version)
+);
+
+-- Roommate Groups & Invitations
+CREATE TABLE IF NOT EXISTS roommate_groups (
+    id TEXT PRIMARY KEY,
+    cycle_id TEXT NOT NULL REFERENCES allocation_cycles(id) ON DELETE CASCADE,
+    leader_student_id TEXT NOT NULL REFERENCES student_profiles(id) ON DELETE CASCADE,
+    preferred_room_id TEXT NOT NULL REFERENCES rooms(id) ON DELETE CASCADE,
+    status TEXT NOT NULL DEFAULT 'ACTIVE', -- 'ACTIVE', 'CONFIRMED', 'DISBANDED', 'INVALIDATED'
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS roommate_group_members (
+    id TEXT PRIMARY KEY,
+    group_id TEXT NOT NULL REFERENCES roommate_groups(id) ON DELETE CASCADE,
+    student_id TEXT NOT NULL REFERENCES student_profiles(id) ON DELETE CASCADE,
+    priority_number INT NOT NULL,
+    preferred_seat_id TEXT REFERENCES seats(id) ON DELETE SET NULL,
+    status TEXT NOT NULL DEFAULT 'PENDING', -- 'PENDING', 'ACCEPTED', 'DECLINED', 'INVALIDATED'
+    invited_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    responded_at TIMESTAMP WITH TIME ZONE,
+    UNIQUE(group_id, student_id)
+);
+
 CREATE TABLE IF NOT EXISTS complaints (
     id TEXT PRIMARY KEY,
     type TEXT NOT NULL, -- 'PUBLIC', 'PRIVATE'
@@ -232,10 +299,13 @@ CREATE TABLE IF NOT EXISTS room_change_requests (
     student_id TEXT NOT NULL REFERENCES student_profiles(id) ON DELETE CASCADE,
     current_allocation_id TEXT NOT NULL REFERENCES allocations(id) ON DELETE CASCADE,
     target_room_id TEXT NOT NULL REFERENCES rooms(id) ON DELETE CASCADE,
+    target_seat_id TEXT REFERENCES seats(id) ON DELETE SET NULL,
     reason TEXT NOT NULL,
     status TEXT NOT NULL DEFAULT 'PENDING', -- 'PENDING', 'APPROVED', 'REJECTED'
     reviewer_user_id TEXT REFERENCES users(id),
     review_notes TEXT,
+    is_in_person BOOLEAN NOT NULL DEFAULT FALSE,
+    recorded_by TEXT REFERENCES users(id),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );

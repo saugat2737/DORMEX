@@ -10,6 +10,9 @@ export type PermissionAction =
   | 'student.view_self'
   | 'student.manage'
   | 'student.edit_priority'
+  | 'fee.verify'
+  | 'terms.accept'
+  | 'terms.manage'
   | 'inventory.view'
   | 'inventory.manage'
   | 'floor_plan.edit'
@@ -21,6 +24,7 @@ export type PermissionAction =
   | 'allocation.confirm'
   | 'allocation.override'
   | 'wishlist.manage'
+  | 'roommate.manage'
   | 'recommendation.manage'
   | 'complaint.create'
   | 'complaint.vote'
@@ -42,11 +46,13 @@ export interface AuthActor {
 export const ROLE_PERMISSIONS: Record<SystemRole, PermissionAction[]> = {
   STUDENT: [
     'student.view_self',
+    'terms.accept',
     'inventory.view',
     'cycle.view',
     'allocation.join',
     'allocation.confirm',
     'wishlist.manage',
+    'roommate.manage',
     'recommendation.manage',
     'complaint.create',
     'complaint.vote',
@@ -80,6 +86,8 @@ export const ROLE_PERMISSIONS: Record<SystemRole, PermissionAction[]> = {
     'student.view_self',
     'student.manage',
     'student.edit_priority',
+    'fee.verify',
+    'terms.manage',
     'inventory.view',
     'inventory.manage',
     'floor_plan.edit',
@@ -87,6 +95,7 @@ export const ROLE_PERMISSIONS: Record<SystemRole, PermissionAction[]> = {
     'cycle.view',
     'cycle.manage',
     'cycle.publish',
+    'roommate.manage',
     'complaint.manage',
     'complaint.view_private',
     'room_change.review',
@@ -96,6 +105,8 @@ export const ROLE_PERMISSIONS: Record<SystemRole, PermissionAction[]> = {
     'student.view_self',
     'student.manage',
     'student.edit_priority',
+    'fee.verify',
+    'terms.manage',
     'inventory.view',
     'inventory.manage',
     'floor_plan.edit',
@@ -104,6 +115,7 @@ export const ROLE_PERMISSIONS: Record<SystemRole, PermissionAction[]> = {
     'cycle.manage',
     'cycle.publish',
     'allocation.override',
+    'roommate.manage',
     'complaint.manage',
     'complaint.view_private',
     'room_change.review',

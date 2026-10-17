@@ -1,4 +1,4 @@
-# DORMEX — College Hostel Allocation System
+/# DORMEX — College Hostel Allocation System
 
 DORMEX is a secure, production-grade, centralized college hostel registration, priority-based seat allocation, floor-plan visualization, occupancy management, complaints, and room change platform.
 
@@ -54,10 +54,17 @@ The pilot implementation is configured for:
 ### End-to-End API Flow
 1. **Health Check**: `GET /health`
 2. **Interactive SVG Map**: `GET /api/floors/:id/svg`
-3. **Student Registry**: `GET /api/students`, `PUT /api/students/:id/eligibility`, `PUT /api/students/:id/priority`
-4. **Join Waiting Room**: `POST /api/allocation-cycles/:id/join`
-5. **Advance Pool Turn**: `POST /api/allocation-pools/:id/advance`
-6. **Confirm Seat (Atomic)**: `POST /api/booking-sessions/:id/confirm-seat`
-7. **Submit Complaint**: `POST /api/complaints`
-8. **Vote Complaint**: `POST /api/complaints/:id/vote`
-9. **Super Admin Force Override**: `POST /api/admin/allocations/force-override`
+3. **Student Registration & Profile**: `PUT /api/students/:id/profile`, `POST /api/students/:id/submit-profile`
+4. **Terms of Responsibility Agreement**: `GET /api/terms/latest`, `POST /api/terms/accept`
+5. **Fee Verification & Priority Recalculation**: `POST /api/students/:id/verify-fee`, `POST /api/allocation/recalculate-priorities`
+6. **Roommate Coordination & Seat Intent**: `POST /api/roommate-groups`, `POST /api/roommate-groups/:id/respond`, `GET /api/floors/:id/roommate-intent`
+7. **Join Waiting Room & Turn Execution**: `POST /api/allocation-cycles/:id/join`, `POST /api/allocation-pools/:id/advance`, `POST /api/booking-sessions/:id/confirm-seat`
+8. **48-Hour Room Change Window**: `POST /api/room-change-requests`, `PUT /api/room-change-requests/:id/review`, `POST /api/room-change-requests/in-person`
+9. **Complaints & Operations**: `POST /api/complaints`, `PUT /api/complaints/:id`, `POST /api/complaints/:id/vote`
+10. **Admin Allocation Controls**: `PUT /api/allocation-cycles/:id/status`, `POST /api/admin/allocations/force-override`
+
+### Portals & Login Experience
+When accessing DORMEX, users are presented with 3 distinct portals:
+- **Student Portal**: Student registration, terms agreement, fee status check, live map turn selection, roommate groups, 48h room changes, complaints.
+- **Admin / Staff Portal**: Allocation cycle lifecycle control (Start, Pause, Resume, Close), central complaint inbox, room change approvals, in-person requests.
+- **Hostel Office Portal**: Student application review, fee payment verification, chronological priority recalculation, allocation readiness monitoring.

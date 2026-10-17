@@ -109,4 +109,188 @@ export class PreferencesService {
 
     return { status: newStatus };
   }
+
+  /**
+   * ROOMMATE GROUP COORDINATION (Section 8 of specifications)
+   * A student enters 1 or 2 intended roommates' priority numbers for a specific room.
+   * Resolves priority numbers securely without leaking private profiles.
+   * Invitations require explicit recipient acceptance.
+   * Creates orange-intent warning state without hard-reserving seats.
+   */
+  async createRoommateGroup(
+    cycleId: string,
+    leaderStudentId: string,
+    roomId: string,
+    peerPriorityNumbers: number[],
+    actor: AuthActor
+  ): Promise<{ groupId: string; invitedCount: number }> {
+    if (!can(actor, 'roommate.manage', { resource_type: 'STUDENT', student_id: leaderStudentId })) {
+      throw new Error('FORBIDDEN: Insufficient permissions to create roommate group');
+    }
+
+    return this.db.transaction(async (client) => {
+      // 1. Verify room exists and check capacity
+      const roomRes = await client.query(`SELECT capacity FROM rooms WHERE id = $1`, [roomId]);
+      if (roomRes.rows.length === 0) throw new Error('NOT_FOUND: Room not found');
+      const capacity = roomRes.rows[0].capacity;
+
+      // Group size cannot exceed room capacity
+      const totalRequested = 1 + peerPriorityNumbers.length;
+      if (totalRequested > capacity) {
+        throw new Error(`EXCEEDS_CAPACITY: Room capacity is ${capacity}, cannot invite ${peerPriorityNumbers.length} roommates`);
+      }
+
+      // 2. Fetch leader's priority
+      const leaderRes = await client.query(
+        `SELECT id, assigned_priority FROM student_profiles WHERE id = $1`,
+        [leaderStudentId]
+      );
+      if (leaderRes.rows.length === 0) throw new Error('NOT_FOUND: Leader student profile not found');
+      const leaderPriority = leaderRes.rows[0].assigned_priority || 999;
+
+      // 3. Resolve target students by priority number securely
+      const invitedStudentIds: { id: string; priority: number }[] = [];
+      for (const pNum of peerPriorityNumbers) {
+        if (pNum === leaderPriority) continue; // cannot invite self
+
+        const targetRes = await client.query(
+          `SELECT id, assigned_priority FROM student_profiles 
+           WHERE assigned_priority = $1 AND eligibility_status = 'ELIGIBLE'`,
+          [pNum]
+        );
+
+        if (targetRes.rows.length === 0) {
+          throw new Error(`INVALID_PRIORITY: Priority #${pNum} is not an eligible registered participant`);
+        }
+        invitedStudentIds.push({ id: targetRes.rows[0].id, priority: pNum });
+      }
+
+      // 4. Create Roommate Group record
+      const groupId = `rmg_${cycleId}_${leaderStudentId}_${Date.now()}`;
+      await client.query(
+        `INSERT INTO roommate_groups (id, cycle_id, leader_student_id, preferred_room_id, status)
+         VALUES ($1, $2, $3, $4, 'ACTIVE')`,
+        [groupId, cycleId, leaderStudentId, roomId]
+      );
+
+      // 5. Add leader as confirmed/accepted member
+      const leaderMemberId = `rmm_${groupId}_${leaderStudentId}`;
+      await client.query(
+        `INSERT INTO roommate_group_members (id, group_id, student_id, priority_number, status, responded_at)
+         VALUES ($1, $2, $3, $4, 'ACCEPTED', CURRENT_TIMESTAMP)`,
+        [leaderMemberId, groupId, leaderStudentId, leaderPriority]
+      );
+
+      // 6. Add peer members with PENDING status
+      for (const peer of invitedStudentIds) {
+        const memId = `rmm_${groupId}_${peer.id}`;
+        await client.query(
+          `INSERT INTO roommate_group_members (id, group_id, student_id, priority_number, status)
+           VALUES ($1, $2, $3, $4, 'PENDING')
+           ON CONFLICT (group_id, student_id) DO UPDATE SET status = 'PENDING'`,
+          [memId, groupId, peer.id, peer.priority]
+        );
+      }
+
+      return { groupId, invitedCount: invitedStudentIds.length };
+    });
+  }
+
+  /**
+   * Recipient responds to roommate group invitation
+   */
+  async respondToRoommateInvite(
+    groupId: string,
+    studentProfileId: string,
+    accept: boolean,
+    actor: AuthActor
+  ): Promise<{ status: string }> {
+    if (actor.role === 'STUDENT' && actor.student_profile_id !== studentProfileId) {
+      throw new Error('FORBIDDEN: Cannot respond on behalf of another student');
+    }
+
+    const newStatus = accept ? 'ACCEPTED' : 'DECLINED';
+    const res = await this.db.query(
+      `UPDATE roommate_group_members SET status = $1, responded_at = CURRENT_TIMESTAMP
+       WHERE group_id = $2 AND student_id = $3
+       RETURNING id`,
+      [newStatus, groupId, studentProfileId]
+    );
+
+    if (res.rows.length === 0) {
+      throw new Error('NOT_FOUND: Pending invitation for this group was not found');
+    }
+
+    return { status: newStatus };
+  }
+
+  /**
+   * Get all active roommate-intent seats on a given floor/cycle.
+   * If a roommate group has preferred room R, unallocated seats in room R with accepted group intent
+   * are flagged as orange-state intent.
+   */
+  async getRoommateIntentSeats(floorId: string, cycleId: string): Promise<Record<string, { groupId: string; roomNumber: string; isIntent: boolean }>> {
+    const res = await this.db.query(
+      `SELECT s.id as seat_id, r.room_number, rg.id as group_id
+       FROM seats s
+       JOIN rooms r ON s.room_id = r.id
+       JOIN roommate_groups rg ON rg.preferred_room_id = r.id AND rg.cycle_id = $1 AND rg.status = 'ACTIVE'
+       JOIN roommate_group_members rgm ON rgm.group_id = rg.id AND rgm.status = 'ACCEPTED'
+       LEFT JOIN allocations a ON s.id = a.seat_id AND a.status = 'CURRENT'
+       WHERE r.floor_id = $2 AND a.id IS NULL AND s.status = 'ACTIVE'`,
+      [cycleId, floorId]
+    );
+
+    const intentMap: Record<string, { groupId: string; roomNumber: string; isIntent: boolean }> = {};
+    for (const row of res.rows) {
+      intentMap[row.seat_id] = {
+        groupId: row.group_id,
+        roomNumber: row.room_number,
+        isIntent: true,
+      };
+    }
+    return intentMap;
+  }
+
+  /**
+   * Get student's roommate invitations (incoming & outgoing)
+   */
+  async getStudentRoommateGroups(studentProfileId: string, cycleId: string) {
+    const incomingRes = await this.db.query(
+      `SELECT rg.id as group_id, rg.preferred_room_id, r.room_number, sp.full_name as leader_name,
+              rgm.status as my_status, rgm.priority_number
+       FROM roommate_group_members rgm
+       JOIN roommate_groups rg ON rgm.group_id = rg.id
+       JOIN student_profiles sp ON rg.leader_student_id = sp.id
+       JOIN rooms r ON rg.preferred_room_id = r.id
+       WHERE rgm.student_id = $1 AND rg.cycle_id = $2`,
+      [studentProfileId, cycleId]
+    );
+
+    const outgoingRes = await this.db.query(
+      `SELECT rg.id as group_id, rg.preferred_room_id, r.room_number, rg.status as group_status
+       FROM roommate_groups rg
+       JOIN rooms r ON rg.preferred_room_id = r.id
+       WHERE rg.leader_student_id = $1 AND rg.cycle_id = $2`,
+      [studentProfileId, cycleId]
+    );
+
+    let outgoingMembers: any[] = [];
+    if (outgoingRes.rows.length > 0) {
+      const gId = outgoingRes.rows[0].group_id;
+      const memRes = await this.db.query(
+        `SELECT rgm.student_id, rgm.priority_number, rgm.status, sp.full_name
+         FROM roommate_group_members rgm
+         JOIN student_profiles sp ON rgm.student_id = sp.id
+         WHERE rgm.group_id = $1`,
+        [gId]
+      );
+      outgoingMembers = memRes.rows;
+    }
+
+    return {
+      incoming: incomingRes.rows,
+      outgoing: outgoingRes.rows[0] ? { ...outgoingRes.rows[0], members: outgoingMembers } : null,
+    };
+  }
 }

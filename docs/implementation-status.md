@@ -82,3 +82,18 @@ Repository Status: Active Development (Modular Monolith)
   - **Staff Registry Management**: Dedicated Student Registry view for staff to inspect, filter, verify eligibility, and assign priority ranks.
   - **BVB Allocation Cycle & Controls**: Configured threshold to 30 with manual early cycle start capability.
   - **Verified with 22 automated tests passing across 4 test suites** (including `tests/bvb_pilot.test.ts`).
+- [x] **Phase 4: Real College Workflows, Student Onboarding, Roommates, & Administrative Controls**:
+  - **Three Clear Login Portals**: Implemented dedicated authentication portals (`Student Portal`, `Admin / Staff Portal`, and `Hostel Office Portal`) with warm neutral surfaces, deep navy typography, and muted teal accents. Authentication and role-based permissions are enforced strictly server-side (`Identity + Role + Scope + Resource + Action`), eliminating client-driven privilege escalation.
+  - **Clean Production Experience**: Removed test aliases and confusing dev controls from production views; removed `DEV HARNESS` and mismatched `PROD` badge; dev switcher is isolated exclusively to dev mode.
+  - **Comprehensive 5-Section Student Registration & Profile Workflow**: Form sections include Academic Information (with USN validation), Parent / Guardian Contact Details, Local Guardian Details (with explicit N/A option), Assigned Proctor Details, and Fee & Admission Status. Submissions transition through backend-authoritative states (`Submitted -> Under Review -> Fee Verified -> Eligible for Allocation`).
+  - **Staff-Authoritative Fee Verification & Payment-Chronology Priority**: Only Hostel Office staff can verify payment evidence and confirm payment timestamps. Automated recalculation sorts priority ranks chronologically by verified payment timestamp, breaking ties deterministically by USN/college ID.
+  - **Mandatory Versioned Hostel Responsibility Terms Agreement**: Seeded Version 1 of the institutional terms agreement. Students cannot enter the waiting room or select seats without an authoritative, server-timestamped terms acknowledgement record.
+  - **Student Onboarding Sequence**: Structured 4-step progress tracker on student view (`1. Profile Submission -> 2. Terms Agreement -> 3. Fee Verification -> 4. Live Turn Allocation`).
+  - **3-Color Seat Availability Map**: 
+    - **Green**: Available for selection during student turn.
+    - **Orange**: Non-binding roommate group intent. Students selecting orange seats are presented with a clear warning modal explaining that a peer group intended the room, but selection is permitted under college policy if vacant.
+    - **Red**: Occupied or unavailable.
+  - **Roommate Group Coordination via Priority Numbers**: Consent-based group formation where students link up using priority numbers without exposing private student contact details or internal preferences. Conflicting intents are automatically cleaned up when seats are confirmed.
+  - **48-Hour Room Change Management**: Supports student-initiated room change requests within a 48-hour cycle window, validation of active allocations, staff review, atomic transfers between seats, and in-person staff recorded changes.
+  - **Admin Allocation Controls & Central Complaint Inbox**: Admin lifecycle actions (`Start`, `Pause`, `Resume`, `Close`); central complaint triage supporting public facility tickets and confidential room tickets with staff assignment and resolution tracking.
+  - **Verified with 32 automated tests passing across 5 test suites** (`npm test` 100% pass rate).

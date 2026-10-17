@@ -6,9 +6,16 @@ import { StudentAllocationView } from './components/StudentAllocationView.js';
 import { AdminDashboard } from './components/AdminDashboard.js';
 import { StudentRegistryView } from './components/StudentRegistryView.js';
 import { ComplaintsView } from './components/ComplaintsView.js';
+import { PortalSelectionView } from './components/PortalSelectionView.js';
 
 const AppContent: React.FC = () => {
-  const { session } = useAuth();
+  const { session, isAuthenticated } = useAuth();
+
+  // If not authenticated, show the 3 Login Portals Welcome Screen
+  if (!isAuthenticated || !session) {
+    return <PortalSelectionView />;
+  }
+
   const [currentTab, setCurrentTab] = useState<string>(
     session.role === 'STUDENT' ? 'student_allocation' : 'admin_overview'
   );

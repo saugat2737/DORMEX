@@ -20,10 +20,13 @@ interface LayoutProps {
 }
 
 export const AppLayout: React.FC<LayoutProps> = ({ currentTab, setCurrentTab, children }) => {
-  const { session, switchUser } = useAuth();
+  const { session, logout, isDevMode, switchUser } = useAuth();
+
+  if (!session) return null;
 
   const isStudent = session.role === 'STUDENT';
-  const isStaff = !isStudent;
+  const isHostelOffice = session.role === 'HOSTEL_OFFICE';
+  const isAdmin = ['SUPER_ADMIN', 'CHIEF_WARDEN', 'WARDEN'].includes(session.role);
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row bg-slate-50 font-sans">
@@ -38,41 +41,50 @@ export const AppLayout: React.FC<LayoutProps> = ({ currentTab, setCurrentTab, ch
             <div>
               <div className="font-bold text-white tracking-tight text-lg flex items-center gap-1.5">
                 DORMEX
-                <span className="text-[10px] font-semibold bg-brand-gold text-white px-1.5 py-0.5 rounded uppercase tracking-wider">PROD</span>
+                {isDevMode ? (
+                  <span className="text-[10px] font-semibold bg-amber-500 text-navy-950 px-1.5 py-0.5 rounded uppercase tracking-wider font-mono">
+                    DEV
+                  </span>
+                ) : (
+                  <span className="text-[10px] font-semibold bg-brand-teal/30 text-teal-300 px-1.5 py-0.5 rounded uppercase tracking-wider">
+                    PILOT
+                  </span>
+                )}
               </div>
-              <div className="text-[11px] text-slate-400 font-medium">Hostel Allocation Platform</div>
+              <div className="text-[11px] text-slate-400 font-medium">B.V.B. Hostel Platform</div>
             </div>
           </div>
 
-          {/* Dev Role Switcher Bar */}
-          <div className="p-3 bg-navy-800/60 border-b border-navy-700/60">
-            <label className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider block mb-1.5">
-              Active Persona (Dev Harness)
-            </label>
-            <select
-              value={
-                Object.keys(DEV_USERS).find((k) => DEV_USERS[k].userId === session.userId) || 'demo1'
-              }
-              onChange={(e) => switchUser(e.target.value)}
-              className="w-full text-xs bg-navy-900 border border-navy-700 rounded-md px-2.5 py-1.5 text-white focus:outline-none focus:ring-1 focus:ring-brand-teal"
-            >
-              <optgroup label="BVB Pilot Demo Students (30 Seeded)">
-                <option value="demo1">Aarav Sharma (DEMO-001, Rank #1)</option>
-                <option value="demo2">Diya Patel (DEMO-002, Rank #2)</option>
-                <option value="demo3">Rohan Verma (DEMO-003, Rank #3)</option>
-                <option value="demo10">Arjun Menon (DEMO-010, Rank #10)</option>
-                <option value="demo29">Prisha Pandey (DEMO-029, Pending)</option>
-                <option value="demo30">Nikhil Saxena (DEMO-030, Fee Pending)</option>
-                <option value="student1">Aarav Patel (USN202401, Test Alias)</option>
-              </optgroup>
-              <optgroup label="Staff Administration">
-                <option value="wardenBvb">Prof. Rao (Warden - BVB Block)</option>
-                <option value="chiefWarden">Dr. Sharma (Chief Warden)</option>
-                <option value="hostelOffice">Hostel Office Staff</option>
-                <option value="superAdmin">Super Administrator (Override)</option>
-              </optgroup>
-            </select>
-          </div>
+          {/* Dev Role Switcher Bar (Appears ONLY in explicitly enabled development mode) */}
+          {isDevMode && (
+            <div className="p-3 bg-navy-800/60 border-b border-navy-700/60">
+              <label className="text-[10px] font-semibold text-amber-400 uppercase tracking-wider block mb-1.5 flex items-center gap-1">
+                <span>Dev Persona Switcher</span>
+              </label>
+              <select
+                value={
+                  Object.keys(DEV_USERS).find((k) => DEV_USERS[k].userId === session.userId) || 'demo1'
+                }
+                onChange={(e) => switchUser(e.target.value)}
+                className="w-full text-xs bg-navy-900 border border-navy-700 rounded-md px-2.5 py-1.5 text-white focus:outline-none focus:ring-1 focus:ring-brand-teal"
+              >
+                <optgroup label="BVB Pilot Demo Students (30 Seeded)">
+                  <option value="demo1">Aarav Sharma (DEMO-001, Rank #1)</option>
+                  <option value="demo2">Diya Patel (DEMO-002, Rank #2)</option>
+                  <option value="demo3">Rohan Verma (DEMO-003, Rank #3)</option>
+                  <option value="demo10">Arjun Menon (DEMO-010, Rank #10)</option>
+                  <option value="demo29">Prisha Pandey (DEMO-029, Fee Pending)</option>
+                  <option value="demo30">Nikhil Saxena (DEMO-030, Unpaid)</option>
+                </optgroup>
+                <optgroup label="Staff Administration">
+                  <option value="hostelOffice">Hostel Office Staff</option>
+                  <option value="superAdmin">System Administrator (Super Admin)</option>
+                  <option value="chiefWarden">Dr. Sharma (Chief Warden)</option>
+                  <option value="wardenBvb">Prof. Rao (Warden - BVB Block)</option>
+                </optgroup>
+              </select>
+            </div>
+          )}
 
           {/* Menu Items */}
           <nav className="p-3 space-y-1">
@@ -88,7 +100,7 @@ export const AppLayout: React.FC<LayoutProps> = ({ currentTab, setCurrentTab, ch
                 >
                   <div className="flex items-center space-x-3">
                     <Clock className="w-4 h-4 text-emerald-300" />
-                    <span>Live Allocation & Map</span>
+                    <span>Onboarding & Allocation</span>
                   </div>
                   <ChevronRight className="w-4 h-4 opacity-50" />
                 </button>
@@ -109,7 +121,7 @@ export const AppLayout: React.FC<LayoutProps> = ({ currentTab, setCurrentTab, ch
               </>
             )}
 
-            {isStaff && (
+            {(isAdmin || isHostelOffice) && (
               <>
                 <button
                   onClick={() => setCurrentTab('admin_overview')}
@@ -140,20 +152,6 @@ export const AppLayout: React.FC<LayoutProps> = ({ currentTab, setCurrentTab, ch
                   <ChevronRight className="w-4 h-4 opacity-50" />
                 </button>
                 <button
-                  onClick={() => setCurrentTab('admin_floor_editor')}
-                  className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-                    currentTab === 'admin_floor_editor'
-                      ? 'bg-brand-teal text-white shadow-sm'
-                      : 'text-slate-300 hover:bg-navy-800 hover:text-white'
-                  }`}
-                >
-                  <div className="flex items-center space-x-3">
-                    <Map className="w-4 h-4 text-cyan-300" />
-                    <span>2D Floor Plan Maker</span>
-                  </div>
-                  <ChevronRight className="w-4 h-4 opacity-50" />
-                </button>
-                <button
                   onClick={() => setCurrentTab('admin_complaints')}
                   className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                     currentTab === 'admin_complaints'
@@ -167,15 +165,31 @@ export const AppLayout: React.FC<LayoutProps> = ({ currentTab, setCurrentTab, ch
                   </div>
                   <ChevronRight className="w-4 h-4 opacity-50" />
                 </button>
+                {isAdmin && (
+                  <button
+                    onClick={() => setCurrentTab('admin_floor_editor')}
+                    className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+                      currentTab === 'admin_floor_editor'
+                        ? 'bg-brand-teal text-white shadow-sm'
+                        : 'text-slate-300 hover:bg-navy-800 hover:text-white'
+                    }`}
+                  >
+                    <div className="flex items-center space-x-3">
+                      <Map className="w-4 h-4 text-cyan-300" />
+                      <span>2D Floor Plan Maker</span>
+                    </div>
+                    <ChevronRight className="w-4 h-4 opacity-50" />
+                  </button>
+                )}
               </>
             )}
           </nav>
         </div>
 
-        {/* User Card */}
-        <div className="p-4 border-t border-navy-800 bg-navy-950/40">
-          <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center font-bold text-xs text-white">
+        {/* User Card & Sign Out */}
+        <div className="p-4 border-t border-navy-800 bg-navy-950/40 flex items-center justify-between">
+          <div className="flex items-center space-x-3 overflow-hidden">
+            <div className="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center font-bold text-xs text-white shrink-0">
               {session.fullName.substring(0, 2).toUpperCase()}
             </div>
             <div className="overflow-hidden">
@@ -183,6 +197,14 @@ export const AppLayout: React.FC<LayoutProps> = ({ currentTab, setCurrentTab, ch
               <div className="text-[10px] text-brand-teal font-medium uppercase tracking-wider">{session.role}</div>
             </div>
           </div>
+
+          <button
+            onClick={logout}
+            title="Sign Out"
+            className="p-1.5 text-slate-400 hover:text-white hover:bg-navy-800 rounded-lg transition-colors ml-2"
+          >
+            <LogOut className="w-4 h-4" />
+          </button>
         </div>
       </aside>
 
