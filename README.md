@@ -43,12 +43,21 @@ npm start
 ```
 By default, the server listens at `http://localhost:3000`.
 
+### Pilot Demonstration: BVB Block · Floor 2 · 30 Students
+The pilot implementation is configured for:
+- **Active Building**: BVB Block
+- **Active Floor**: Floor 2 (`bvb-floor-2.svg`, numbered room markers 201 through 272)
+- **Synthetic Demo Students**: Exactly 30 records (`DEMO-001` through `DEMO-030`)
+- **Provisional Bed Capacities**: Separate seat inventory per room labelled provisional until verified by the hostel.
+- **Cycle Controls**: Threshold configured to 30 students with staff manual early start capability.
+
 ### End-to-End API Flow
 1. **Health Check**: `GET /health`
 2. **Interactive SVG Map**: `GET /api/floors/:id/svg`
-3. **Join Waiting Room**: `POST /api/allocation-cycles/:id/join`
-4. **Advance Pool Turn**: `POST /api/allocation-pools/:id/advance`
-5. **Confirm Seat (Atomic)**: `POST /api/booking-sessions/:id/confirm-seat`
-6. **Submit Complaint**: `POST /api/complaints`
-7. **Vote Complaint**: `POST /api/complaints/:id/vote`
-8. **Super Admin Force Override**: `POST /api/admin/allocations/force-override`
+3. **Student Registry**: `GET /api/students`, `PUT /api/students/:id/eligibility`, `PUT /api/students/:id/priority`
+4. **Join Waiting Room**: `POST /api/allocation-cycles/:id/join`
+5. **Advance Pool Turn**: `POST /api/allocation-pools/:id/advance`
+6. **Confirm Seat (Atomic)**: `POST /api/booking-sessions/:id/confirm-seat`
+7. **Submit Complaint**: `POST /api/complaints`
+8. **Vote Complaint**: `POST /api/complaints/:id/vote`
+9. **Super Admin Force Override**: `POST /api/admin/allocations/force-override`

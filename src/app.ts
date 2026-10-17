@@ -26,10 +26,27 @@ export async function buildApp(db?: DatabaseService): Promise<FastifyInstance> {
   await app.register(cookie);
 
   const clientDist = path.join(process.cwd(), 'dist', 'client');
+  const publicDir = path.join(process.cwd(), 'public');
+
+  if (fs.existsSync(publicDir)) {
+    await app.register(fastifyStatic, {
+      root: publicDir,
+      prefix: '/public/',
+      decorateReply: false,
+    });
+  }
+
   if (fs.existsSync(clientDist)) {
     await app.register(fastifyStatic, {
       root: clientDist,
       prefix: '/',
+    });
+
+    app.setNotFoundHandler(async (req, reply) => {
+      if (req.url.startsWith('/api')) {
+        return reply.code(404).send({ error: 'Endpoint not found' });
+      }
+      return reply.sendFile('index.html');
     });
   }
 
@@ -71,6 +88,21 @@ export async function buildApp(db?: DatabaseService): Promise<FastifyInstance> {
   app.get('/health', async () => ({ status: 'UP', service: 'DORMEX Hostel Allocation Engine' }));
 
   // Student Registry routes
+  app.get('/api/students', async (req: any, reply) => {
+    try {
+      const actor = await extractActor(req);
+      const query = req.query || {};
+      const students = await studentRegistry.listStudents(actor, {
+        academicYear: query.academicYear ? parseInt(query.academicYear, 10) : undefined,
+        quota: query.quota,
+        search: query.search,
+      });
+      return reply.send(students);
+    } catch (err: any) {
+      return reply.code(err.message?.startsWith('FORBIDDEN') ? 403 : 400).send({ error: err.message });
+    }
+  });
+
   app.post('/api/students', async (req, reply) => {
     try {
       const actor = await extractActor(req);
@@ -88,6 +120,28 @@ export async function buildApp(db?: DatabaseService): Promise<FastifyInstance> {
       return reply.send(profile);
     } catch (err: any) {
       return reply.code(err.message?.startsWith('FORBIDDEN') ? 403 : 404).send({ error: err.message });
+    }
+  });
+
+  app.put('/api/students/:id/eligibility', async (req: any, reply) => {
+    try {
+      const actor = await extractActor(req);
+      const { status } = req.body as any;
+      await studentRegistry.updateEligibility(req.params.id, status, actor);
+      return reply.send({ success: true, message: 'Student eligibility updated successfully' });
+    } catch (err: any) {
+      return reply.code(err.message?.startsWith('FORBIDDEN') ? 403 : 400).send({ error: err.message });
+    }
+  });
+
+  app.put('/api/students/:id/priority', async (req: any, reply) => {
+    try {
+      const actor = await extractActor(req);
+      const { priority } = req.body as any;
+      await studentRegistry.updatePriority(req.params.id, priority, actor);
+      return reply.send({ success: true, message: 'Student priority updated successfully' });
+    } catch (err: any) {
+      return reply.code(err.message?.startsWith('FORBIDDEN') ? 403 : 400).send({ error: err.message });
     }
   });
 
@@ -123,13 +177,92 @@ export async function buildApp(db?: DatabaseService): Promise<FastifyInstance> {
       const complaintsRes = await database.query(`SELECT COUNT(*) as count FROM complaints WHERE status = 'OPEN'`);
       const buildingsRes = await database.query(`SELECT COUNT(*) as count FROM buildings`);
 
+      const activeSeatsRes = await database.query(`SELECT COUNT(*) as count FROM seats WHERE status = 'ACTIVE'`);
+      const activeCount = parseInt(activeSeatsRes.rows[0].count, 10);
+      const occupiedCount = parseInt(occupiedSeatsRes.rows[0].count, 10);
+      const availableCount = Math.max(0, activeCount - occupiedCount);
+
+      const blockedSeatsRes = await database.query(`SELECT COUNT(*) as count FROM seats WHERE status = 'BLOCKED'`);
+      const maintenanceSeatsRes = await database.query(`SELECT COUNT(*) as count FROM seats WHERE status = 'MAINTENANCE'`);
+      const totalRoomsRes = await database.query(`SELECT COUNT(*) as count FROM rooms`);
+      const eligibleStudentsRes = await database.query(`SELECT COUNT(*) as count FROM student_profiles WHERE eligibility_status = 'ELIGIBLE'`);
+
       return {
         totalSeats: parseInt(totalSeatsRes.rows[0].count, 10),
-        occupiedSeats: parseInt(occupiedSeatsRes.rows[0].count, 10),
+        occupiedSeats: occupiedCount,
+        availableSeats: availableCount,
+        blockedSeats: parseInt(blockedSeatsRes.rows[0].count, 10),
+        maintenanceSeats: parseInt(maintenanceSeatsRes.rows[0].count, 10),
+        totalRooms: parseInt(totalRoomsRes.rows[0].count, 10),
         registeredStudents: parseInt(studentsRes.rows[0].count, 10),
+        eligibleStudents: parseInt(eligibleStudentsRes.rows[0].count, 10),
         openComplaints: parseInt(complaintsRes.rows[0].count, 10),
         totalBuildings: parseInt(buildingsRes.rows[0].count, 10),
       };
+    } catch (err: any) {
+      return reply.code(400).send({ error: err.message });
+    }
+  });
+
+  // Admin rooms inventory endpoint with status updates
+  app.get('/api/floors/:id/rooms', async (req: any, reply) => {
+    try {
+      const res = await database.query(
+        `SELECT r.*, 
+                COUNT(s.id) as total_seats,
+                COUNT(CASE WHEN s.status = 'ACTIVE' AND a.id IS NULL THEN 1 END) as available_seats,
+                COUNT(CASE WHEN a.id IS NOT NULL THEN 1 END) as occupied_seats
+         FROM rooms r
+         LEFT JOIN seats s ON r.id = s.room_id
+         LEFT JOIN allocations a ON s.id = a.seat_id AND a.status = 'CURRENT'
+         WHERE r.floor_id = $1
+         GROUP BY r.id
+         ORDER BY r.room_number ASC`,
+        [req.params.id]
+      );
+      return reply.send(res.rows);
+    } catch (err: any) {
+      return reply.code(400).send({ error: err.message });
+    }
+  });
+
+  // Admin seat status toggle (maintenance, blocked, active)
+  app.put('/api/seats/:id/status', async (req: any, reply) => {
+    try {
+      const actor = await extractActor(req);
+      if (!['WARDEN', 'CHIEF_WARDEN', 'HOSTEL_OFFICE', 'SUPER_ADMIN'].includes(actor.role)) {
+        return reply.code(403).send({ error: 'FORBIDDEN: Insufficient permissions to update seat status' });
+      }
+      const { status } = req.body as any;
+      if (!['ACTIVE', 'BLOCKED', 'MAINTENANCE'].includes(status)) {
+        return reply.code(400).send({ error: 'INVALID_STATUS: Must be ACTIVE, BLOCKED, or MAINTENANCE' });
+      }
+
+      await database.query(
+        `UPDATE seats SET status = $1 WHERE id = $2`,
+        [status, req.params.id]
+      );
+      return reply.send({ success: true, seatId: req.params.id, status });
+    } catch (err: any) {
+      return reply.code(400).send({ error: err.message });
+    }
+  });
+
+  // Admin cycle status toggle (e.g. manual early start for pilot)
+  app.put('/api/allocation-cycles/:id/status', async (req: any, reply) => {
+    try {
+      const actor = await extractActor(req);
+      if (!['HOSTEL_OFFICE', 'SUPER_ADMIN'].includes(actor.role)) {
+        return reply.code(403).send({ error: 'FORBIDDEN: Only Hostel Office or Super Admin can manage allocation cycle status' });
+      }
+      const { status, waitingRoomThreshold } = req.body as any;
+      if (status) {
+        await database.query(`UPDATE allocation_cycles SET status = $1 WHERE id = $2`, [status, req.params.id]);
+      }
+      if (waitingRoomThreshold !== undefined) {
+        await database.query(`UPDATE allocation_cycles SET waiting_room_threshold = $1 WHERE id = $2`, [waitingRoomThreshold, req.params.id]);
+      }
+      return reply.send({ success: true, message: 'Cycle updated successfully' });
     } catch (err: any) {
       return reply.code(400).send({ error: err.message });
     }

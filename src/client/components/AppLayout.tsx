@@ -51,20 +51,24 @@ export const AppLayout: React.FC<LayoutProps> = ({ currentTab, setCurrentTab, ch
             </label>
             <select
               value={
-                Object.keys(DEV_USERS).find((k) => DEV_USERS[k].userId === session.userId) || 'student1'
+                Object.keys(DEV_USERS).find((k) => DEV_USERS[k].userId === session.userId) || 'demo1'
               }
               onChange={(e) => switchUser(e.target.value)}
               className="w-full text-xs bg-navy-900 border border-navy-700 rounded-md px-2.5 py-1.5 text-white focus:outline-none focus:ring-1 focus:ring-brand-teal"
             >
-              <optgroup label="Students">
-                <option value="student1">Aarav Patel (USN202401)</option>
-                <option value="student2">Diya Sen (USN202402)</option>
-                <option value="student3">Rohan Verma (USN202403)</option>
+              <optgroup label="BVB Pilot Demo Students (30 Seeded)">
+                <option value="demo1">Aarav Sharma (DEMO-001, Rank #1)</option>
+                <option value="demo2">Diya Patel (DEMO-002, Rank #2)</option>
+                <option value="demo3">Rohan Verma (DEMO-003, Rank #3)</option>
+                <option value="demo10">Arjun Menon (DEMO-010, Rank #10)</option>
+                <option value="demo29">Prisha Pandey (DEMO-029, Pending)</option>
+                <option value="demo30">Nikhil Saxena (DEMO-030, Fee Pending)</option>
+                <option value="student1">Aarav Patel (USN202401, Test Alias)</option>
               </optgroup>
               <optgroup label="Staff Administration">
-                <option value="wardenA">Prof. Rao (Warden - Aryabhata)</option>
+                <option value="wardenBvb">Prof. Rao (Warden - BVB Block)</option>
                 <option value="chiefWarden">Dr. Sharma (Chief Warden)</option>
-                <option value="hostelOffice">Hostel Office Administrator</option>
+                <option value="hostelOffice">Hostel Office Staff</option>
                 <option value="superAdmin">Super Administrator (Override)</option>
               </optgroup>
             </select>
@@ -117,7 +121,21 @@ export const AppLayout: React.FC<LayoutProps> = ({ currentTab, setCurrentTab, ch
                 >
                   <div className="flex items-center space-x-3">
                     <Building2 className="w-4 h-4 text-teal-300" />
-                    <span>Hostel Overview</span>
+                    <span>BVB Pilot Overview</span>
+                  </div>
+                  <ChevronRight className="w-4 h-4 opacity-50" />
+                </button>
+                <button
+                  onClick={() => setCurrentTab('admin_students')}
+                  className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+                    currentTab === 'admin_students'
+                      ? 'bg-brand-teal text-white shadow-sm'
+                      : 'text-slate-300 hover:bg-navy-800 hover:text-white'
+                  }`}
+                >
+                  <div className="flex items-center space-x-3">
+                    <Users className="w-4 h-4 text-emerald-300" />
+                    <span>Student Registry (30)</span>
                   </div>
                   <ChevronRight className="w-4 h-4 opacity-50" />
                 </button>

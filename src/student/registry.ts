@@ -81,8 +81,67 @@ export class StudentRegistryService {
     );
   }
 
+  async updatePriority(
+    studentProfileId: string,
+    priority: number,
+    actor: AuthActor
+  ): Promise<void> {
+    if (!can(actor, 'student.edit_priority')) {
+      throw new Error('FORBIDDEN: Only authorized staff (Hostel Office or Super Admin) can assign student priority');
+    }
+
+    await this.db.query(
+      `UPDATE student_profiles SET assigned_priority = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2`,
+      [priority, studentProfileId]
+    );
+
+    // Also update active waiting room entry priority if present
+    await this.db.query(
+      `UPDATE waiting_room_entries SET priority_number = $1 WHERE student_id = $2 AND status = 'WAITING'`,
+      [priority, studentProfileId]
+    );
+  }
+
+  async listStudents(actor: AuthActor, filters?: { academicYear?: number; quota?: string; search?: string }) {
+    if (!can(actor, 'student.manage') && !can(actor, 'student.view_self')) {
+      throw new Error('FORBIDDEN: Insufficient permissions to view student registry');
+    }
+
+    let sql = `
+      SELECT sp.*, u.email, u.phone,
+             wre.status as waiting_status, wre.priority_number as live_priority,
+             a.id as allocation_id, a.seat_id as allocated_seat_id, a.status as allocation_status
+      FROM student_profiles sp
+      JOIN users u ON sp.user_id = u.id
+      LEFT JOIN waiting_room_entries wre ON sp.id = wre.student_id
+      LEFT JOIN allocations a ON sp.id = a.student_id AND a.status = 'CURRENT'
+      WHERE 1=1
+    `;
+    const params: any[] = [];
+
+    if (filters?.academicYear) {
+      params.push(filters.academicYear);
+      sql += ` AND sp.academic_year = $${params.length}`;
+    }
+
+    if (filters?.quota) {
+      params.push(filters.quota);
+      sql += ` AND sp.quota_category = $${params.length}`;
+    }
+
+    if (filters?.search) {
+      params.push(`%${filters.search}%`);
+      sql += ` AND (sp.full_name ILIKE $${params.length} OR sp.college_id ILIKE $${params.length})`;
+    }
+
+    sql += ` ORDER BY COALESCE(sp.assigned_priority, 999999) ASC, sp.college_id ASC`;
+
+    const res = await this.db.query(sql, params);
+    return res.rows;
+  }
+
   async getProfile(studentProfileId: string, actor: AuthActor) {
-    if (!can(actor, 'student.view_self', { resource_type: 'STUDENT', student_id: studentProfileId })) {
+    if (!can(actor, 'student.view_self', { resource_type: 'STUDENT', student_id: studentProfileId }) && !can(actor, 'student.manage')) {
       throw new Error('FORBIDDEN: Access denied to student profile');
     }
 

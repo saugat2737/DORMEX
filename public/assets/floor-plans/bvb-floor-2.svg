@@ -1,0 +1,312 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 650" id="hostel-map-svg">
+    <rect x="0" y="0" width="900" height="650" fill="#f0f0f0"/>
+    <rect x="50" y="50" width="800" height="550" fill="none" stroke="#bbb" stroke-width="1" rx="4" ry="4"/>
+    <rect x="110" y="50" width="680" height="70" fill="#e0e0e0" stroke="#bbb" stroke-width="1"/>
+    <rect x="110" y="530" width="680" height="70" fill="#e0e0e0" stroke="#bbb" stroke-width="1"/>
+    <rect x="50" y="120" width="60" height="410" fill="#e0e0e0" stroke="#bbb" stroke-width="1"/>
+    <rect x="790" y="120" width="60" height="410" fill="#e0e0e0" stroke="#bbb" stroke-width="1"/>
+    <rect x="430" y="140" width="40" height="360" fill="#e0e0e0" stroke="#bbb" stroke-width="1"/>
+    <rect x="170" y="140" width="260" height="360" fill="#fafafa" stroke="#ccc" stroke-width="1"/>
+    <rect x="470" y="140" width="260" height="360" fill="#fafafa" stroke="#ccc" stroke-width="1"/>
+    <rect x="50" y="50" width="60" height="70" fill="#c0e0c0" stroke="#bbb" stroke-width="1"/>
+    <rect x="790" y="50" width="60" height="70" fill="#c0e0c0" stroke="#bbb" stroke-width="1"/>
+    <style> 
+        .room{fill:#ffffff;stroke:#333;stroke-width:1; cursor: pointer;} 
+        .label{font-family: Arial, Helvetica, sans-serif; font-size:12px; fill:#666; pointer-events:none; dominant-baseline:middle; text-anchor:middle;} 
+    </style>
+    
+    <g id="room-272-c3">
+        <rect class="room" x="60" y="140" width="50" height="30" rx="3" ry="3"/>
+        <text class="label" x="85" y="155">272</text>
+    </g>
+    <g id="room-271-c3">
+        <rect class="room" x="60" y="181" width="50" height="30" rx="3" ry="3"/>
+        <text class="label" x="85" y="196">271</text>
+    </g>
+    <g id="room-270-c3">
+        <rect class="room" x="60" y="222" width="50" height="30" rx="3" ry="3"/>
+        <text class="label" x="85" y="237">270</text>
+    </g>
+    <g id="room-269-c3">
+        <rect class="room" x="60" y="263" width="50" height="30" rx="3" ry="3"/>
+        <text class="label" x="85" y="278">269</text>
+    </g>
+    <g id="room-268-c3">
+        <rect class="room" x="60" y="304" width="50" height="30" rx="3" ry="3"/>
+        <text class="label" x="85" y="319">268</text>
+    </g>
+    <g id="room-267-c3">
+        <rect class="room" x="60" y="345" width="50" height="30" rx="3" ry="3"/>
+        <text class="label" x="85" y="360">267</text>
+    </g>
+    <g id="room-266-c3">
+        <rect class="room" x="60" y="386" width="50" height="30" rx="3" ry="3"/>
+        <text class="label" x="85" y="401">266</text>
+    </g>
+    <g id="room-265-c3">
+        <rect class="room" x="60" y="427" width="50" height="30" rx="3" ry="3"/>
+        <text class="label" x="85" y="442">265</text>
+    </g>
+    <g id="room-264-c3">
+        <rect class="room" x="60" y="468" width="50" height="30" rx="3" ry="3"/>
+        <text class="label" x="85" y="483">264</text>
+    </g>
+    <g id="room-263-c3">
+        <rect class="room" x="60" y="509" width="50" height="30" rx="3" ry="3"/>
+        <text class="label" x="85" y="524">263</text>
+    </g>
+    
+    <g id="room-201-c3">
+        <rect class="room" x="790" y="140" width="50" height="30" rx="3" ry="3"/>
+        <text class="label" x="815" y="155">201</text>
+    </g>
+    <g id="room-202-c3">
+        <rect class="room" x="790" y="181" width="50" height="30" rx="3" ry="3"/>
+        <text class="label" x="815" y="196">202</text>
+    </g>
+    <g id="room-203-c3">
+        <rect class="room" x="790" y="222" width="50" height="30" rx="3" ry="3"/>
+        <text class="label" x="815" y="237">203</text>
+    </g>
+    <g id="room-204-c3">
+        <rect class="room" x="790" y="263" width="50" height="30" rx="3" ry="3"/>
+        <text class="label" x="815" y="278">204</text>
+    </g>
+    <g id="room-205-c3">
+        <rect class="room" x="790" y="304" width="50" height="30" rx="3" ry="3"/>
+        <text class="label" x="815" y="319">205</text>
+    </g>
+    <g id="room-206-c3">
+        <rect class="room" x="790" y="345" width="50" height="30" rx="3" ry="3"/>
+        <text class="label" x="815" y="360">206</text>
+    </g>
+    <g id="room-207-c3">
+        <rect class="room" x="790" y="386" width="50" height="30" rx="3" ry="3"/>
+        <text class="label" x="815" y="401">207</text>
+    </g>
+    <g id="room-208-c3">
+        <rect class="room" x="790" y="427" width="50" height="30" rx="3" ry="3"/>
+        <text class="label" x="815" y="442">208</text>
+    </g>
+    <g id="room-209-c3">
+        <rect class="room" x="790" y="468" width="50" height="30" rx="3" ry="3"/>
+        <text class="label" x="815" y="483">209</text>
+    </g>
+    <g id="room-210-c3">
+        <rect class="room" x="790" y="509" width="50" height="30" rx="3" ry="3"/>
+        <text class="label" x="815" y="524">210</text>
+    </g>
+    
+    <g id="room-251-c2">
+        <rect class="room" x="380" y="145" width="50" height="23" rx="3" ry="3"/>
+        <text class="label" x="405" y="156.5">251</text>
+    </g>
+    <g id="room-250-c2">
+        <rect class="room" x="380" y="169" width="50" height="23" rx="3" ry="3"/>
+        <text class="label" x="405" y="180.5">250</text>
+    </g>
+    <g id="room-249-c2">
+        <rect class="room" x="380" y="193" width="50" height="23" rx="3" ry="3"/>
+        <text class="label" x="405" y="204.5">249</text>
+    </g>
+    <g id="room-248-c2">
+        <rect class="room" x="380" y="217" width="50" height="23" rx="3" ry="3"/>
+        <text class="label" x="405" y="228.5">248</text>
+    </g>
+    <g id="room-247-c2">
+        <rect class="room" x="380" y="241" width="50" height="23" rx="3" ry="3"/>
+        <text class="label" x="405" y="252.5">247</text>
+    </g>
+    <g id="room-246-c2">
+        <rect class="room" x="380" y="265" width="50" height="23" rx="3" ry="3"/>
+        <text class="label" x="405" y="276.5">246</text>
+    </g>
+    <g id="room-245-c2">
+        <rect class="room" x="380" y="289" width="50" height="23" rx="3" ry="3"/>
+        <text class="label" x="405" y="300.5">245</text>
+    </g>
+    <g id="room-244-c2">
+        <rect class="room" x="380" y="313" width="50" height="23" rx="3" ry="3"/>
+        <text class="label" x="405" y="324.5">244</text>
+    </g>
+    <g id="room-243-c2">
+        <rect class="room" x="380" y="337" width="50" height="23" rx="3" ry="3"/>
+        <text class="label" x="405" y="348.5">243</text>
+    </g>
+    <g id="room-242-c2">
+        <rect class="room" x="380" y="361" width="50" height="23" rx="3" ry="3"/>
+        <text class="label" x="405" y="372.5">242</text>
+    </g>
+    <g id="room-241-c2">
+        <rect class="room" x="380" y="385" width="50" height="23" rx="3" ry="3"/>
+        <text class="label" x="405" y="396.5">241</text>
+    </g>
+    <g id="room-240-c2">
+        <rect class="room" x="380" y="409" width="50" height="23" rx="3" ry="3"/>
+        <text class="label" x="405" y="420.5">240</text>
+    </g>
+    <g id="room-239-c2">
+        <rect class="room" x="380" y="433" width="50" height="23" rx="3" ry="3"/>
+        <text class="label" x="405" y="444.5">239</text>
+    </g>
+    <g id="room-238-c2">
+        <rect class="room" x="380" y="457" width="50" height="23" rx="3" ry="3"/>
+        <text class="label" x="405" y="468.5">238</text>
+    </g>
+    <g id="room-237-c2">
+        <rect class="room" x="380" y="481" width="50" height="23" rx="3" ry="3"/>
+        <text class="label" x="405" y="492.5">237</text>
+    </g>
+
+    <g id="room-222-c2">
+        <rect class="room" x="470" y="145" width="50" height="23" rx="3" ry="3"/>
+        <text class="label" x="495" y="156.5">222</text>
+    </g>
+    <g id="room-223-c2">
+        <rect class="room" x="470" y="169" width="50" height="23" rx="3" ry="3"/>
+        <text class="label" x="495" y="180.5">223</text>
+    </g>
+    <g id="room-224-c2">
+        <rect class="room" x="470" y="193" width="50" height="23" rx="3" ry="3"/>
+        <text class="label" x="495" y="204.5">224</text>
+    </g>
+    <g id="room-225-c2">
+        <rect class="room" x="470" y="217" width="50" height="23" rx="3" ry="3"/>
+        <text class="label" x="495" y="228.5">225</text>
+    </g>
+    <g id="room-226-c2">
+        <rect class="room" x="470" y="241" width="50" height="23" rx="3" ry="3"/>
+        <text class="label" x="495" y="252.5">226</text>
+    </g>
+    <g id="room-227-c2">
+        <rect class="room" x="470" y="265" width="50" height="23" rx="3" ry="3"/>
+        <text class="label" x="495" y="276.5">227</text>
+    </g>
+    <g id="room-228-c2">
+        <rect class="room" x="470" y="289" width="50" height="23" rx="3" ry="3"/>
+        <text class="label" x="495" y="300.5">228</text>
+    </g>
+    <g id="room-229-c2">
+        <rect class="room" x="470" y="313" width="50" height="23" rx="3" ry="3"/>
+        <text class="label" x="495" y="324.5">229</text>
+    </g>
+    <g id="room-230-c2">
+        <rect class="room" x="470" y="337" width="50" height="23" rx="3" ry="3"/>
+        <text class="label" x="495" y="348.5">230</text>
+    </g>
+    <g id="room-231-c2">
+        <rect class="room" x="470" y="361" width="50" height="23" rx="3" ry="3"/>
+        <text class="label" x="495" y="372.5">231</text>
+    </g>
+    <g id="room-232-c2">
+        <rect class="room" x="470" y="385" width="50" height="23" rx="3" ry="3"/>
+        <text class="label" x="495" y="396.5">232</text>
+    </g>
+    <g id="room-233-c2">
+        <rect class="room" x="470" y="409" width="50" height="23" rx="3" ry="3"/>
+        <text class="label" x="495" y="420.5">233</text>
+    </g>
+    <g id="room-234-c2">
+        <rect class="room" x="470" y="433" width="50" height="23" rx="3" ry="3"/>
+        <text class="label" x="495" y="444.5">234</text>
+    </g>
+    <g id="room-235-c2">
+        <rect class="room" x="470" y="457" width="50" height="23" rx="3" ry="3"/>
+        <text class="label" x="495" y="468.5">235</text>
+    </g>
+    <g id="room-236-c2">
+        <rect class="room" x="470" y="481" width="50" height="23" rx="3" ry="3"/>
+        <text class="label" x="495" y="492.5">236</text>
+    </g>
+    
+    
+    <g id="room-262-c1">
+        <rect class="room" x="115" y="538" width="25" height="50" rx="3" ry="3"/>
+        <text class="label" x="127.5" y="563">262</text>
+    </g>
+    <g id="room-261-c3">
+        <rect class="room" x="145" y="538" width="25" height="50" rx="3" ry="3"/>
+        <text class="label" x="157.5" y="563">261</text>
+    </g>
+    <g id="room-260-c3">
+        <rect class="room" x="175" y="538" width="25" height="50" rx="3" ry="3"/>
+        <text class="label" x="187.5" y="563">260</text>
+    </g>
+    <g id="room-259-c3">
+        <rect class="room" x="205" y="538" width="25" height="50" rx="3" ry="3"/>
+        <text class="label" x="217.5" y="563">259</text>
+    </g>
+    <g id="room-258-c3">
+        <rect class="room" x="235" y="538" width="25" height="50" rx="3" ry="3"/>
+        <text class="label" x="247.5" y="563">258</text>
+    </g>
+    <g id="room-257-c3">
+        <rect class="room" x="265" y="538" width="25" height="50" rx="3" ry="3"/>
+        <text class="label" x="277.5" y="563">257</text>
+    </g>
+    <g id="room-256-c3">
+        <rect class="room" x="295" y="538" width="25" height="50" rx="3" ry="3"/>
+        <text class="label" x="307.5" y="563">256</text>
+    </g>
+    <g id="room-255-c3">
+        <rect class="room" x="325" y="538" width="25" height="50" rx="3" ry="3"/>
+        <text class="label" x="337.5" y="563">255</text>
+    </g>
+    <g id="room-254-c3">
+        <rect class="room" x="355" y="538" width="25" height="50" rx="3" ry="3"/>
+        <text class="label" x="367.5" y="563">254</text>
+    </g>
+    <g id="room-253-c3">
+        <rect class="room" x="385" y="538" width="25" height="50" rx="3" ry="3"/>
+        <text class="label" x="397.5" y="563">253</text>
+    </g>
+    <g id="room-252-c3">
+        <rect class="room" x="415" y="538" width="25" height="50" rx="3" ry="3"/>
+        <text class="label" x="427.5" y="563">252</text>
+    </g>
+    
+    <g id="room-221-c3">
+        <rect class="room" x="460" y="538" width="25" height="50" rx="3" ry="3"/>
+        <text class="label" x="472.5" y="563">221</text>
+    </g>
+    <g id="room-220-c3">
+        <rect class="room" x="490" y="538" width="25" height="50" rx="3" ry="3"/>
+        <text class="label" x="502.5" y="563">220</text>
+    </g>
+    <g id="room-219-c3">
+        <rect class="room" x="520" y="538" width="25" height="50" rx="3" ry="3"/>
+        <text class="label" x="532.5" y="563">219</text>
+    </g>
+    <g id="room-218-c3">
+        <rect class="room" x="550" y="538" width="25" height="50" rx="3" ry="3"/>
+        <text class="label" x="562.5" y="563">218</text>
+    </g>
+    <g id="room-217-c3">
+        <rect class="room" x="580" y="538" width="25" height="50" rx="3" ry="3"/>
+        <text class="label" x="592.5" y="563">217</text>
+    </g>
+    <g id="room-216-c3">
+        <rect class="room" x="610" y="538" width="25" height="50" rx="3" ry="3"/>
+        <text class="label" x="622.5" y="563">216</text>
+    </g>
+    <g id="room-215-c3">
+        <rect class="room" x="640" y="538" width="25" height="50" rx="3" ry="3"/>
+        <text class="label" x="652.5" y="563">215</text>
+    </g>
+    <g id="room-214-c3">
+        <rect class="room" x="670" y="538" width="25" height="50" rx="3" ry="3"/>
+        <text class="label" x="682.5" y="563">214</text>
+    </g>
+    <g id="room-213-c3">
+        <rect class="room" x="700" y="538" width="25" height="50" rx="3" ry="3"/>
+        <text class="label" x="712.5" y="563">213</text>
+    </g>
+    <g id="room-212-c3">
+        <rect class="room" x="730" y="538" width="25" height="50" rx="3" ry="3"/>
+        <text class="label" x="742.5" y="563">212</text>
+    </g>
+    <g id="room-211-c3">
+        <rect class="room" x="760" y="538" width="25" height="50" rx="3" ry="3"/>
+        <text class="label" x="772.5" y="563">211</text>
+    </g>
+</svg>

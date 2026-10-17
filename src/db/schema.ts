@@ -52,6 +52,7 @@ CREATE TABLE IF NOT EXISTS student_profiles (
     gender TEXT NOT NULL,
     quota_category TEXT NOT NULL, -- 'GENERAL', 'MERIT', 'SPORTS', 'PWD', 'NRI'
     eligibility_status TEXT NOT NULL DEFAULT 'PENDING', -- 'PENDING', 'ELIGIBLE', 'INELIGIBLE', 'FEE_PENDING'
+    assigned_priority INT, -- Staff assigned priority rank (1 = highest priority)
     proctor_user_id TEXT REFERENCES users(id),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP

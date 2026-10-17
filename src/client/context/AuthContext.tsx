@@ -13,40 +13,76 @@ export interface UserSession {
 }
 
 export const DEV_USERS: Record<string, UserSession> = {
+  demo1: {
+    userId: 'usr_demo_001',
+    collegeId: 'DEMO-001',
+    fullName: 'Aarav Sharma (Rank #1)',
+    role: 'STUDENT',
+    scopeType: 'STUDENT',
+    scopeId: null,
+    profileId: 'prof_demo_001',
+  },
+  demo2: {
+    userId: 'usr_demo_002',
+    collegeId: 'DEMO-002',
+    fullName: 'Diya Patel (Rank #2)',
+    role: 'STUDENT',
+    scopeType: 'STUDENT',
+    scopeId: null,
+    profileId: 'prof_demo_002',
+  },
+  demo3: {
+    userId: 'usr_demo_003',
+    collegeId: 'DEMO-003',
+    fullName: 'Rohan Verma (Rank #3)',
+    role: 'STUDENT',
+    scopeType: 'STUDENT',
+    scopeId: null,
+    profileId: 'prof_demo_003',
+  },
+  demo10: {
+    userId: 'usr_demo_010',
+    collegeId: 'DEMO-010',
+    fullName: 'Arjun Menon (Rank #10)',
+    role: 'STUDENT',
+    scopeType: 'STUDENT',
+    scopeId: null,
+    profileId: 'prof_demo_010',
+  },
+  demo29: {
+    userId: 'usr_demo_029',
+    collegeId: 'DEMO-029',
+    fullName: 'Prisha Pandey (Pending Eligibility)',
+    role: 'STUDENT',
+    scopeType: 'STUDENT',
+    scopeId: null,
+    profileId: 'prof_demo_029',
+  },
+  demo30: {
+    userId: 'usr_demo_030',
+    collegeId: 'DEMO-030',
+    fullName: 'Nikhil Saxena (Fee Pending)',
+    role: 'STUDENT',
+    scopeType: 'STUDENT',
+    scopeId: null,
+    profileId: 'prof_demo_030',
+  },
   student1: {
     userId: 'usr_student_1',
     collegeId: 'USN202401',
-    fullName: 'Aarav Patel (Student)',
+    fullName: 'Aarav Patel (Test Alias)',
     role: 'STUDENT',
     scopeType: 'STUDENT',
     scopeId: null,
     profileId: 'prof_stu_1',
   },
-  student2: {
-    userId: 'usr_student_2',
-    collegeId: 'USN202402',
-    fullName: 'Diya Sen (Student)',
-    role: 'STUDENT',
-    scopeType: 'STUDENT',
-    scopeId: null,
-    profileId: 'prof_stu_2',
-  },
-  student3: {
-    userId: 'usr_student_3',
-    collegeId: 'USN202403',
-    fullName: 'Rohan Verma (Student)',
-    role: 'STUDENT',
-    scopeType: 'STUDENT',
-    scopeId: null,
-    profileId: 'prof_stu_3',
-  },
-  wardenA: {
-    userId: 'usr_warden_a',
+  wardenBvb: {
+    userId: 'usr_warden_bvb',
     collegeId: 'WRD001',
-    fullName: 'Prof. Rao (Warden - Aryabhata)',
+    fullName: 'Prof. Rao (Warden - BVB Block)',
     role: 'WARDEN',
     scopeType: 'BUILDING',
-    scopeId: 'bld_aryabhata',
+    scopeId: 'bld_bvb',
     profileId: null,
   },
   chiefWarden: {
@@ -85,7 +121,7 @@ interface AuthContextType {
 }
 
 const AuthContext = createContext<AuthContextType>({
-  session: DEV_USERS.student1,
+  session: DEV_USERS.demo1,
   setSession: () => {},
   switchUser: () => {},
 });
@@ -100,7 +136,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         // fallback
       }
     }
-    return DEV_USERS.student1;
+    return DEV_USERS.demo1;
   });
 
   const switchUser = (devKey: string) => {

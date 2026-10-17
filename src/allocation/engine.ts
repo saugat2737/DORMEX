@@ -74,7 +74,7 @@ export class AllocationEngineService {
 
       // 2. Authoritative check on student eligibility
       const stuRes = await client.query(
-        `SELECT id, academic_year, quota_category, eligibility_status FROM student_profiles WHERE id = $1`,
+        `SELECT id, academic_year, quota_category, eligibility_status, assigned_priority FROM student_profiles WHERE id = $1`,
         [studentProfileId]
       );
       if (stuRes.rows.length === 0) {
@@ -95,13 +95,15 @@ export class AllocationEngineService {
       }
       const poolId = poolRes.rows[0].id;
 
-      // 4. Server-computed priority (cannot be supplied by client)
-      // Base priority on deterministic registration / waitlist order
-      const countRes = await client.query(
-        `SELECT COUNT(*) as cnt FROM waiting_room_entries WHERE pool_id = $1`,
-        [poolId]
-      );
-      const priorityNumber = parseInt(countRes.rows[0].cnt, 10) + 1;
+      // 4. Server-computed priority (authoritative, cannot be supplied by client)
+      let priorityNumber = student.assigned_priority;
+      if (!priorityNumber) {
+        const countRes = await client.query(
+          `SELECT COUNT(*) as cnt FROM waiting_room_entries WHERE pool_id = $1`,
+          [poolId]
+        );
+        priorityNumber = parseInt(countRes.rows[0].cnt, 10) + 1;
+      }
 
       // 5. Insert or return existing waiting room entry
       const entryId = `wre_${cycleId}_${studentProfileId}`;

@@ -75,3 +75,10 @@ Repository Status: Active Development (Modular Monolith)
   - Complaints desk with public facility anonymous peer upvoting and confidential room tickets.
   - Staff Operational Dashboard with telemetry, campus block inventories, and active allocation cycles.
   - Verified with 16 automated tests passing across 3 test suites.
+- [x] **Phase 3 Pilot Implementation: BVB Block · Floor 2 · 30 Students**:
+  - **Scope-controlled pilot**: Single building (`BVB Block`), single floor (`Floor 2`), and exactly 30 synthetic student records (`DEMO-001` to `DEMO-030`).
+  - **Authentic Floor Geometry**: Ingested geometry from supplied `bvb-floor-2.svg` (`public/assets/floor-plans/bvb-floor-2.svg`), preserving numbered room markers 201 through 272 without altering layout or room numbering.
+  - **Provisional Capacities & Seats**: Separate seat inventory records generated per room (capacities marked as provisional demonstration data).
+  - **Staff Registry Management**: Dedicated Student Registry view for staff to inspect, filter, verify eligibility, and assign priority ranks.
+  - **BVB Allocation Cycle & Controls**: Configured threshold to 30 with manual early cycle start capability.
+  - **Verified with 22 automated tests passing across 4 test suites** (including `tests/bvb_pilot.test.ts`).

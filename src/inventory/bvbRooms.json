@@ -1,0 +1,578 @@
+[
+  {
+    "roomNumber": "272",
+    "typeCode": "3",
+    "x": 60,
+    "y": 140,
+    "width": 50,
+    "height": 30
+  },
+  {
+    "roomNumber": "271",
+    "typeCode": "3",
+    "x": 60,
+    "y": 181,
+    "width": 50,
+    "height": 30
+  },
+  {
+    "roomNumber": "270",
+    "typeCode": "3",
+    "x": 60,
+    "y": 222,
+    "width": 50,
+    "height": 30
+  },
+  {
+    "roomNumber": "269",
+    "typeCode": "3",
+    "x": 60,
+    "y": 263,
+    "width": 50,
+    "height": 30
+  },
+  {
+    "roomNumber": "268",
+    "typeCode": "3",
+    "x": 60,
+    "y": 304,
+    "width": 50,
+    "height": 30
+  },
+  {
+    "roomNumber": "267",
+    "typeCode": "3",
+    "x": 60,
+    "y": 345,
+    "width": 50,
+    "height": 30
+  },
+  {
+    "roomNumber": "266",
+    "typeCode": "3",
+    "x": 60,
+    "y": 386,
+    "width": 50,
+    "height": 30
+  },
+  {
+    "roomNumber": "265",
+    "typeCode": "3",
+    "x": 60,
+    "y": 427,
+    "width": 50,
+    "height": 30
+  },
+  {
+    "roomNumber": "264",
+    "typeCode": "3",
+    "x": 60,
+    "y": 468,
+    "width": 50,
+    "height": 30
+  },
+  {
+    "roomNumber": "263",
+    "typeCode": "3",
+    "x": 60,
+    "y": 509,
+    "width": 50,
+    "height": 30
+  },
+  {
+    "roomNumber": "201",
+    "typeCode": "3",
+    "x": 790,
+    "y": 140,
+    "width": 50,
+    "height": 30
+  },
+  {
+    "roomNumber": "202",
+    "typeCode": "3",
+    "x": 790,
+    "y": 181,
+    "width": 50,
+    "height": 30
+  },
+  {
+    "roomNumber": "203",
+    "typeCode": "3",
+    "x": 790,
+    "y": 222,
+    "width": 50,
+    "height": 30
+  },
+  {
+    "roomNumber": "204",
+    "typeCode": "3",
+    "x": 790,
+    "y": 263,
+    "width": 50,
+    "height": 30
+  },
+  {
+    "roomNumber": "205",
+    "typeCode": "3",
+    "x": 790,
+    "y": 304,
+    "width": 50,
+    "height": 30
+  },
+  {
+    "roomNumber": "206",
+    "typeCode": "3",
+    "x": 790,
+    "y": 345,
+    "width": 50,
+    "height": 30
+  },
+  {
+    "roomNumber": "207",
+    "typeCode": "3",
+    "x": 790,
+    "y": 386,
+    "width": 50,
+    "height": 30
+  },
+  {
+    "roomNumber": "208",
+    "typeCode": "3",
+    "x": 790,
+    "y": 427,
+    "width": 50,
+    "height": 30
+  },
+  {
+    "roomNumber": "209",
+    "typeCode": "3",
+    "x": 790,
+    "y": 468,
+    "width": 50,
+    "height": 30
+  },
+  {
+    "roomNumber": "210",
+    "typeCode": "3",
+    "x": 790,
+    "y": 509,
+    "width": 50,
+    "height": 30
+  },
+  {
+    "roomNumber": "251",
+    "typeCode": "2",
+    "x": 380,
+    "y": 145,
+    "width": 50,
+    "height": 23
+  },
+  {
+    "roomNumber": "250",
+    "typeCode": "2",
+    "x": 380,
+    "y": 169,
+    "width": 50,
+    "height": 23
+  },
+  {
+    "roomNumber": "249",
+    "typeCode": "2",
+    "x": 380,
+    "y": 193,
+    "width": 50,
+    "height": 23
+  },
+  {
+    "roomNumber": "248",
+    "typeCode": "2",
+    "x": 380,
+    "y": 217,
+    "width": 50,
+    "height": 23
+  },
+  {
+    "roomNumber": "247",
+    "typeCode": "2",
+    "x": 380,
+    "y": 241,
+    "width": 50,
+    "height": 23
+  },
+  {
+    "roomNumber": "246",
+    "typeCode": "2",
+    "x": 380,
+    "y": 265,
+    "width": 50,
+    "height": 23
+  },
+  {
+    "roomNumber": "245",
+    "typeCode": "2",
+    "x": 380,
+    "y": 289,
+    "width": 50,
+    "height": 23
+  },
+  {
+    "roomNumber": "244",
+    "typeCode": "2",
+    "x": 380,
+    "y": 313,
+    "width": 50,
+    "height": 23
+  },
+  {
+    "roomNumber": "243",
+    "typeCode": "2",
+    "x": 380,
+    "y": 337,
+    "width": 50,
+    "height": 23
+  },
+  {
+    "roomNumber": "242",
+    "typeCode": "2",
+    "x": 380,
+    "y": 361,
+    "width": 50,
+    "height": 23
+  },
+  {
+    "roomNumber": "241",
+    "typeCode": "2",
+    "x": 380,
+    "y": 385,
+    "width": 50,
+    "height": 23
+  },
+  {
+    "roomNumber": "240",
+    "typeCode": "2",
+    "x": 380,
+    "y": 409,
+    "width": 50,
+    "height": 23
+  },
+  {
+    "roomNumber": "239",
+    "typeCode": "2",
+    "x": 380,
+    "y": 433,
+    "width": 50,
+    "height": 23
+  },
+  {
+    "roomNumber": "238",
+    "typeCode": "2",
+    "x": 380,
+    "y": 457,
+    "width": 50,
+    "height": 23
+  },
+  {
+    "roomNumber": "237",
+    "typeCode": "2",
+    "x": 380,
+    "y": 481,
+    "width": 50,
+    "height": 23
+  },
+  {
+    "roomNumber": "222",
+    "typeCode": "2",
+    "x": 470,
+    "y": 145,
+    "width": 50,
+    "height": 23
+  },
+  {
+    "roomNumber": "223",
+    "typeCode": "2",
+    "x": 470,
+    "y": 169,
+    "width": 50,
+    "height": 23
+  },
+  {
+    "roomNumber": "224",
+    "typeCode": "2",
+    "x": 470,
+    "y": 193,
+    "width": 50,
+    "height": 23
+  },
+  {
+    "roomNumber": "225",
+    "typeCode": "2",
+    "x": 470,
+    "y": 217,
+    "width": 50,
+    "height": 23
+  },
+  {
+    "roomNumber": "226",
+    "typeCode": "2",
+    "x": 470,
+    "y": 241,
+    "width": 50,
+    "height": 23
+  },
+  {
+    "roomNumber": "227",
+    "typeCode": "2",
+    "x": 470,
+    "y": 265,
+    "width": 50,
+    "height": 23
+  },
+  {
+    "roomNumber": "228",
+    "typeCode": "2",
+    "x": 470,
+    "y": 289,
+    "width": 50,
+    "height": 23
+  },
+  {
+    "roomNumber": "229",
+    "typeCode": "2",
+    "x": 470,
+    "y": 313,
+    "width": 50,
+    "height": 23
+  },
+  {
+    "roomNumber": "230",
+    "typeCode": "2",
+    "x": 470,
+    "y": 337,
+    "width": 50,
+    "height": 23
+  },
+  {
+    "roomNumber": "231",
+    "typeCode": "2",
+    "x": 470,
+    "y": 361,
+    "width": 50,
+    "height": 23
+  },
+  {
+    "roomNumber": "232",
+    "typeCode": "2",
+    "x": 470,
+    "y": 385,
+    "width": 50,
+    "height": 23
+  },
+  {
+    "roomNumber": "233",
+    "typeCode": "2",
+    "x": 470,
+    "y": 409,
+    "width": 50,
+    "height": 23
+  },
+  {
+    "roomNumber": "234",
+    "typeCode": "2",
+    "x": 470,
+    "y": 433,
+    "width": 50,
+    "height": 23
+  },
+  {
+    "roomNumber": "235",
+    "typeCode": "2",
+    "x": 470,
+    "y": 457,
+    "width": 50,
+    "height": 23
+  },
+  {
+    "roomNumber": "236",
+    "typeCode": "2",
+    "x": 470,
+    "y": 481,
+    "width": 50,
+    "height": 23
+  },
+  {
+    "roomNumber": "262",
+    "typeCode": "1",
+    "x": 115,
+    "y": 538,
+    "width": 25,
+    "height": 50
+  },
+  {
+    "roomNumber": "261",
+    "typeCode": "3",
+    "x": 145,
+    "y": 538,
+    "width": 25,
+    "height": 50
+  },
+  {
+    "roomNumber": "260",
+    "typeCode": "3",
+    "x": 175,
+    "y": 538,
+    "width": 25,
+    "height": 50
+  },
+  {
+    "roomNumber": "259",
+    "typeCode": "3",
+    "x": 205,
+    "y": 538,
+    "width": 25,
+    "height": 50
+  },
+  {
+    "roomNumber": "258",
+    "typeCode": "3",
+    "x": 235,
+    "y": 538,
+    "width": 25,
+    "height": 50
+  },
+  {
+    "roomNumber": "257",
+    "typeCode": "3",
+    "x": 265,
+    "y": 538,
+    "width": 25,
+    "height": 50
+  },
+  {
+    "roomNumber": "256",
+    "typeCode": "3",
+    "x": 295,
+    "y": 538,
+    "width": 25,
+    "height": 50
+  },
+  {
+    "roomNumber": "255",
+    "typeCode": "3",
+    "x": 325,
+    "y": 538,
+    "width": 25,
+    "height": 50
+  },
+  {
+    "roomNumber": "254",
+    "typeCode": "3",
+    "x": 355,
+    "y": 538,
+    "width": 25,
+    "height": 50
+  },
+  {
+    "roomNumber": "253",
+    "typeCode": "3",
+    "x": 385,
+    "y": 538,
+    "width": 25,
+    "height": 50
+  },
+  {
+    "roomNumber": "252",
+    "typeCode": "3",
+    "x": 415,
+    "y": 538,
+    "width": 25,
+    "height": 50
+  },
+  {
+    "roomNumber": "221",
+    "typeCode": "3",
+    "x": 460,
+    "y": 538,
+    "width": 25,
+    "height": 50
+  },
+  {
+    "roomNumber": "220",
+    "typeCode": "3",
+    "x": 490,
+    "y": 538,
+    "width": 25,
+    "height": 50
+  },
+  {
+    "roomNumber": "219",
+    "typeCode": "3",
+    "x": 520,
+    "y": 538,
+    "width": 25,
+    "height": 50
+  },
+  {
+    "roomNumber": "218",
+    "typeCode": "3",
+    "x": 550,
+    "y": 538,
+    "width": 25,
+    "height": 50
+  },
+  {
+    "roomNumber": "217",
+    "typeCode": "3",
+    "x": 580,
+    "y": 538,
+    "width": 25,
+    "height": 50
+  },
+  {
+    "roomNumber": "216",
+    "typeCode": "3",
+    "x": 610,
+    "y": 538,
+    "width": 25,
+    "height": 50
+  },
+  {
+    "roomNumber": "215",
+    "typeCode": "3",
+    "x": 640,
+    "y": 538,
+    "width": 25,
+    "height": 50
+  },
+  {
+    "roomNumber": "214",
+    "typeCode": "3",
+    "x": 670,
+    "y": 538,
+    "width": 25,
+    "height": 50
+  },
+  {
+    "roomNumber": "213",
+    "typeCode": "3",
+    "x": 700,
+    "y": 538,
+    "width": 25,
+    "height": 50
+  },
+  {
+    "roomNumber": "212",
+    "typeCode": "3",
+    "x": 730,
+    "y": 538,
+    "width": 25,
+    "height": 50
+  },
+  {
+    "roomNumber": "211",
+    "typeCode": "3",
+    "x": 760,
+    "y": 538,
+    "width": 25,
+    "height": 50
+  }
+]

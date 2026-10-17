@@ -10,23 +10,40 @@ import {
   ShieldAlert,
   Loader2,
   Check,
-  Building
+  Building,
+  Bed,
+  Info
 } from 'lucide-react';
 
 export const StudentAllocationView: React.FC = () => {
   const { session } = useAuth();
-  const [cycleId] = useState('cyc_fall_2026');
+  const [cycleId] = useState('cyc_bvb_pilot_2026');
   const [waitingEntry, setWaitingEntry] = useState<any>(null);
   const [activeSession, setActiveSession] = useState<any>(null);
-  const [floorId, setFloorId] = useState('flr_aryabhata_1');
+  const [floorId, setFloorId] = useState('flr_bvb_2');
   const [floorMap, setFloorMap] = useState<any>(null);
   const [seatStates, setSeatStates] = useState<Record<string, string>>({});
+  const [selectedRoomNumber, setSelectedRoomNumber] = useState<string | null>(null);
   const [selectedSeatId, setSelectedSeatId] = useState<string | null>(null);
   const [myAllocation, setMyAllocation] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
   const [inviteCode, setInviteCode] = useState<string | null>(null);
+  const [myProfile, setMyProfile] = useState<any>(null);
+
+  // Load student's own authoritative profile
+  const fetchMyProfile = async () => {
+    if (session.profileId) {
+      try {
+        const res = await apiFetch(`/api/students/${session.profileId}`);
+        if (res.ok) {
+          const prof = await res.json();
+          setMyProfile(prof);
+        }
+      } catch (e) {}
+    }
+  };
 
   // Poll waiting room & session state
   const refreshStatus = async () => {
@@ -52,8 +69,32 @@ export const StudentAllocationView: React.FC = () => {
     } catch (e) {}
   };
 
+  const [timeLeft, setTimeLeft] = useState<number | null>(null);
+
+  // Active turn countdown ticker
   useEffect(() => {
-    // Initial map load
+    if (!activeSession || !activeSession.expiresAt) {
+      setTimeLeft(null);
+      return;
+    }
+    const tick = () => {
+      const now = Date.now();
+      const exp = new Date(activeSession.expiresAt).getTime();
+      const diff = Math.max(0, Math.floor((exp - now) / 1000));
+      setTimeLeft(diff);
+      if (diff === 0) {
+        setActiveSession(null);
+        setErrorMsg('Your turn selection window has expired.');
+      }
+    };
+    tick();
+    const tInterval = setInterval(tick, 1000);
+    return () => clearInterval(tInterval);
+  }, [activeSession?.expiresAt]);
+
+  useEffect(() => {
+    fetchMyProfile();
+    // Load published BVB Floor 2 map
     apiFetch(`/api/floors/${floorId}/map`).then(async (r) => {
       if (r.ok) {
         setFloorMap(await r.json());
@@ -62,7 +103,7 @@ export const StudentAllocationView: React.FC = () => {
 
     const interval = setInterval(refreshStatus, 3000);
     return () => clearInterval(interval);
-  }, [floorId, waitingEntry?.poolId]);
+  }, [floorId, waitingEntry?.poolId, session.profileId]);
 
   // Join waiting room
   const handleJoinWaitingRoom = async () => {
@@ -108,7 +149,7 @@ export const StudentAllocationView: React.FC = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           seatId: selectedSeatId,
-          idempotencyKey: `idemp_${Date.now()}`,
+          idempotencyKey: `idemp_${Date.now()}_${session.profileId}`,
         }),
       });
 
@@ -168,19 +209,41 @@ export const StudentAllocationView: React.FC = () => {
     }
   };
 
+  // Get seats belonging to currently selected room
+  const roomSeats = floorMap?.elements?.filter(
+    (el: any) => el.t === 'seat' && el.meta?.roomId === `rm_bvb_${selectedRoomNumber}`
+  ) || [];
+
   return (
     <div className="p-6 max-w-7xl mx-auto space-y-6">
-      {/* Turn & Waiting Room Banner */}
+      {/* Student Profile & Pilot Header */}
       <div className="bg-white rounded-xl p-5 border border-slate-200 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div>
-          <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-            Cycle: Fall 2026 Academic Allocation
+          <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2">
+            <span>Pilot Scope: BVB Block • Floor 2 (30 Students)</span>
+            <span className="bg-emerald-50 text-emerald-800 border border-emerald-200 px-2 py-0.2 rounded text-[10px]">
+              Active Cycle: READY
+            </span>
           </div>
-          <div className="text-lg font-bold text-navy-900 mt-0.5 flex items-center gap-2">
-            <span>Student: {session.fullName}</span>
-            <span className="text-xs font-mono bg-slate-100 text-slate-700 px-2 py-0.5 rounded">
+          <div className="text-lg font-bold text-navy-900 mt-1 flex flex-wrap items-center gap-2">
+            <span>{session.fullName}</span>
+            <span className="text-xs font-mono bg-slate-100 text-slate-700 px-2 py-0.5 rounded border border-slate-200">
               {session.collegeId}
             </span>
+            {myProfile && (
+              <span className="text-xs font-semibold px-2 py-0.5 rounded bg-blue-50 text-blue-800 border border-blue-200">
+                Priority Rank #{myProfile.assigned_priority ?? '—'}
+              </span>
+            )}
+            {myProfile && (
+              <span className={`text-xs font-semibold px-2 py-0.5 rounded ${
+                myProfile.eligibility_status === 'ELIGIBLE' 
+                  ? 'bg-emerald-50 text-emerald-800 border border-emerald-200' 
+                  : 'bg-amber-50 text-amber-800 border border-amber-200'
+              }`}>
+                {myProfile.eligibility_status}
+              </span>
+            )}
           </div>
         </div>
 
@@ -188,11 +251,11 @@ export const StudentAllocationView: React.FC = () => {
           {!waitingEntry && !myAllocation && (
             <button
               onClick={handleJoinWaitingRoom}
-              disabled={loading}
-              className="px-4 py-2 bg-brand-teal hover:bg-brand-tealHover text-white text-xs font-bold rounded-lg shadow-sm transition-colors flex items-center gap-1.5"
+              disabled={loading || (myProfile && myProfile.eligibility_status !== 'ELIGIBLE')}
+              className="px-4 py-2 bg-brand-teal hover:bg-brand-tealHover text-white text-xs font-bold rounded-lg shadow-sm transition-colors flex items-center gap-1.5 disabled:opacity-50"
             >
               {loading && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
-              Enter Waiting Room
+              Enter Pilot Waiting Room
             </button>
           )}
 
@@ -206,7 +269,7 @@ export const StudentAllocationView: React.FC = () => {
           {activeSession && !myAllocation && (
             <div className="flex items-center gap-3 bg-emerald-50 text-emerald-900 border border-emerald-200 px-4 py-2 rounded-lg text-xs font-bold shadow-sm">
               <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping" />
-              <span>YOUR TURN IS ACTIVE! Selection Window: 120s</span>
+              <span>YOUR TURN IS ACTIVE! Selection Window: <span className="font-mono text-emerald-700 text-sm">{timeLeft !== null ? `${timeLeft}s` : '120s'}</span></span>
             </div>
           )}
 
@@ -234,23 +297,29 @@ export const StudentAllocationView: React.FC = () => {
       )}
 
       {/* Map Legend */}
-      <div className="flex flex-wrap items-center gap-4 bg-white px-5 py-3 rounded-lg border border-slate-200 text-xs font-medium text-slate-600">
-        <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">Legend:</span>
-        <div className="flex items-center gap-1.5">
-          <div className="w-3.5 h-3.5 rounded bg-emerald-500" />
-          <span>Available</span>
+      <div className="flex flex-wrap items-center justify-between gap-4 bg-white px-5 py-3 rounded-lg border border-slate-200 text-xs font-medium text-slate-600">
+        <div className="flex flex-wrap items-center gap-4">
+          <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">Map Legend:</span>
+          <div className="flex items-center gap-1.5">
+            <div className="w-3.5 h-3.5 rounded bg-white border border-slate-400" />
+            <span>Room Marker (SVG Geometry)</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <div className="w-3.5 h-3.5 rounded bg-emerald-500" />
+            <span>Available Seat</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <div className="w-3.5 h-3.5 rounded bg-slate-400" />
+            <span>Taken Seat</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <div className="w-3.5 h-3.5 rounded bg-blue-600" />
+            <span>Selected / Mine</span>
+          </div>
         </div>
-        <div className="flex items-center gap-1.5">
-          <div className="w-3.5 h-3.5 rounded bg-slate-400" />
-          <span>Taken</span>
-        </div>
-        <div className="flex items-center gap-1.5">
-          <div className="w-3.5 h-3.5 rounded bg-rose-500" />
-          <span>Blocked</span>
-        </div>
-        <div className="flex items-center gap-1.5">
-          <div className="w-3.5 h-3.5 rounded bg-blue-600" />
-          <span>Selected / Mine</span>
+
+        <div className="text-[11px] text-amber-700 bg-amber-50 px-2 py-0.5 rounded border border-amber-200">
+          * Capacities are provisional demonstration data until hostel confirmation
         </div>
       </div>
 
@@ -259,37 +328,81 @@ export const StudentAllocationView: React.FC = () => {
         {/* SVG Interactive Canvas */}
         <div className="lg:col-span-2 bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-3">
           <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-            <div className="text-xs font-bold text-navy-900 uppercase tracking-wider">
-              Aryabhata Boys Hall — Floor 1 (Live Map)
+            <div>
+              <div className="text-xs font-bold text-navy-900 uppercase tracking-wider">
+                BVB Block — Floor 2 (Original Floor Plan Geometry: 201..272)
+              </div>
+              <div className="text-[11px] text-slate-400">
+                Click any numbered room marker to view its configured bed inventory. Click a seat to select.
+              </div>
             </div>
-            <div className="text-[11px] text-slate-400">Click an available seat to inspect & select</div>
+            {selectedRoomNumber && (
+              <span className="text-xs font-bold bg-teal-50 text-teal-800 border border-teal-200 px-2.5 py-1 rounded">
+                Inspecting Room {selectedRoomNumber}
+              </span>
+            )}
           </div>
 
-          <div className="w-full bg-slate-900 rounded-lg p-4 overflow-x-auto min-h-[420px] flex items-center justify-center">
+          <div className="w-full bg-[#f8fafc] rounded-lg p-3 border border-slate-200 overflow-x-auto min-h-[440px] flex items-center justify-center">
             {floorMap && (
-              <svg viewBox="0 0 3000 1500" className="w-full max-h-[460px] border border-slate-800 rounded bg-slate-950">
+              <svg viewBox="0 0 900 650" className="w-full max-h-[500px] border border-slate-300 rounded shadow-inner bg-[#f0f0f0]">
+                {/* Structural Background Walls & Corridors */}
+                <rect x="50" y="50" width="800" height="550" fill="none" stroke="#bbb" strokeWidth="1" rx="4" ry="4"/>
+                <rect x="110" y="50" width="680" height="70" fill="#e2e8f0" stroke="#cbd5e1" strokeWidth="1"/>
+                <rect x="110" y="530" width="680" height="70" fill="#e2e8f0" stroke="#cbd5e1" strokeWidth="1"/>
+                <rect x="50" y="120" width="60" height="410" fill="#e2e8f0" stroke="#cbd5e1" strokeWidth="1"/>
+                <rect x="790" y="120" width="60" height="410" fill="#e2e8f0" stroke="#cbd5e1" strokeWidth="1"/>
+                <rect x="430" y="140" width="40" height="360" fill="#e2e8f0" stroke="#cbd5e1" strokeWidth="1"/>
+                <rect x="170" y="140" width="260" height="360" fill="#fafafa" stroke="#cbd5e1" strokeWidth="1"/>
+                <rect x="470" y="140" width="260" height="360" fill="#fafafa" stroke="#cbd5e1" strokeWidth="1"/>
+                <rect x="50" y="50" width="60" height="70" fill="#c0e0c0" stroke="#cbd5e1" strokeWidth="1"/>
+                <rect x="790" y="50" width="60" height="70" fill="#c0e0c0" stroke="#cbd5e1" strokeWidth="1"/>
+
+                {/* Rooms and Seats from Authoritative JSON */}
                 {floorMap.elements?.map((el: any, i: number) => {
-                  if (el.t === 'wall' && el.pts) {
-                    const [[x1, y1], [x2, y2]] = el.pts;
-                    return <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke="#334155" strokeWidth="10" strokeLinecap="round" />;
-                  }
-                  if (el.t === 'corridor' && el.pts) {
-                    const pts = el.pts.map(([x, y]: any) => `${x},${y}`).join(' ');
-                    return <polygon key={i} points={pts} fill="#1e293b" stroke="#334155" strokeWidth="2" />;
-                  }
                   if (el.t === 'room' && el.poly) {
-                    const pts = el.poly.map(([x, y]: any) => `${x},${y}`).join(' ');
+                    const [p1, p2, p3, p4] = el.poly;
+                    const rx = p1[0];
+                    const ry = p1[1];
+                    const rw = p2[0] - p1[0];
+                    const rh = p4[1] - p1[1];
+                    const isSelectedRoom = selectedRoomNumber === el.label;
+
                     return (
-                      <g key={i}>
-                        <polygon points={pts} fill="#0f172a" stroke="#0d9488" strokeWidth="3" />
-                        {el.label && el.poly[0] && (
-                          <text x={el.poly[0][0] + 30} y={el.poly[0][1] + 35} fill="#f8fafc" fontSize="22" fontWeight="bold">
-                            {el.label}
-                          </text>
-                        )}
+                      <g
+                        key={`room_${i}`}
+                        className="cursor-pointer"
+                        onClick={() => setSelectedRoomNumber(el.label)}
+                      >
+                        <rect
+                          x={rx}
+                          y={ry}
+                          width={rw}
+                          height={rh}
+                          rx="3"
+                          ry="3"
+                          fill={isSelectedRoom ? '#e0f2fe' : '#ffffff'}
+                          stroke={isSelectedRoom ? '#0284c7' : '#475569'}
+                          strokeWidth={isSelectedRoom ? '2' : '1'}
+                          className="hover:fill-sky-50 transition-colors"
+                        />
+                        <text
+                          x={rx + rw / 2}
+                          y={ry + rh / 2 + 3}
+                          fill="#475569"
+                          fontSize="10"
+                          fontFamily="sans-serif"
+                          fontWeight="bold"
+                          textAnchor="middle"
+                          dominantBaseline="middle"
+                          pointerEvents="none"
+                        >
+                          {el.label}
+                        </text>
                       </g>
                     );
                   }
+
                   if (el.t === 'seat' && el.pos && el.size) {
                     const [x, y] = el.pos;
                     const [w, h] = el.size;
@@ -297,29 +410,50 @@ export const StudentAllocationView: React.FC = () => {
                     const isSelected = selectedSeatId === el.id;
                     const isMine = myAllocation?.seatId === el.id;
 
-                    let fillColor = '#10b981';
-                    if (isTaken) fillColor = '#64748b';
-                    if (isSelected || isMine) fillColor = '#2563eb';
+                    let fillColor = '#10b981'; // available
+                    if (isTaken) fillColor = '#94a3b8'; // taken
+                    if (isSelected || isMine) fillColor = '#2563eb'; // selected/mine
 
                     return (
-                      <g key={i} className="cursor-pointer" onClick={() => !isTaken && setSelectedSeatId(el.id)}>
+                      <g
+                        key={`seat_${i}`}
+                        className="cursor-pointer"
+                        onClick={() => {
+                          if (!isTaken) {
+                            setSelectedSeatId(el.id);
+                            if (el.meta?.roomId) {
+                              setSelectedRoomNumber(el.meta.roomId.replace('rm_bvb_', ''));
+                            }
+                          }
+                        }}
+                      >
                         <rect
                           x={x}
                           y={y}
                           width={w}
                           height={h}
-                          rx="8"
+                          rx="2"
                           fill={fillColor}
-                          stroke={isSelected ? '#93c5fd' : '#1e293b'}
-                          strokeWidth={isSelected ? '5' : '2'}
-                          className="transition-all hover:opacity-90"
+                          stroke={isSelected ? '#1d4ed8' : '#334155'}
+                          strokeWidth={isSelected ? '1.5' : '0.5'}
+                          className="transition-all hover:opacity-80"
                         />
-                        <text x={x + w / 2} y={y + h / 2 + 7} fill="#ffffff" fontSize="18" fontWeight="bold" textAnchor="middle">
+                        <text
+                          x={x + w / 2}
+                          y={y + h / 2 + 2}
+                          fill="#ffffff"
+                          fontSize="7"
+                          fontWeight="bold"
+                          textAnchor="middle"
+                          dominantBaseline="middle"
+                          pointerEvents="none"
+                        >
                           {el.label}
                         </text>
                       </g>
                     );
                   }
+
                   return null;
                 })}
               </svg>
@@ -327,23 +461,82 @@ export const StudentAllocationView: React.FC = () => {
           </div>
         </div>
 
-        {/* Seat Action Panel */}
+        {/* Room & Seat Action Panel */}
         <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
           <div className="text-xs font-bold text-navy-900 uppercase tracking-wider border-b border-slate-100 pb-2">
-            Seat Selection Panel
+            Configured Bed Inventory & Selection
           </div>
 
-          {selectedSeatId ? (
-            <div className="space-y-4">
-              <div className="p-4 bg-slate-50 rounded-lg border border-slate-200 space-y-2">
-                <div className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Target Bed</div>
-                <div className="text-base font-bold text-navy-900 font-mono">{selectedSeatId}</div>
-                <div className="text-xs text-slate-600 flex items-center gap-1.5">
-                  <MapPin className="w-3.5 h-3.5 text-brand-teal" />
-                  <span>Aryabhata Hall, Floor 1</span>
+          {/* Inspected Room Details */}
+          {selectedRoomNumber ? (
+            <div className="p-4 bg-slate-50 rounded-lg border border-slate-200 space-y-3">
+              <div className="flex items-center justify-between">
+                <div>
+                  <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Physical Room</span>
+                  <div className="text-lg font-bold text-navy-900">Room {selectedRoomNumber}</div>
                 </div>
-                <div className="text-xs font-semibold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-md inline-block">
-                  Status: Available
+                <span className="text-[10px] font-semibold bg-slate-200 text-slate-700 px-2 py-0.5 rounded">
+                  BVB Block • Floor 2
+                </span>
+              </div>
+
+              {/* Beds list inside room */}
+              <div className="space-y-1.5">
+                <div className="text-[11px] font-bold text-slate-600">Configured Seats inside Room:</div>
+                <div className="grid grid-cols-1 gap-2">
+                  {roomSeats.map((st: any) => {
+                    const isTaken = seatStates[st.id] === 'taken';
+                    const isSelected = selectedSeatId === st.id;
+                    const isMine = myAllocation?.seatId === st.id;
+
+                    return (
+                      <div
+                        key={st.id}
+                        onClick={() => !isTaken && setSelectedSeatId(st.id)}
+                        className={`p-2.5 rounded-lg border text-xs flex items-center justify-between cursor-pointer transition-colors ${
+                          isSelected || isMine
+                            ? 'bg-blue-50 border-blue-400 text-blue-900'
+                            : isTaken
+                            ? 'bg-slate-100 border-slate-200 text-slate-400 cursor-not-allowed'
+                            : 'bg-white border-slate-200 hover:border-brand-teal text-slate-700'
+                        }`}
+                      >
+                        <div className="flex items-center gap-2">
+                          <Bed className="w-4 h-4 text-slate-500" />
+                          <span className="font-mono font-bold">Seat {st.label}</span>
+                          <span className="text-[10px] font-mono text-slate-400">({st.id})</span>
+                        </div>
+                        <span className={`text-[10px] font-semibold px-2 py-0.5 rounded ${
+                          isMine 
+                            ? 'bg-blue-600 text-white' 
+                            : isTaken 
+                            ? 'bg-slate-200 text-slate-500' 
+                            : 'bg-emerald-100 text-emerald-800'
+                        }`}>
+                          {isMine ? 'Allocated to You' : (isTaken ? 'Occupied' : 'Available')}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="p-4 bg-slate-50 rounded-lg border border-slate-200 text-center text-xs text-slate-500 space-y-1">
+              <Info className="w-5 h-5 mx-auto text-slate-400" />
+              <div>Click any room marker on the floor plan above to inspect its seats.</div>
+            </div>
+          )}
+
+          {/* Selected Seat Confirmation Panel */}
+          {selectedSeatId ? (
+            <div className="space-y-4 pt-2 border-t border-slate-100">
+              <div className="p-3 bg-emerald-50 rounded-lg border border-emerald-200 space-y-1">
+                <div className="text-[10px] uppercase font-bold text-emerald-700 tracking-wider">Target Selected Seat</div>
+                <div className="text-base font-bold text-emerald-950 font-mono">{selectedSeatId}</div>
+                <div className="text-xs text-emerald-800 flex items-center gap-1.5">
+                  <MapPin className="w-3.5 h-3.5 text-emerald-600" />
+                  <span>BVB Block, Floor 2, Room {selectedRoomNumber}</span>
                 </div>
               </div>
 
@@ -357,6 +550,12 @@ export const StudentAllocationView: React.FC = () => {
                   {loading && <Loader2 className="w-4 h-4 animate-spin" />}
                   Confirm Seat Allocation
                 </button>
+              )}
+
+              {!activeSession && !myAllocation && (
+                <div className="p-3 bg-amber-50 rounded-lg border border-amber-200 text-xs text-amber-800">
+                  Seat selected. You can confirm this allocation when your priority turn becomes active.
+                </div>
               )}
 
               {/* Wishlist & Invite options */}
@@ -379,25 +578,19 @@ export const StudentAllocationView: React.FC = () => {
 
                   {inviteCode && (
                     <div className="p-3 bg-blue-50 rounded-lg border border-blue-200 text-xs text-blue-900 space-y-1">
-                      <div className="font-bold">One-Hop Invite Code:</div>
+                      <div className="font-bold">One-Hop Roommate Invite Code:</div>
                       <div className="font-mono text-sm font-bold text-blue-700 bg-white px-2 py-1 rounded text-center select-all">
                         {inviteCode}
                       </div>
                       <div className="text-[10px] text-blue-600">
-                        Share this one-time code with your intended roommate. Priority numbers remain strictly hidden.
+                        Share this code with your roommate. Priority ranks remain completely confidential.
                       </div>
                     </div>
                   )}
                 </div>
               )}
             </div>
-          ) : (
-            <div className="p-8 text-center text-slate-400 text-xs space-y-2 border-2 border-dashed border-slate-200 rounded-lg">
-              <Building className="w-8 h-8 mx-auto text-slate-300" />
-              <div>No seat selected.</div>
-              <div className="text-[11px] text-slate-400">Click any available green bed on the interactive floor map.</div>
-            </div>
-          )}
+          ) : null}
         </div>
       </div>
     </div>
