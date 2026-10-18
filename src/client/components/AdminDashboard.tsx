@@ -44,6 +44,12 @@ export const AdminDashboard: React.FC = () => {
   const [showSimModal, setShowSimModal] = useState(false);
   const [simLoading, setSimLoading] = useState(false);
 
+  // Dynamic Building & Floor Selection
+  const [buildings, setBuildings] = useState<any[]>([]);
+  const [floors, setFloors] = useState<any[]>([]);
+  const [selectedBuildingId, setSelectedBuildingId] = useState<string>('bld_bvb');
+  const [selectedFloorId, setSelectedFloorId] = useState<string>('flr_bvb_2');
+
   const isSuperAdminOrOffice = ['HOSTEL_OFFICE', 'SUPER_ADMIN'].includes(session?.role || '');
 
   const handleRunSimulation = async (cycleId: string) => {
@@ -69,28 +75,58 @@ export const AdminDashboard: React.FC = () => {
 
   const loadData = async () => {
     try {
-      const [ov, cyc, rms, mp, rcr, stu, aud] = await Promise.all([
+      const [ov, cyc, blds, rcr, stu, aud] = await Promise.all([
         apiFetch('/api/admin/overview').then((r) => r.ok ? r.json() : null),
         apiFetch('/api/allocation-cycles').then((r) => r.ok ? r.json() : []),
-        apiFetch('/api/floors/flr_bvb_2/rooms').then((r) => r.ok ? r.json() : []),
-        apiFetch('/api/floors/flr_bvb_2/map').then((r) => r.ok ? r.json() : null),
+        apiFetch('/api/buildings').then((r) => r.ok ? r.json() : []),
         apiFetch('/api/room-change-requests').then((r) => r.ok ? r.json() : []),
         apiFetch('/api/students').then((r) => r.ok ? r.json() : []),
         apiFetch('/api/admin/audit-logs').then((r) => r.ok ? r.json() : []),
       ]);
       setOverview(ov);
       setCycles(cyc);
-      setRooms(rms);
-      setFloorMap(mp);
+      setBuildings(blds);
       setRoomChangeRequests(rcr);
       setAllStudents(stu);
       setAuditLogs(aud);
+
+      // Default building selection if needed
+      if (blds.length > 0 && !selectedBuildingId) {
+        setSelectedBuildingId(blds[0].id);
+      }
     } catch (e) {
       console.error(e);
     } finally {
       setLoading(false);
     }
   };
+
+  // Fetch floors whenever selected building changes
+  useEffect(() => {
+    if (!selectedBuildingId) return;
+    apiFetch(`/api/buildings/${selectedBuildingId}/floors`).then(async (r) => {
+      if (r.ok) {
+        const flrs = await r.json();
+        setFloors(flrs);
+        if (flrs.length > 0 && (!flrs.find((f: any) => f.id === selectedFloorId))) {
+          setSelectedFloorId(flrs[0].id);
+        }
+      }
+    });
+  }, [selectedBuildingId]);
+
+  // Fetch rooms and map whenever selected floor changes
+  useEffect(() => {
+    if (!selectedFloorId) return;
+    setSelectedRoom(null);
+    Promise.all([
+      apiFetch(`/api/floors/${selectedFloorId}/rooms`).then((r) => r.ok ? r.json() : []),
+      apiFetch(`/api/floors/${selectedFloorId}/map`).then((r) => r.ok ? r.json() : null),
+    ]).then(([rms, mp]) => {
+      setRooms(rms);
+      setFloorMap(mp);
+    });
+  }, [selectedFloorId]);
 
   useEffect(() => {
     loadData();
@@ -364,14 +400,43 @@ export const AdminDashboard: React.FC = () => {
           </div>
         </div>
 
-        {/* BVB Floor 2 Room & Seat Inventory */}
+        {/* Dynamic Building & Floor Room & Seat Inventory */}
         <div className="lg:col-span-2 bg-white p-5 rounded-xl border border-[#E2E6E8] shadow-sm space-y-4">
-          <div className="flex items-center justify-between border-b border-[#E2E6E8] pb-3">
-            <h2 className="text-xs font-bold text-[#203653] uppercase tracking-wider flex items-center gap-2">
-              <Layers className="w-4 h-4 text-[#2C8279]" />
-              BVB Floor 2 Room & Bed Inspection (Rooms 201–272)
-            </h2>
-            <span className="text-[11px] text-[#627084]">Click any room to view or toggle bed maintenance</span>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-[#E2E6E8] pb-3 gap-3">
+            <div>
+              <h2 className="text-xs font-bold text-[#203653] uppercase tracking-wider flex items-center gap-2">
+                <Layers className="w-4 h-4 text-[#2C8279]" />
+                Room & Bed Inspection ({rooms.length} Rooms Loaded)
+              </h2>
+              <span className="text-[11px] text-[#627084]">Click any room to view or toggle bed maintenance</span>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <select
+                value={selectedBuildingId}
+                onChange={(e) => setSelectedBuildingId(e.target.value)}
+                className="text-xs bg-[#F7F6F1] border border-[#E2E6E8] rounded px-2.5 py-1 text-[#263345] font-semibold"
+              >
+                {buildings.map((b) => (
+                  <option key={b.id} value={b.id}>
+                    {b.name}
+                  </option>
+                ))}
+              </select>
+
+              <select
+                value={selectedFloorId}
+                onChange={(e) => setSelectedFloorId(e.target.value)}
+                className="text-xs bg-[#F7F6F1] border border-[#E2E6E8] rounded px-2.5 py-1 text-[#263345] font-semibold"
+              >
+                {floors.map((f) => (
+                  <option key={f.id} value={f.id}>
+                    {f.name || `Floor ${f.floor_number}`}
+                  </option>
+                ))}
+                {floors.length === 0 && <option value="flr_bvb_2">Floor 2</option>}
+              </select>
+            </div>
           </div>
 
           <div className="grid grid-cols-6 sm:grid-cols-9 md:grid-cols-12 gap-1.5 max-h-[300px] overflow-y-auto p-1.5 bg-[#F7F6F1] border border-[#E2E6E8] rounded-lg">

@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.6.0] - 2026-10-18
+
+### Added
+- **Dynamic Building & Floor Selection Across Student & Admin Portals**:
+  - Replaced hardcoded values with dynamic data fetching from `/api/buildings`, `/api/buildings/:id/floors`, and `/api/allocation-cycles`.
+  - Added building and floor selector dropdowns in `AdminDashboard.tsx`, allowing administrators to inspect room and seat inventory across any building and floor dynamically.
+  - Added building and floor selector dropdowns in `StudentAllocationView.tsx`, enabling students to inspect real floor map geometry and seat allocations across available buildings and floors.
+  - Added dynamic building selection dropdown in `ComplaintsView.tsx` submission modal, allowing students and staff to file tickets for any hostel building rather than defaulting to a hardcoded block.
+  - Added interactive Zoom controls (`Zoom In`, `Zoom Out`, `Reset`) with percentage scale indicator in `StudentAllocationView.tsx` for responsive SVG floor plan inspection on all viewports.
+
+---
+
 ## [1.5.0] - 2026-10-18
 
 ### Added

@@ -131,5 +131,17 @@ Repository Status: Active Development (Modular Monolith)
   - **Comprehensive Verification**:
     - Added integration test to `tests/architecture_enhancements.test.ts` (suite total: 39 tests, 100% pass rate).
     - Verified TypeScript typecheck (`npm run typecheck`, 0 errors) and Vite production bundle (`npm run build:client`).
+- [x] **Phase 9: Dynamic Campus Inventory & Responsive UI Controls**:
+  - **Removal of Hardcoded Inventory Constants**:
+    - Decoupled `StudentAllocationView`, `AdminDashboard`, and `ComplaintsView` from hardcoded floor/building identifiers (`bld_bvb`, `flr_bvb_2`).
+    - Implemented reactive Building and Floor selectors linked to `/api/buildings` and `/api/buildings/:id/floors`.
+    - Implemented dynamic building selector in Complaint submission modal.
+  - **SVG Zoom & Accessibility Controls**:
+    - Added responsive zoom controls (`Zoom In`, `Zoom Out`, `Reset`) to the interactive SVG floor plan canvas in `StudentAllocationView.tsx`.
+  - **Verification Gate**:
+    - All 39 automated tests passing (100%).
+    - Zero TypeScript errors (`npm run typecheck`).
+    - Vite production bundle compiled cleanly (`npm run build:client`).
+
 
 
