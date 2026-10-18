@@ -119,4 +119,17 @@ Repository Status: Active Development (Modular Monolith)
     - Added 2 new integration test cases to `tests/phase4_workflows.test.ts` (suite total: 38 tests, 100% pass rate).
     - Verified TypeScript type check (`npm run typecheck`, 0 errors).
     - Verified production client build (`npm run build:client`).
+- [x] **Phase 8: Dry-Run Allocation Cycle Simulation & Capacity Analytics (Acceptance Target 8)**:
+  - **Non-Mutating Cycle Simulation Engine**:
+    - Implemented `simulateCycle` in `AllocationEngineService` (`src/allocation/engine.ts`).
+    - Models expected turn durations, concurrent pool throughput, and calculates predicted wall-clock completion time.
+    - Evaluates cohort size versus available bed inventory, surfacing overflow warnings and waitlist projections before cycles go live.
+  - **Simulation API Endpoint**:
+    - Added `POST /api/allocation-cycles/:id/simulate` with strict RBAC enforcement (`HOSTEL_OFFICE`, `SUPER_ADMIN`).
+  - **Simulation Analytics Modal in Admin Dashboard**:
+    - Embedded Dry-Run Simulation Modal in `AdminDashboard.tsx` with KPI projection cards, inventory sufficiency indicators, and per-pool time breakdowns.
+  - **Comprehensive Verification**:
+    - Added integration test to `tests/architecture_enhancements.test.ts` (suite total: 39 tests, 100% pass rate).
+    - Verified TypeScript typecheck (`npm run typecheck`, 0 errors) and Vite production bundle (`npm run build:client`).
+
 

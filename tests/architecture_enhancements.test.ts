@@ -85,5 +85,24 @@ describe('DORMEX Architecture & PostgreSQL Enhancements Suite', () => {
     const sessCheck = await db.query(`SELECT status FROM booking_sessions WHERE id = $1`, [session.sessionId]);
     expect(sessCheck.rows[0].status).toBe('CONFIRMED');
   });
+
+  it('5. Executes non-mutating dry-run cycle simulation and returns duration predictions', async () => {
+    const simRes = await app.inject({
+      method: 'POST',
+      url: '/api/allocation-cycles/cyc_bvb_pilot_2026/simulate',
+      headers: { 'x-user-id': 'usr_office' },
+    });
+
+    expect(simRes.statusCode).toBe(200);
+    const sim = simRes.json();
+
+    expect(sim.cycleId).toBe('cyc_bvb_pilot_2026');
+    expect(sim.totalEligibleStudents).toBeGreaterThan(0);
+    expect(sim.totalAvailableSeats).toBeGreaterThanOrEqual(0);
+    expect(sim.estimatedAverageSecondsPerTurn).toBeGreaterThan(0);
+    expect(sim.predictedDurationMinutes).toBeGreaterThanOrEqual(0);
+    expect(Array.isArray(sim.poolBreakdown)).toBe(true);
+  });
 });
+
 

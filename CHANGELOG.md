@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.5.0] - 2026-10-18
+
+### Added
+- **Dry-Run Allocation Cycle Simulation (Acceptance Target 8)**:
+  - Added `simulateCycle(cycleId, actor)` method to `AllocationEngineService` in `src/allocation/engine.ts`.
+  - Computes predictive cohort duration, pool breakdown, average turn time, and capacity overflow warnings without mutating production allocations.
+  - Added `POST /api/allocation-cycles/:id/simulate` endpoint restricted to `HOSTEL_OFFICE` and `SUPER_ADMIN`.
+  - Built interactive Dry-Run Simulation Modal in `AdminDashboard.tsx` with pool duration projections, capacity analysis, and disjoint inventory verification.
+  - Added test case to `tests/architecture_enhancements.test.ts` (test suite total: 39 tests, 100% pass rate).
+
+---
+
 ## [1.4.0] - 2026-10-18
 
 ### Fixed
