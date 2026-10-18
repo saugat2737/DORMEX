@@ -83,10 +83,10 @@ export const DormexLogo: React.FC<LogoProps> = ({
 }) => {
   const isDark = variant === 'dark';
 
-  // Dimension scaling
-  const symbolSize = size === 'sm' ? 28 : size === 'md' ? 36 : size === 'lg' ? 44 : 54;
-  const titleSize = size === 'sm' ? 'text-sm' : size === 'md' ? 'text-lg' : size === 'lg' ? 'text-xl' : 'text-2xl';
-  const subtitleSize = size === 'sm' ? 'text-[8px]' : size === 'md' ? 'text-[9px]' : 'text-[10px]';
+  // Dimension scaling (scaled up for enhanced visual prominence)
+  const symbolSize = size === 'sm' ? 36 : size === 'md' ? 46 : size === 'lg' ? 56 : 68;
+  const titleSize = size === 'sm' ? 'text-base' : size === 'md' ? 'text-xl' : size === 'lg' ? 'text-2xl' : 'text-3xl';
+  const subtitleSize = size === 'sm' ? 'text-[9px]' : size === 'md' ? 'text-[10px]' : 'text-xs';
 
   if (variant === 'symbol-only') {
     return <DormexSymbol size={symbolSize} className={className} isDark={isDark} />;
