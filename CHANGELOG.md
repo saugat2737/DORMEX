@@ -22,6 +22,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Optimized `confirmSeat` endpoint in `src/app.ts` to advance the pool turn immediately upon confirmation instead of letting the wall-clock run out.
 - **Architecture Enhancements Test Suite**:
   - Added `tests/architecture_enhancements.test.ts` testing DB liveness, disjoint pool invariants, conflict detection, and turn advance timing.
+- **Administrative Audit Trail API & UI**:
+  - Added `GET /api/admin/audit-logs` endpoint with role-based restriction (`SUPER_ADMIN` and `HOSTEL_OFFICE`).
+  - Added real-time audit trail viewer in `AdminDashboard.tsx` displaying timestamps, action types, actors, targets, and before/after states with mandatory justification notes.
 - **Agent & Contribution Protocol**:
   - Added `AGENTS.md` specifying commit style, pre-commit checklists, and mandatory documentation policies.
 

@@ -392,6 +392,26 @@ export async function buildApp(db?: DatabaseService): Promise<FastifyInstance> {
     }
   });
 
+  // Administrative Audit Trail Endpoint
+  app.get('/api/admin/audit-logs', async (req: any, reply) => {
+    try {
+      const actor = await extractActor(req);
+      if (!['HOSTEL_OFFICE', 'SUPER_ADMIN'].includes(actor.role)) {
+        return reply.code(403).send({ error: 'FORBIDDEN: Insufficient permissions to inspect administrative audit logs' });
+      }
+      const res = await database.query(
+        `SELECT a.*, u.full_name as actor_name, u.email as actor_email
+         FROM audit_logs a
+         LEFT JOIN users u ON a.actor_id = u.id
+         ORDER BY a.created_at DESC
+         LIMIT 50`
+      );
+      return reply.send(res.rows);
+    } catch (err: any) {
+      return reply.code(400).send({ error: err.message });
+    }
+  });
+
   // Super Admin Force Override route
   app.post('/api/admin/allocations/force-override', async (req: any, reply) => {
     try {

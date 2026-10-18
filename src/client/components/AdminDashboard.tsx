@@ -38,18 +38,20 @@ export const AdminDashboard: React.FC = () => {
   const [inpTargetRoomId, setInpTargetRoomId] = useState('');
   const [inpReason, setInpReason] = useState('');
   const [allStudents, setAllStudents] = useState<any[]>([]);
+  const [auditLogs, setAuditLogs] = useState<any[]>([]);
 
   const isSuperAdminOrOffice = ['HOSTEL_OFFICE', 'SUPER_ADMIN'].includes(session?.role || '');
 
   const loadData = async () => {
     try {
-      const [ov, cyc, rms, mp, rcr, stu] = await Promise.all([
+      const [ov, cyc, rms, mp, rcr, stu, aud] = await Promise.all([
         apiFetch('/api/admin/overview').then((r) => r.ok ? r.json() : null),
         apiFetch('/api/allocation-cycles').then((r) => r.ok ? r.json() : []),
         apiFetch('/api/floors/flr_bvb_2/rooms').then((r) => r.ok ? r.json() : []),
         apiFetch('/api/floors/flr_bvb_2/map').then((r) => r.ok ? r.json() : null),
         apiFetch('/api/room-change-requests').then((r) => r.ok ? r.json() : []),
         apiFetch('/api/students').then((r) => r.ok ? r.json() : []),
+        apiFetch('/api/admin/audit-logs').then((r) => r.ok ? r.json() : []),
       ]);
       setOverview(ov);
       setCycles(cyc);
@@ -57,6 +59,7 @@ export const AdminDashboard: React.FC = () => {
       setFloorMap(mp);
       setRoomChangeRequests(rcr);
       setAllStudents(stu);
+      setAuditLogs(aud);
     } catch (e) {
       console.error(e);
     } finally {
@@ -426,7 +429,7 @@ export const AdminDashboard: React.FC = () => {
                 {roomChangeRequests.map((req) => (
                   <tr key={req.id} className="hover:bg-slate-50/80">
                     <td className="py-2.5 px-4 font-bold text-navy-900">
-                      {req.student_name} <span className="text-[10px] font-mono text-slate-400 font-normal">({req.usn})</span>
+                       {req.student_name} <span className="text-[10px] font-mono text-slate-400 font-normal">({req.usn})</span>
                     </td>
                     <td className="py-2.5 px-4 font-mono">
                       Room {req.current_room_number} (Seat {req.current_seat_label})
@@ -473,6 +476,67 @@ export const AdminDashboard: React.FC = () => {
           </div>
         )}
       </div>
+
+      {/* Append-Only Administrative Audit Trail */}
+      {isSuperAdminOrOffice && (
+        <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
+          <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+            <div>
+              <h2 className="text-xs font-bold text-navy-900 uppercase tracking-wider flex items-center gap-2">
+                <ShieldCheck className="w-4 h-4 text-brand-teal" />
+                Immutable Administrative Audit Trail
+              </h2>
+              <p className="text-[11px] text-slate-500 mt-0.5">
+                Append-only log of administrative overrides, status modifications, and allocations with mandatory reasons.
+              </p>
+            </div>
+            <span className="text-xs font-mono font-bold bg-slate-100 text-slate-700 px-2.5 py-1 rounded">
+              {auditLogs.length} Logged Events
+            </span>
+          </div>
+
+          {auditLogs.length > 0 ? (
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs text-slate-600">
+                <thead className="bg-slate-50 text-[11px] uppercase font-bold text-slate-500 border-b border-slate-200 tracking-wider">
+                  <tr>
+                    <th className="py-2.5 px-4">Timestamp</th>
+                    <th className="py-2.5 px-4">Action</th>
+                    <th className="py-2.5 px-4">Actor</th>
+                    <th className="py-2.5 px-4">Target Type / ID</th>
+                    <th className="py-2.5 px-4">Reason / Notes</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100 font-mono text-[11px]">
+                  {auditLogs.map((log) => (
+                    <tr key={log.id} className="hover:bg-slate-50/80">
+                      <td className="py-2 px-4 text-slate-500">
+                        {new Date(log.created_at).toLocaleString()}
+                      </td>
+                      <td className="py-2 px-4 font-bold text-brand-teal">
+                        {log.action}
+                      </td>
+                      <td className="py-2 px-4 font-sans font-medium text-navy-900">
+                        {log.actor_name || log.actor_id}
+                      </td>
+                      <td className="py-2 px-4 text-slate-600">
+                        {log.target_type}: {log.target_id}
+                      </td>
+                      <td className="py-2 px-4 font-sans text-slate-700 max-w-xs truncate" title={log.reason}>
+                        {log.reason || '—'}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <div className="p-6 text-center text-xs text-slate-400 bg-slate-50 rounded-lg">
+              No audit log entries recorded yet.
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Record In-Person Request Modal */}
       {showInPersonModal && (
