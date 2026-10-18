@@ -4,6 +4,7 @@ import {
   Clock, 
   MapPin, 
   CheckCircle, 
+  CheckCircle2,
   AlertCircle, 
   Heart, 
   Share2, 
@@ -60,6 +61,15 @@ export const StudentAllocationView: React.FC = () => {
   // Active view tab: 'workflow' | 'allocation_map' | 'room_change'
   const [activeSubTab, setActiveSubTab] = useState<'workflow' | 'allocation_map' | 'room_change'>('workflow');
 
+  // Allocation Confirmed Success Modal
+  const [showAllocationSuccessModal, setShowAllocationSuccessModal] = useState(false);
+  const [allocationModalDetails, setAllocationModalDetails] = useState<{
+    block: string;
+    floor: string;
+    room: string;
+    seat: string;
+  } | null>(null);
+
   // Load student profile & terms status
   const fetchMyData = async () => {
     if (!session?.profileId) return;
@@ -74,10 +84,13 @@ export const StudentAllocationView: React.FC = () => {
       if (pRes.ok) {
         const prof = await pRes.json();
         setMyProfile(prof);
-        if (prof.allocation_id) {
+        if (prof.allocated_seat_id) {
           setMyAllocation({
-            allocationId: prof.allocation_id,
+            allocationId: prof.allocation_id || `alloc_${prof.id}`,
             seatId: prof.allocated_seat_id,
+            roomNumber: prof.allocated_room_number,
+            seatLabel: prof.allocated_seat_label,
+            buildingName: prof.allocated_building_name,
           });
         }
       }
@@ -256,6 +269,18 @@ export const StudentAllocationView: React.FC = () => {
       setActiveSession(null);
       refreshStatus();
       fetchMyData();
+
+      // Show dedicated Allocation Confirmation Modal
+      const seatEl = floorMap?.elements?.find((e: any) => e.id === selectedSeatId);
+      const roomNum = selectedRoomNumber || (seatEl?.meta?.roomId ? seatEl.meta.roomId.replace('rm_bvb_', '') : '202');
+      const seatLbl = seatEl?.label || selectedSeatId.slice(-1);
+      setAllocationModalDetails({
+        block: 'BVB Block',
+        floor: 'Floor 2',
+        room: roomNum,
+        seat: seatLbl,
+      });
+      setShowAllocationSuccessModal(true);
     } catch (err: any) {
       setErrorMsg(err.message);
       refreshStatus();
@@ -307,6 +332,7 @@ export const StudentAllocationView: React.FC = () => {
   // Respond to roommate invitation
   const handleRespondRoommateInvite = async (groupId: string, accept: boolean) => {
     if (!session?.profileId) return;
+    setErrorMsg(null);
     try {
       const res = await apiFetch(`/api/roommate-groups/${groupId}/respond`, {
         method: 'POST',
@@ -316,11 +342,42 @@ export const StudentAllocationView: React.FC = () => {
           accept,
         }),
       });
-      if (res.ok) {
-        fetchMyData();
-        refreshStatus();
+
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || 'Failed to respond to roommate invitation');
       }
-    } catch (e) {}
+
+      if (accept) {
+        setSuccessMsg('Roommate invitation accepted');
+      } else {
+        setSuccessMsg('Roommate invitation declined');
+      }
+
+      // Immediately synchronize authoritative state: student profile, seat states, roommate intent
+      await fetchMyData();
+      await refreshStatus();
+
+      // Check if student now holds an authoritative allocation (e.g. if allocated)
+      const pRes = await apiFetch(`/api/students/${session.profileId}`);
+      if (pRes.ok) {
+        const updatedProf = await pRes.json();
+        if (updatedProf.allocated_seat_id) {
+          const seatEl = floorMap?.elements?.find((e: any) => e.id === updatedProf.allocated_seat_id);
+          const roomNum = updatedProf.allocated_room_number || (seatEl?.meta?.roomId ? seatEl.meta.roomId.replace('rm_bvb_', '') : '202');
+          const seatLbl = updatedProf.allocated_seat_label || seatEl?.label || updatedProf.allocated_seat_id.slice(-1);
+          setAllocationModalDetails({
+            block: 'BVB Block',
+            floor: 'Floor 2',
+            room: roomNum,
+            seat: seatLbl,
+          });
+          setShowAllocationSuccessModal(true);
+        }
+      }
+    } catch (err: any) {
+      setErrorMsg(err.message || 'Error processing invitation');
+    }
   };
 
   // Submit 48-Hour Room Change Request
@@ -411,36 +468,84 @@ export const StudentAllocationView: React.FC = () => {
         </div>
       )}
 
-      {/* Student Onboarding & Operational Sub-Navigation */}
-      <div className="flex flex-wrap items-center justify-between gap-3 bg-white p-2.5 rounded-xl border border-slate-200 shadow-sm">
-        <div className="flex items-center gap-1.5">
+      {/* Dedicated Allocation Success Confirmation Modal */}
+      {showAllocationSuccessModal && allocationModalDetails && (
+        <div className="fixed inset-0 z-50 bg-[#203653]/70 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl max-w-md w-full p-6 space-y-5 border border-[#E2E6E8] shadow-2xl animate-fadeIn">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-xl bg-[#E7F2ED] text-[#1E7B54] border border-[#A8D5C2] flex items-center justify-center font-bold shrink-0">
+                <CheckCircle2 className="w-7 h-7 text-[#1E7B54]" />
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-[#203653] tracking-tight">Your Seat Is Allocated</h3>
+                <p className="text-xs font-semibold text-[#2C8279]">
+                  {allocationModalDetails.block} · {allocationModalDetails.floor}
+                </p>
+              </div>
+            </div>
+
+            <div className="p-4 bg-[#F7F6F1] rounded-xl border border-[#E2E6E8] space-y-2">
+              <div className="flex items-center justify-between text-xs">
+                <span className="text-[#627084] font-medium">Room:</span>
+                <span className="font-mono font-bold text-[#203653] text-sm">{allocationModalDetails.room}</span>
+              </div>
+              <div className="flex items-center justify-between text-xs">
+                <span className="text-[#627084] font-medium">Seat:</span>
+                <span className="font-mono font-bold text-[#1E7B54] text-sm">Seat {allocationModalDetails.seat}</span>
+              </div>
+              <div className="flex items-center justify-between text-xs border-t border-[#E2E6E8] pt-2 mt-1">
+                <span className="text-[#627084] font-medium">Academic Block:</span>
+                <span className="font-bold text-[#203653]">BVB Campus Block</span>
+              </div>
+            </div>
+
+            <p className="text-xs text-[#627084] leading-relaxed">
+              Your allocation has been successfully confirmed.
+            </p>
+
+            <div className="flex items-center justify-end pt-2 border-t border-[#E2E6E8]">
+              <button
+                type="button"
+                onClick={() => setShowAllocationSuccessModal(false)}
+                className="w-full sm:w-auto px-5 py-2.5 bg-[#2C8279] hover:bg-[#20635c] text-white text-xs font-bold rounded shadow-xs transition-colors"
+              >
+                Acknowledge Allocation
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Student Onboarding & Operational Sub-Navigation matching Stitch Navigation */}
+      <div className="flex flex-wrap items-center justify-between gap-3 bg-white p-3 rounded-xl border border-[#E2E6E8] shadow-sm">
+        <div className="flex items-center gap-2">
           <button
             onClick={() => setActiveSubTab('workflow')}
-            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-colors ${
+            className={`px-3.5 py-2 rounded text-xs font-bold transition-colors ${
               activeSubTab === 'workflow'
-                ? 'bg-brand-teal text-white shadow-sm'
-                : 'text-slate-600 hover:bg-slate-100'
+                ? 'bg-[#203653] text-white shadow-xs'
+                : 'text-[#627084] hover:bg-[#F7F6F1] hover:text-[#263345]'
             }`}
           >
-            1. Registration & Status
+            1. Registration & Application Terms
           </button>
           <button
             onClick={() => setActiveSubTab('allocation_map')}
-            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-colors ${
+            className={`px-3.5 py-2 rounded text-xs font-bold transition-colors ${
               activeSubTab === 'allocation_map'
-                ? 'bg-brand-teal text-white shadow-sm'
-                : 'text-slate-600 hover:bg-slate-100'
+                ? 'bg-[#203653] text-white shadow-xs'
+                : 'text-[#627084] hover:bg-[#F7F6F1] hover:text-[#263345]'
             }`}
           >
-            2. Live Map & Roommates
+            2. BVB Floor 2 Live Map & Coordination
           </button>
           {myAllocation && (
             <button
               onClick={() => setActiveSubTab('room_change')}
-              className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-colors ${
+              className={`px-3.5 py-2 rounded text-xs font-bold transition-colors ${
                 activeSubTab === 'room_change'
-                  ? 'bg-brand-teal text-white shadow-sm'
-                  : 'text-slate-600 hover:bg-slate-100'
+                  ? 'bg-[#203653] text-white shadow-xs'
+                : 'text-[#627084] hover:bg-[#F7F6F1] hover:text-[#263345]'
               }`}
             >
               3. 48-Hour Room Change
@@ -449,12 +554,12 @@ export const StudentAllocationView: React.FC = () => {
         </div>
 
         <div className="flex items-center gap-2">
-          <span className="text-[11px] font-medium text-slate-500">
-            Terms: {termsStatus?.accepted ? '✓ Accepted' : 'Pending Acceptance'}
+          <span className="text-[11px] font-medium text-[#627084]">
+            Terms: {termsStatus?.accepted ? '✓ Accepted Accord' : 'Pending Acceptance'}
           </span>
-          <span className="text-slate-300">•</span>
-          <span className="text-[11px] font-medium text-slate-500">
-            Fee: {myProfile?.fee_status === 'VERIFIED' ? '✓ Verified' : (myProfile?.fee_status || 'Pending')}
+          <span className="text-[#E2E6E8]">•</span>
+          <span className="text-[11px] font-medium text-[#627084]">
+            Fee: {myProfile?.fee_status === 'VERIFIED' ? '✓ Verified (SBI)' : (myProfile?.fee_status || 'Pending')}
           </span>
         </div>
       </div>
@@ -462,63 +567,7 @@ export const StudentAllocationView: React.FC = () => {
       {/* Tab 1: Registration, Profile & Terms Status */}
       {activeSubTab === 'workflow' && (
         <div className="space-y-6">
-          {/* Progress Tracker Banner */}
-          <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
-            <h3 className="text-xs font-bold text-navy-900 uppercase tracking-wider mb-4">
-              Student Hostel Onboarding Sequence
-            </h3>
-            <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
-              <div className={`p-3 rounded-xl border text-xs ${
-                myProfile?.profile_submitted ? 'bg-emerald-50 border-emerald-200 text-emerald-900' : 'bg-slate-50 border-slate-200 text-slate-700'
-              }`}>
-                <div className="font-bold flex items-center gap-1.5">
-                  <CheckCircle className={`w-3.5 h-3.5 ${myProfile?.profile_submitted ? 'text-emerald-600' : 'text-slate-400'}`} />
-                  Step 1: Student Profile
-                </div>
-                <div className="text-[11px] text-slate-500 mt-1">
-                  {myProfile?.profile_submitted ? 'Completed & Submitted' : 'Complete details below'}
-                </div>
-              </div>
-
-              <div className={`p-3 rounded-xl border text-xs ${
-                termsStatus?.accepted ? 'bg-emerald-50 border-emerald-200 text-emerald-900' : 'bg-amber-50 border-amber-200 text-amber-900'
-              }`}>
-                <div className="font-bold flex items-center gap-1.5">
-                  <CheckCircle className={`w-3.5 h-3.5 ${termsStatus?.accepted ? 'text-emerald-600' : 'text-amber-500'}`} />
-                  Step 2: Responsibility Terms
-                </div>
-                <div className="text-[11px] text-slate-500 mt-1">
-                  {termsStatus?.accepted ? 'Accepted by Student' : 'Action Required'}
-                </div>
-              </div>
-
-              <div className={`p-3 rounded-xl border text-xs ${
-                myProfile?.fee_status === 'VERIFIED' ? 'bg-emerald-50 border-emerald-200 text-emerald-900' : 'bg-slate-50 border-slate-200 text-slate-700'
-              }`}>
-                <div className="font-bold flex items-center gap-1.5">
-                  <CheckCircle className={`w-3.5 h-3.5 ${myProfile?.fee_status === 'VERIFIED' ? 'text-emerald-600' : 'text-slate-400'}`} />
-                  Step 3: Fee Verification
-                </div>
-                <div className="text-[11px] text-slate-500 mt-1">
-                  {myProfile?.fee_status === 'VERIFIED' ? `Verified (Rank #${myProfile.assigned_priority})` : 'Hostel Office Review'}
-                </div>
-              </div>
-
-              <div className={`p-3 rounded-xl border text-xs ${
-                myAllocation ? 'bg-emerald-50 border-emerald-200 text-emerald-900' : 'bg-slate-50 border-slate-200 text-slate-700'
-              }`}>
-                <div className="font-bold flex items-center gap-1.5">
-                  <CheckCircle className={`w-3.5 h-3.5 ${myAllocation ? 'text-emerald-600' : 'text-slate-400'}`} />
-                  Step 4: Seat Allocation
-                </div>
-                <div className="text-[11px] text-slate-500 mt-1">
-                  {myAllocation ? `Allocated: ${myAllocation.seatId}` : 'Join Live Allocation Map'}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Student Profile Form */}
+          {/* Student Profile Form with 5-Step Stepper */}
           <StudentProfileForm onProfileUpdated={fetchMyData} />
         </div>
       )}
@@ -527,21 +576,21 @@ export const StudentAllocationView: React.FC = () => {
       {activeSubTab === 'allocation_map' && (
         <div className="space-y-6">
           {/* Allocation Header Banner */}
-          <div className="bg-white rounded-xl p-5 border border-slate-200 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+          <div className="bg-white rounded-xl p-5 border border-[#E2E6E8] shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
             <div>
-              <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2">
-                <span>BVB Block • Floor 2 (Pilot Allocation)</span>
-                <span className="bg-emerald-50 text-emerald-800 border border-emerald-200 px-2 py-0.2 rounded text-[10px]">
+              <div className="text-[11px] font-bold text-[#627084] uppercase tracking-wider flex items-center gap-2">
+                <span>BVB Block • Floor 2 (Rooms 201–272 CAD Schema)</span>
+                <span className="bg-[#E7F2ED] text-[#1E7B54] border border-[#A8D5C2] px-2 py-0.5 rounded text-[10px]">
                   Cycle: READY
                 </span>
               </div>
-              <div className="text-lg font-bold text-navy-900 mt-1 flex flex-wrap items-center gap-2">
+              <div className="text-lg font-bold text-[#203653] mt-1 flex flex-wrap items-center gap-2">
                 <span>{session?.fullName}</span>
-                <span className="text-xs font-mono bg-slate-100 text-slate-700 px-2 py-0.5 rounded border border-slate-200">
+                <span className="text-xs font-mono bg-[#F7F6F1] text-[#263345] px-2 py-0.5 rounded border border-[#E2E6E8]">
                   {session?.collegeId}
                 </span>
                 {myProfile?.assigned_priority && (
-                  <span className="text-xs font-semibold px-2 py-0.5 rounded bg-blue-50 text-blue-800 border border-blue-200">
+                  <span className="text-xs font-semibold px-2 py-0.5 rounded bg-[#FAF4E6] text-[#9C7A2E] border border-[#D4B779]">
                     Priority Rank #{myProfile.assigned_priority}
                   </span>
                 )}
@@ -553,7 +602,7 @@ export const StudentAllocationView: React.FC = () => {
                 <button
                   onClick={handleJoinWaitingRoom}
                   disabled={loading || (myProfile && myProfile.eligibility_status !== 'ELIGIBLE')}
-                  className="px-4 py-2 bg-brand-teal hover:bg-brand-tealHover text-white text-xs font-bold rounded-lg shadow-sm transition-colors flex items-center gap-1.5 disabled:opacity-50"
+                  className="px-4 py-2 bg-[#203653] hover:bg-[#17283B] text-white text-xs font-bold rounded shadow-xs transition-colors flex items-center gap-1.5 disabled:opacity-50"
                 >
                   {loading && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
                   Enter Allocation Queue
@@ -561,22 +610,22 @@ export const StudentAllocationView: React.FC = () => {
               )}
 
               {waitingEntry && !activeSession && !myAllocation && (
-                <div className="flex items-center gap-2 bg-amber-50 text-amber-900 border border-amber-200 px-3.5 py-2 rounded-lg text-xs font-semibold">
-                  <Clock className="w-4 h-4 text-amber-600 animate-pulse" />
+                <div className="flex items-center gap-2 bg-[#FAF4E6] text-[#9C7A2E] border border-[#D4B779] px-3.5 py-2 rounded text-xs font-semibold">
+                  <Clock className="w-4 h-4 text-[#D4B779] animate-pulse" />
                   <span>In Queue — Priority Rank #{waitingEntry.priorityNumber}</span>
                 </div>
               )}
 
               {activeSession && !myAllocation && (
-                <div className="flex items-center gap-3 bg-emerald-50 text-emerald-900 border border-emerald-200 px-4 py-2 rounded-lg text-xs font-bold shadow-sm">
-                  <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping" />
-                  <span>YOUR TURN IS ACTIVE! Remaining Window: <span className="font-mono text-emerald-700 text-sm">{timeLeft !== null ? `${timeLeft}s` : '120s'}</span></span>
+                <div className="flex items-center gap-3 bg-[#E7F2ED] text-[#1E7B54] border border-[#A8D5C2] px-4 py-2 rounded text-xs font-bold shadow-xs">
+                  <div className="w-2.5 h-2.5 rounded-full bg-[#1E7B54] animate-ping" />
+                  <span>YOUR TURN IS ACTIVE! Remaining Window: <span className="font-mono text-[#1E7B54] text-sm">{timeLeft !== null ? `${timeLeft}s` : '120s'}</span></span>
                 </div>
               )}
 
               {myAllocation && (
-                <div className="flex items-center gap-2 bg-blue-50 text-blue-900 border border-blue-200 px-4 py-2 rounded-lg text-xs font-bold">
-                  <Check className="w-4 h-4 text-blue-600" />
+                <div className="flex items-center gap-2 bg-[#E7F2ED] text-[#1E7B54] border border-[#A8D5C2] px-4 py-2 rounded text-xs font-bold">
+                  <Check className="w-4 h-4 text-[#1E7B54]" />
                   <span>Allocated: {myAllocation.seatId}</span>
                 </div>
               )}
@@ -584,38 +633,38 @@ export const StudentAllocationView: React.FC = () => {
           </div>
 
           {errorMsg && (
-            <div className="p-3.5 bg-rose-50 border border-rose-200 text-rose-800 text-xs font-medium rounded-lg flex items-center gap-2">
-              <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
+            <div className="p-3.5 bg-[#FDE8E8] border border-[#F8B4B4] text-[#C93B3B] text-xs font-medium rounded flex items-center gap-2">
+              <AlertCircle className="w-4 h-4 text-[#C93B3B] shrink-0" />
               <span>{errorMsg}</span>
             </div>
           )}
 
           {successMsg && (
-            <div className="p-3.5 bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-medium rounded-lg flex items-center gap-2">
-              <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0" />
+            <div className="p-3.5 bg-[#E7F2ED] border border-[#A8D5C2] text-[#1E7B54] text-xs font-medium rounded flex items-center gap-2">
+              <CheckCircle className="w-4 h-4 text-[#1E7B54] shrink-0" />
               <span>{successMsg}</span>
             </div>
           )}
 
-          {/* Three-Color Availability System Legend */}
-          <div className="bg-white p-4 rounded-xl border border-slate-200 text-xs font-medium text-slate-700 flex flex-wrap items-center justify-between gap-4">
+          {/* Three-Color Availability System Legend matching Stitch Design System */}
+          <div className="bg-white p-4 rounded-xl border border-[#E2E6E8] text-xs font-medium text-[#263345] flex flex-wrap items-center justify-between gap-4">
             <div className="flex items-center gap-4">
-              <span className="text-[10px] uppercase font-bold text-slate-400">Seat Availability Legend:</span>
+              <span className="text-[10px] uppercase font-bold text-[#627084]">Seat Availability System:</span>
               <div className="flex items-center gap-1.5">
-                <div className="w-4 h-4 rounded bg-[#10b981] border border-emerald-700" />
-                <span className="font-semibold text-emerald-900">Green — Available</span>
+                <div className="w-4 h-4 rounded bg-[#1E7B54] border border-[#166041]" />
+                <span className="font-semibold text-[#1E7B54]">Green — Available</span>
               </div>
               <div className="flex items-center gap-1.5">
-                <div className="w-4 h-4 rounded bg-[#f59e0b] border border-amber-700" />
-                <span className="font-semibold text-amber-900">Orange — Roommate Intent</span>
+                <div className="w-4 h-4 rounded bg-[#E06A26] border border-[#b35118]" />
+                <span className="font-semibold text-[#E06A26]">Orange — Roommate Intent</span>
               </div>
               <div className="flex items-center gap-1.5">
-                <div className="w-4 h-4 rounded bg-[#ef4444] border border-rose-700" />
-                <span className="font-semibold text-rose-900">Red — Occupied / Unavailable</span>
+                <div className="w-4 h-4 rounded bg-[#C93B3B] border border-[#a12828]" />
+                <span className="font-semibold text-[#C93B3B]">Red — Occupied / Unavailable</span>
               </div>
             </div>
 
-            <div className="text-[11px] text-slate-500">
+            <div className="text-[11px] text-[#627084]">
               Roommate intent is non-reserving preference. Orange seats present a confirmation warning.
             </div>
           </div>
@@ -745,11 +794,11 @@ export const StudentAllocationView: React.FC = () => {
                         const isSelected = selectedSeatId === el.id;
                         const isMine = myAllocation?.seatId === el.id;
 
-                        // 3-COLOR SYSTEM IMPLEMENTATION
-                        let fillColor = '#10b981'; // GREEN - Available
-                        if (isOrangeIntent) fillColor = '#f59e0b'; // ORANGE - Roommate Intent
-                        if (isTaken) fillColor = '#ef4444'; // RED - Occupied / Unavailable
-                        if (isSelected || isMine) fillColor = '#2563eb'; // Blue - Current user selection
+                        // 3-COLOR SYSTEM IMPLEMENTATION (Matching Stitch Institutional Palette)
+                        let fillColor = '#1E7B54'; // GREEN - Available Bed (#1E7B54)
+                        if (isOrangeIntent) fillColor = '#E06A26'; // ORANGE - Roommate Intent (#E06A26)
+                        if (isTaken) fillColor = '#C93B3B'; // RED - Occupied / Unavailable (#C93B3B)
+                        if (isSelected || isMine) fillColor = '#1D63B8'; // Blue - Active Selection (#1D63B8)
 
                         return (
                           <g
@@ -764,7 +813,7 @@ export const StudentAllocationView: React.FC = () => {
                               height={h}
                               rx="2"
                               fill={fillColor}
-                              stroke={isSelected ? '#1d4ed8' : '#334155'}
+                              stroke={isSelected ? '#1D63B8' : '#263345'}
                               strokeWidth={isSelected ? '2' : '0.5'}
                               className="transition-all hover:opacity-80"
                             />
@@ -790,24 +839,24 @@ export const StudentAllocationView: React.FC = () => {
               </div>
             </div>
 
-            {/* Room & Seat Action Panel + Roommate Group Form */}
-            <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
-              <div className="text-xs font-bold text-navy-900 uppercase tracking-wider border-b border-slate-100 pb-2">
-                Room & Roommate Details
+            {/* Room & Seat Action Panel + Roommate Group Form matching Stitch Bed Matrix */}
+            <div className="bg-white p-5 rounded-xl border border-[#E2E6E8] shadow-sm space-y-4">
+              <div className="text-xs font-bold text-[#203653] uppercase tracking-wider border-b border-[#E2E6E8] pb-2">
+                Room & Roommate Inspection
               </div>
 
               {selectedRoomNumber ? (
                 <div className="space-y-4">
-                  <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200 space-y-2">
+                  <div className="p-3.5 bg-[#F7F6F1] rounded-lg border border-[#E2E6E8] space-y-2">
                     <div className="flex items-center justify-between">
-                      <div className="text-base font-bold text-navy-900">Room {selectedRoomNumber}</div>
-                      <span className="text-[10px] font-semibold bg-slate-200 text-slate-700 px-2 py-0.5 rounded">
+                      <div className="text-base font-bold text-[#203653]">Room {selectedRoomNumber}</div>
+                      <span className="text-[10px] font-semibold bg-[#E5E9EB] text-[#203653] px-2 py-0.5 rounded">
                         BVB Block • Floor 2
                       </span>
                     </div>
 
                     <div className="space-y-1.5 pt-1">
-                      <div className="text-[11px] font-bold text-slate-600">Configured Beds:</div>
+                      <div className="text-[11px] font-bold text-[#627084]">Configured Beds:</div>
                       <div className="grid grid-cols-1 gap-1.5">
                         {roomSeats.map((st: any) => {
                           const isTaken = seatStates[st.id] === 'taken';
@@ -819,29 +868,29 @@ export const StudentAllocationView: React.FC = () => {
                             <div
                               key={st.id}
                               onClick={() => handleSeatClick(st.id, st.meta?.roomId)}
-                              className={`p-2 rounded-lg border text-xs flex items-center justify-between cursor-pointer transition-colors ${
+                              className={`p-2.5 rounded border text-xs flex items-center justify-between cursor-pointer transition-colors ${
                                 isSelected || isMine
-                                  ? 'bg-blue-50 border-blue-400 text-blue-900'
+                                  ? 'bg-[#EBF3FC] border-[#1D63B8] text-[#1D63B8]'
                                   : isTaken
-                                  ? 'bg-rose-50 border-rose-200 text-rose-700 cursor-not-allowed'
+                                  ? 'bg-[#FDE8E8] border-[#F8B4B4] text-[#C93B3B] cursor-not-allowed'
                                   : isOrangeIntent
-                                  ? 'bg-amber-50 border-amber-200 text-amber-900'
-                                  : 'bg-emerald-50 border-emerald-200 text-emerald-900'
+                                  ? 'bg-[#FFF0E6] border-[#FFD1B3] text-[#E06A26]'
+                                  : 'bg-[#E7F2ED] border-[#A8D5C2] text-[#1E7B54]'
                               }`}
                             >
                               <div className="flex items-center gap-2">
-                                <Bed className="w-4 h-4 text-slate-500" />
+                                <Bed className="w-4 h-4 text-[#627084]" />
                                 <span className="font-mono font-bold">Seat {st.label}</span>
-                                <span className="text-[10px] font-mono text-slate-400">({st.id})</span>
+                                <span className="text-[10px] font-mono text-[#627084]">({st.id})</span>
                               </div>
                               <span className={`text-[10px] font-semibold px-2 py-0.5 rounded ${
                                 isMine 
-                                  ? 'bg-blue-600 text-white' 
+                                  ? 'bg-[#1D63B8] text-white' 
                                   : isTaken 
-                                  ? 'bg-rose-600 text-white' 
+                                  ? 'bg-[#C93B3B] text-white' 
                                   : isOrangeIntent
-                                  ? 'bg-amber-500 text-white'
-                                  : 'bg-emerald-600 text-white'
+                                  ? 'bg-[#E06A26] text-white'
+                                  : 'bg-[#1E7B54] text-white'
                               }`}>
                                 {isMine ? 'Allocated to You' : (isTaken ? 'Red (Occupied)' : isOrangeIntent ? 'Orange (Group Intent)' : 'Green (Available)')}
                               </span>

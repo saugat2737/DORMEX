@@ -105,4 +105,18 @@ Repository Status: Active Development (Modular Monolith)
   - **Immediate Turn Advance Optimization**: Optimized `confirmSeat` endpoint to advance the pool turn immediately upon confirmation rather than waiting out the remainder of the 2-minute selection window. Reduces total wall-clock duration for the cohort.
   - **Hook Lifecycle & Timeout Optimization**: Standardized Vitest integration suites to use optimized setup hooks with graceful timeouts, eliminating test runner timeouts.
   - **Verified with 36 automated tests passing across 6 test suites** (`npm test` 100% pass rate).
+- [x] **Phase 7: Critical Bug Fixes — Roommate Acceptance, Seat Allocation & Admin Complaint Desk**:
+  - **Roommate Group Acceptance vs Final Allocation Invariant**:
+    - Preserved server-authoritative turn allocation policy: accepting an invitation registers consensus and marks roommate group membership as `ACCEPTED`. It does not bypass the turn engine or pre-allocate seats.
+    - Configured orange intent (`#E06A26`) to surface non-binding roommate preference on unallocated seats across all student sessions.
+    - Added dedicated `"Your Seat Is Allocated"` modal dialog (`BVB Block · Floor 2 · Room: [number] · Seat: [label]`) triggered only when an authorized allocation is committed by the backend.
+    - Rendered explicit feedback on response (`"Roommate invitation accepted"` / `"Roommate invitation declined"`).
+  - **Admin & Hostel Office Central Complaint Inbox**:
+    - Enriched staff complaints read model to return author full name, USN, and room number.
+    - Verified RBAC and privacy invariants: `SUPER_ADMIN`, `CHIEF_WARDEN`, and `HOSTEL_OFFICE` see all public and private tickets across system scope; `WARDEN` sees all tickets in their scoped building (`bld_bvb`); students strictly see only public tickets and their own private tickets.
+    - Redesigned `ComplaintsView` to match Stitch design system standards with executive KPI counters, search bar, classification & status filters, and staff management modal (status workflow, assignee, resolution notes).
+  - **Comprehensive Verification**:
+    - Added 2 new integration test cases to `tests/phase4_workflows.test.ts` (suite total: 38 tests, 100% pass rate).
+    - Verified TypeScript type check (`npm run typecheck`, 0 errors).
+    - Verified production client build (`npm run build:client`).
 

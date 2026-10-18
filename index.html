@@ -13,24 +13,66 @@
         theme: {
           extend: {
             colors: {
+              primary: {
+                DEFAULT: '#203653',
+                container: '#203653',
+                dark: '#17283B',
+                light: '#4a5f7f',
+              },
+              secondary: {
+                DEFAULT: '#2C8279',
+                container: '#E7F2ED',
+                hover: '#236B63',
+              },
+              tertiary: {
+                DEFAULT: '#D4B779',
+                container: '#FAF4E6',
+              },
               navy: {
-                900: '#0a192f',
-                800: '#0f2744',
-                700: '#173b61',
+                950: '#07203c',
+                900: '#203653',
+                800: '#17283b',
+                700: '#263345',
               },
               surface: {
-                50: '#f8fafc',
-                100: '#f1f5f9',
-                200: '#e2e8f0',
+                DEFAULT: '#f6fafc',
+                dim: '#d6dbdd',
+                bright: '#f6fafc',
+                lowest: '#ffffff',
+                low: '#f0f4f6',
+                container: '#eaeef0',
+                high: '#e5e9eb',
+                highest: '#dfe3e5',
+                ivory: '#F7F6F1',
+                mint: '#E7F2ED',
+                50: '#F7F6F1',
+                100: '#f0f4f6',
+                200: '#E2E6E8',
               },
+              'on-surface': '#263345',
+              'on-surface-variant': '#627084',
+              'outline-neutral': '#E2E6E8',
               brand: {
-                teal: '#0d9488',
-                tealHover: '#0f766e',
-                gold: '#d97706',
+                navy: '#203653',
+                teal: '#2C8279',
+                tealHover: '#236B63',
+                gold: '#D4B779',
+                mint: '#E7F2ED',
+                ivory: '#F7F6F1',
+                darkText: '#263345',
+                mutedText: '#627084',
+                border: '#E2E6E8',
+              },
+              status: {
+                available: '#1E7B54',
+                intent: '#E06A26',
+                occupied: '#C93B3B',
+                selected: '#1D63B8',
+                warning: '#D97706',
               }
             },
             fontFamily: {
-              sans: ['Inter', 'sans-serif'],
+              sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
               mono: ['JetBrains Mono', 'monospace'],
             }
           }
@@ -38,7 +80,7 @@
       }
     </script>
   </head>
-  <body class="bg-surface-50 text-slate-800 antialiased font-sans selection:bg-brand-teal selection:text-white">
+  <body class="bg-[#F7F6F1] text-[#263345] antialiased font-sans selection:bg-[#2C8279] selection:text-white">
     <div id="root"></div>
     <script type="module" src="/src/client/main.tsx"></script>
   </body>

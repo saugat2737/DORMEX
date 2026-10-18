@@ -76,7 +76,18 @@ export class OperationsService {
 
     // Staff view with building scope checks
     const params: any[] = [];
-    let sql = `SELECT c.*, COUNT(cv.id) as vote_count FROM complaints c LEFT JOIN complaint_votes cv ON c.id = cv.complaint_id `;
+    let sql = `
+      SELECT c.id, c.type, c.building_id, c.room_id, c.author_id, c.title, c.description, c.status, 
+             c.assigned_to, c.resolution_notes, c.created_at, c.updated_at,
+             u.full_name as author_name, 
+             u.college_id as author_college_id,
+             r.room_number,
+             COUNT(cv.id) as vote_count 
+      FROM complaints c 
+      LEFT JOIN complaint_votes cv ON c.id = cv.complaint_id 
+      LEFT JOIN users u ON c.author_id = u.id
+      LEFT JOIN rooms r ON c.room_id = r.id
+    `;
 
     if (actor.role === 'WARDEN' && actor.scope_type === 'BUILDING' && actor.scope_id) {
       sql += ` WHERE c.building_id = $1 `;
@@ -86,7 +97,7 @@ export class OperationsService {
       params.push(buildingId);
     }
 
-    sql += ` GROUP BY c.id ORDER BY c.created_at DESC`;
+    sql += ` GROUP BY c.id, c.type, c.building_id, c.room_id, c.author_id, c.title, c.description, c.status, c.assigned_to, c.resolution_notes, c.created_at, c.updated_at, u.full_name, u.college_id, r.room_number ORDER BY c.created_at DESC`;
 
     return this.db.query(sql, params);
   }

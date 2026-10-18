@@ -159,143 +159,167 @@ export const AdminDashboard: React.FC = () => {
 
   return (
     <div className="p-6 max-w-7xl mx-auto space-y-6">
-      {/* Title */}
-      <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+      {/* Header matching Stitch Admin Allocation Control Console */}
+      <div className="bg-white p-5 rounded-xl border border-[#E2E6E8] shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <Building2 className="w-5 h-5 text-brand-teal" />
-            <h1 className="text-xl font-bold text-navy-900 tracking-tight">
-              BVB Block Pilot Administration Dashboard
+            <Building2 className="w-5 h-5 text-[#2C8279]" />
+            <h1 className="text-xl font-bold text-[#203653] tracking-tight">
+              Admin Allocation Control Console
             </h1>
-            <span className="text-[11px] font-bold bg-teal-50 text-teal-800 border border-teal-200 px-2.5 py-0.5 rounded-full">
-              Floor 2 • 30 Students
+            <span className="text-[11px] font-bold bg-[#E7F2ED] text-[#1E7B54] border border-[#A8D5C2] px-2.5 py-0.5 rounded-full">
+              BVB Floor 2 Pilot • Cycle Active
             </span>
           </div>
-          <p className="text-xs text-slate-500 mt-1">
-            Authoritative scope-controlled pilot overview: 30 synthetic students, 72 SVG rooms, provisional bed inventory.
+          <p className="text-xs text-[#627084] mt-1">
+            Pre-flight inventory verification, authoritative live turn engine, and participant cohort management.
           </p>
         </div>
 
         <div className="flex items-center gap-2">
           <button
             onClick={() => setShowInPersonModal(true)}
-            className="px-3.5 py-1.5 bg-brand-teal hover:bg-brand-tealHover text-white text-xs font-bold rounded-lg shadow-sm transition-colors flex items-center gap-1.5"
+            className="px-3.5 py-2 bg-[#203653] hover:bg-[#17283B] text-white text-xs font-bold rounded shadow-xs transition-colors flex items-center gap-1.5"
           >
-            <Repeat className="w-4 h-4" />
+            <Repeat className="w-4 h-4 text-[#84d5ca]" />
             Record In-Person Room Change
           </button>
         </div>
       </div>
 
       {actionMsg && (
-        <div className={`p-3.5 border rounded-lg text-xs font-medium flex items-center gap-2 ${
+        <div className={`p-3.5 border rounded text-xs font-medium flex items-center gap-2 ${
           actionMsg.type === 'success' 
-            ? 'bg-emerald-50 border-emerald-200 text-emerald-800' 
-            : 'bg-rose-50 border-rose-200 text-rose-800'
+            ? 'bg-[#E7F2ED] border-[#A8D5C2] text-[#1E7B54]' 
+            : 'bg-[#FDE8E8] border-[#F8B4B4] text-[#C93B3B]'
         }`}>
-          {actionMsg.type === 'success' ? <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" /> : <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />}
+          {actionMsg.type === 'success' ? <CheckCircle2 className="w-4 h-4 text-[#1E7B54] shrink-0" /> : <AlertCircle className="w-4 h-4 text-[#C93B3B] shrink-0" />}
           <span>{actionMsg.text}</span>
         </div>
       )}
 
-      {/* Primary Metrics Cards */}
+      {/* Primary Metrics Cards matching Stitch Section 1 Executive Metrics */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-1">
-          <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Registered Students</div>
-          <div className="text-2xl font-bold text-navy-900 font-mono">
-            {overview?.registeredStudents ?? 30} <span className="text-xs font-normal text-slate-500">Demo Records</span>
+        <div className="bg-white p-5 rounded-xl border border-[#E2E6E8] shadow-sm space-y-1">
+          <div className="text-[10px] font-bold uppercase tracking-wider text-[#627084]">Eligible & Verified Cohort</div>
+          <div className="text-2xl font-bold text-[#203653] font-mono">
+            {overview?.registeredStudents ?? 30} <span className="text-xs font-normal text-[#627084]">Students</span>
           </div>
-          <div className="text-[11px] text-slate-500">
-            {overview?.eligibleStudents ?? 28} Verified Eligible • Exactly 30 Seeded
+          <div className="text-[11px] text-[#2C8279] font-medium">
+            {overview?.eligibleStudents ?? 28} Verified Active • Exactly 30 Seeded
           </div>
         </div>
 
-        <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-1">
-          <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Total BVB Floor 2 Seats</div>
-          <div className="text-2xl font-bold text-emerald-600 font-mono">
-            {overview?.totalSeats ?? 144} <span className="text-xs font-normal text-slate-500">Beds</span>
+        <div className="bg-white p-5 rounded-xl border border-[#E2E6E8] shadow-sm space-y-1">
+          <div className="text-[10px] font-bold uppercase tracking-wider text-[#627084]">BVB Floor 2 Capacity</div>
+          <div className="text-2xl font-bold text-[#1E7B54] font-mono">
+            {overview?.totalSeats ?? 144} <span className="text-xs font-normal text-[#627084]">Beds</span>
           </div>
-          <div className="text-[11px] text-slate-500">
+          <div className="text-[11px] text-[#627084]">
             {overview?.occupiedSeats ?? 0} Occupied • {overview?.availableSeats ?? 144} Available
           </div>
         </div>
 
-        <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-1">
-          <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Rooms In Inventory</div>
-          <div className="text-2xl font-bold text-navy-900 font-mono">
-            {overview?.totalRooms ?? 72} <span className="text-xs font-normal text-slate-500">Rooms</span>
+        <div className="bg-white p-5 rounded-xl border border-[#E2E6E8] shadow-sm space-y-1">
+          <div className="text-[10px] font-bold uppercase tracking-wider text-[#627084]">Verified Room Geometry</div>
+          <div className="text-2xl font-bold text-[#203653] font-mono">
+            {overview?.totalRooms ?? 72} <span className="text-xs font-normal text-[#627084]">Rooms</span>
           </div>
-          <div className="text-[11px] text-slate-500">
-            Rooms 201–272 from authentic SVG
+          <div className="text-[11px] text-[#627084]">
+            Rooms 201–272 from authentic BVB Floor 2 CAD
           </div>
         </div>
 
-        <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-1">
-          <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Pending Operations</div>
-          <div className="text-2xl font-bold text-amber-600 font-mono">
-            {roomChangeRequests.filter(r => r.status === 'PENDING').length} <span className="text-xs font-normal text-slate-500">Room Changes</span>
+        <div className="bg-white p-5 rounded-xl border border-[#E2E6E8] shadow-sm space-y-1">
+          <div className="text-[10px] font-bold uppercase tracking-wider text-[#627084]">Pending Operations</div>
+          <div className="text-2xl font-bold text-[#E06A26] font-mono">
+            {roomChangeRequests.filter(r => r.status === 'PENDING').length} <span className="text-xs font-normal text-[#627084]">Room Changes</span>
           </div>
-          <div className="text-[11px] text-slate-500">
-            {overview?.openComplaints ?? 0} Open Complaints
+          <div className="text-[11px] text-[#627084]">
+            {overview?.openComplaints ?? 0} Open Complaints Logged
           </div>
+        </div>
+      </div>
+
+      {/* Pre-Flight Certification Banner matching Stitch Prototype */}
+      <div className="bg-[#F7F6F1] p-4 rounded-xl border border-[#E2E6E8] flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-9 rounded bg-[#E7F2ED] text-[#1E7B54] border border-[#A8D5C2] flex items-center justify-center font-bold shrink-0">
+            ✓
+          </div>
+          <div>
+            <div className="text-xs font-bold text-[#203653]">
+              Pre-Flight Certification: BVB Floor 2 Inventory Frozen
+            </div>
+            <div className="text-[11px] text-[#627084]">
+              Digitally certified by Chief Warden (BVB Block). Authoritative turn scheduling active.
+            </div>
+          </div>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="text-xs font-mono bg-white px-2.5 py-1 rounded border border-[#E2E6E8] text-[#203653]">
+            Cycle: SIT-BVB-24F2-PH1
+          </span>
         </div>
       </div>
 
       {/* Allocation Cycle Control & BVB Inventory Inspection */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Allocation Cycle Administration */}
-        <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
-          <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-            <h2 className="text-xs font-bold text-navy-900 uppercase tracking-wider flex items-center gap-2">
-              <Calendar className="w-4 h-4 text-brand-teal" />
-              Pilot Allocation Cycle Control
+        <div className="bg-white p-5 rounded-xl border border-[#E2E6E8] shadow-sm space-y-4">
+          <div className="flex items-center justify-between border-b border-[#E2E6E8] pb-3">
+            <h2 className="text-xs font-bold text-[#203653] uppercase tracking-wider flex items-center gap-2">
+              <Calendar className="w-4 h-4 text-[#2C8279]" />
+              Live Turn Engine & Cycle Controls
             </h2>
-            <span className="text-[10px] font-semibold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded">
-              BVB Pilot
+            <span className="text-[10px] font-semibold bg-[#E7F2ED] text-[#1E7B54] px-2 py-0.5 rounded">
+              Authoritative
             </span>
           </div>
 
           <div className="space-y-3">
             {cycles.map((c) => (
-              <div key={c.id} className="p-3.5 bg-slate-50 rounded-lg border border-slate-200 space-y-2">
+              <div key={c.id} className="p-3.5 bg-[#F7F6F1] rounded-lg border border-[#E2E6E8] space-y-2">
                 <div className="flex items-center justify-between">
-                  <div className="font-bold text-navy-900 text-xs">{c.name}</div>
-                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded ${
-                    c.status === 'READY' ? 'bg-emerald-100 text-emerald-800' : (c.status === 'PAUSED' ? 'bg-amber-100 text-amber-800' : 'bg-slate-200 text-slate-700')
+                  <div className="font-bold text-[#203653] text-xs">{c.name}</div>
+                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded border ${
+                    c.status === 'READY' 
+                      ? 'bg-[#E7F2ED] text-[#1E7B54] border-[#A8D5C2]' 
+                      : (c.status === 'PAUSED' ? 'bg-[#FAF4E6] text-[#9C7A2E] border-[#D4B779]' : 'bg-[#E5E9EB] text-[#627084] border-[#E2E6E8]')
                   }`}>
                     {c.status}
                   </span>
                 </div>
-                <div className="text-[11px] text-slate-500 space-y-0.5">
+                <div className="text-[11px] text-[#627084] space-y-0.5">
                   <div><strong>Turn Window:</strong> {c.turn_duration_seconds}s per student</div>
                   <div><strong>Waiting Threshold:</strong> {c.waiting_room_threshold} students (Pilot configured)</div>
                   <div><strong>Late Grace:</strong> {c.late_grace_seconds}s (max {c.max_penalty_turns} turns)</div>
-                  <div><strong>Inventory Pool:</strong> BVB Floor 2 Seats</div>
+                  <div><strong>Inventory Pool:</strong> BVB Floor 2 (Rooms 201–272)</div>
                 </div>
 
                 {isSuperAdminOrOffice && (
-                  <div className="pt-2 border-t border-slate-200 flex flex-wrap items-center gap-2">
+                  <div className="pt-2 border-t border-[#E2E6E8] flex flex-wrap items-center gap-2">
                     {c.status !== 'READY' && (
                       <button
                         onClick={() => handleUpdateCycleStatus(c.id, 'READY')}
-                        className="flex-1 py-1.5 bg-brand-teal hover:bg-brand-tealHover text-white text-xs font-bold rounded-lg shadow-sm transition-colors flex items-center justify-center gap-1.5"
+                        className="flex-1 py-1.5 bg-[#203653] hover:bg-[#17283B] text-white text-xs font-bold rounded shadow-xs transition-colors flex items-center justify-center gap-1.5"
                       >
                         <Play className="w-3.5 h-3.5 fill-current" />
-                        Start Cycle
+                        Start / Resume Cycle
                       </button>
                     )}
                     {c.status === 'READY' && (
                       <button
                         onClick={() => handleUpdateCycleStatus(c.id, 'PAUSED')}
-                        className="flex-1 py-1.5 bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold rounded-lg shadow-sm transition-colors flex items-center justify-center gap-1.5"
+                        className="flex-1 py-1.5 bg-[#D4B779] hover:bg-[#b69a5f] text-[#203653] text-xs font-bold rounded shadow-xs transition-colors flex items-center justify-center gap-1.5"
                       >
                         <Pause className="w-3.5 h-3.5 fill-current" />
-                        Pause Cycle
+                        Pause Turn Engine
                       </button>
                     )}
                     <button
                       onClick={() => handleUpdateCycleStatus(c.id, 'CLOSED')}
-                      className="px-3 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-semibold rounded-lg transition-colors flex items-center justify-center gap-1"
+                      className="px-3 py-1.5 bg-white hover:bg-[#F7F6F1] text-[#627084] border border-[#E2E6E8] text-xs font-semibold rounded transition-colors flex items-center justify-center gap-1"
                     >
                       <StopCircle className="w-3.5 h-3.5" />
                       Close
@@ -308,16 +332,16 @@ export const AdminDashboard: React.FC = () => {
         </div>
 
         {/* BVB Floor 2 Room & Seat Inventory */}
-        <div className="lg:col-span-2 bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
-          <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-            <h2 className="text-xs font-bold text-navy-900 uppercase tracking-wider flex items-center gap-2">
-              <Layers className="w-4 h-4 text-brand-teal" />
+        <div className="lg:col-span-2 bg-white p-5 rounded-xl border border-[#E2E6E8] shadow-sm space-y-4">
+          <div className="flex items-center justify-between border-b border-[#E2E6E8] pb-3">
+            <h2 className="text-xs font-bold text-[#203653] uppercase tracking-wider flex items-center gap-2">
+              <Layers className="w-4 h-4 text-[#2C8279]" />
               BVB Floor 2 Room & Bed Inspection (Rooms 201–272)
             </h2>
-            <span className="text-[11px] text-slate-400">Click any room to view or toggle bed maintenance</span>
+            <span className="text-[11px] text-[#627084]">Click any room to view or toggle bed maintenance</span>
           </div>
 
-          <div className="grid grid-cols-6 sm:grid-cols-9 md:grid-cols-12 gap-1.5 max-h-[300px] overflow-y-auto p-1 bg-slate-50 border border-slate-200 rounded-lg">
+          <div className="grid grid-cols-6 sm:grid-cols-9 md:grid-cols-12 gap-1.5 max-h-[300px] overflow-y-auto p-1.5 bg-[#F7F6F1] border border-[#E2E6E8] rounded-lg">
             {rooms.map((rm) => {
               const isSelected = selectedRoom?.id === rm.id;
               const hasOccupied = parseInt(rm.occupied_seats, 10) > 0;
@@ -328,10 +352,10 @@ export const AdminDashboard: React.FC = () => {
                   onClick={() => setSelectedRoom(rm)}
                   className={`p-1.5 rounded text-center text-xs font-mono font-bold transition-all border ${
                     isSelected
-                      ? 'bg-blue-600 text-white border-blue-700 shadow-sm'
+                      ? 'bg-[#203653] text-white border-[#203653] shadow-xs'
                       : hasOccupied
-                      ? 'bg-slate-200 text-slate-800 border-slate-300'
-                      : 'bg-white text-slate-700 border-slate-200 hover:border-brand-teal'
+                      ? 'bg-[#E5E9EB] text-[#263345] border-[#E2E6E8]'
+                      : 'bg-white text-[#263345] border-[#E2E6E8] hover:border-[#2C8279]'
                   }`}
                 >
                   <div className="text-[10px] leading-tight">{rm.room_number}</div>
@@ -344,43 +368,43 @@ export const AdminDashboard: React.FC = () => {
           </div>
 
           {selectedRoom ? (
-            <div className="p-4 bg-slate-50 rounded-lg border border-slate-200 space-y-3">
+            <div className="p-4 bg-[#F7F6F1] rounded-lg border border-[#E2E6E8] space-y-3">
               <div className="flex items-center justify-between">
                 <div>
-                  <div className="text-sm font-bold text-navy-900">Room {selectedRoom.room_number} Inspection</div>
-                  <div className="text-[11px] text-slate-500">
+                  <div className="text-sm font-bold text-[#203653]">Room {selectedRoom.room_number} Inspection</div>
+                  <div className="text-[11px] text-[#627084]">
                     Type: {selectedRoom.room_type} • Configured Capacity: {selectedRoom.total_seats} Beds
                   </div>
                 </div>
                 <button
                   onClick={() => setSelectedRoom(null)}
-                  className="text-xs text-slate-500 hover:text-slate-800"
+                  className="text-xs text-[#627084] hover:text-[#263345]"
                 >
                   Close
                 </button>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-slate-200">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-[#E2E6E8]">
                 {floorMap?.elements
                   ?.filter((el: any) => el.t === 'seat' && el.meta?.roomId === selectedRoom.id)
                   .map((st: any) => (
                     <div
                       key={st.id}
-                      className="p-3 bg-white rounded-lg border border-slate-200 flex items-center justify-between text-xs"
+                      className="p-3 bg-white rounded-lg border border-[#E2E6E8] flex items-center justify-between text-xs"
                     >
                       <div className="flex items-center gap-2">
-                        <Bed className="w-4 h-4 text-brand-teal" />
+                        <Bed className="w-4 h-4 text-[#2C8279]" />
                         <div>
-                          <div className="font-bold text-navy-900">Seat {st.label}</div>
-                          <div className="text-[10px] font-mono text-slate-400">{st.id}</div>
+                          <div className="font-bold text-[#203653]">Seat {st.label}</div>
+                          <div className="text-[10px] font-mono text-[#627084]">{st.id}</div>
                         </div>
                       </div>
 
                       <button
                         onClick={() => handleToggleSeatStatus(st.id, 'ACTIVE')}
-                        className="px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 text-[11px] font-semibold rounded border border-slate-300 flex items-center gap-1"
+                        className="px-2.5 py-1 bg-white hover:bg-[#F7F6F1] text-[#263345] text-[11px] font-semibold rounded border border-[#E2E6E8] flex items-center gap-1 transition-colors"
                       >
-                        <Wrench className="w-3 h-3 text-slate-500" />
+                        <Wrench className="w-3 h-3 text-[#627084]" />
                         Toggle Status
                       </button>
                     </div>
@@ -388,7 +412,7 @@ export const AdminDashboard: React.FC = () => {
               </div>
             </div>
           ) : (
-            <div className="p-4 text-center text-xs text-slate-400 bg-slate-50 rounded-lg border border-slate-200">
+            <div className="p-4 text-center text-xs text-[#627084] bg-[#F7F6F1] rounded-lg border border-[#E2E6E8]">
               Select any numbered room above to inspect its configured seat inventory.
             </div>
           )}
@@ -396,26 +420,26 @@ export const AdminDashboard: React.FC = () => {
       </div>
 
       {/* 48-Hour Room Change Requests Review Inbox */}
-      <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
-        <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+      <div className="bg-white p-5 rounded-xl border border-[#E2E6E8] shadow-sm space-y-4">
+        <div className="flex items-center justify-between border-b border-[#E2E6E8] pb-3">
           <div>
-            <h2 className="text-xs font-bold text-navy-900 uppercase tracking-wider flex items-center gap-2">
-              <Repeat className="w-4 h-4 text-brand-teal" />
+            <h2 className="text-xs font-bold text-[#203653] uppercase tracking-wider flex items-center gap-2">
+              <Repeat className="w-4 h-4 text-[#2C8279]" />
               Official 48-Hour Room-Change Requests Inbox
             </h2>
-            <p className="text-[11px] text-slate-500 mt-0.5">
+            <p className="text-[11px] text-[#627084] mt-0.5">
               Review and approve or reject atomic seat transfers requested during the 48-hour post-allocation period.
             </p>
           </div>
-          <span className="text-xs font-bold bg-amber-50 text-amber-800 border border-amber-200 px-2.5 py-1 rounded">
+          <span className="text-xs font-bold bg-[#FAF4E6] text-[#9C7A2E] border border-[#D4B779] px-2.5 py-1 rounded">
             {roomChangeRequests.length} Total Requests
           </span>
         </div>
 
         {roomChangeRequests.length > 0 ? (
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs text-slate-600">
-              <thead className="bg-slate-50 text-[11px] uppercase font-bold text-slate-500 border-b border-slate-200 tracking-wider">
+            <table className="w-full text-left text-xs text-[#263345]">
+              <thead className="bg-[#F7F6F1] text-[11px] uppercase font-bold text-[#627084] border-b border-[#E2E6E8] tracking-wider">
                 <tr>
                   <th className="py-2.5 px-4">Student</th>
                   <th className="py-2.5 px-4">Current Allocation</th>

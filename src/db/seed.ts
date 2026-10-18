@@ -392,4 +392,13 @@ Students who wish to request a room change must apply within the official 48-hou
     `INSERT INTO allocation_pools (id, cycle_id, name, quota_category, academic_year)
      VALUES ('pool_yr2_general', 'cyc_fall_2026', 'Year 2 General Pool', 'GENERAL', 2) ON CONFLICT (id) DO NOTHING`
   );
+
+  // 8. Seed Baseline Complaints in BVB Block (Public Facility & Private Room)
+  await db.query(
+    `INSERT INTO complaints (id, type, building_id, room_id, author_id, title, description, status)
+     VALUES 
+      ('cmp_bvb_seed_001', 'PUBLIC', 'bld_bvb', NULL, 'usr_demo_001', 'BVB Floor 2 RO Water Purifier Dispenser Low Pressure', 'The drinking water dispenser near Room 215 has very low pressure and requires cartridge replacement.', 'OPEN'),
+      ('cmp_bvb_seed_002', 'PRIVATE', 'bld_bvb', 'rm_bvb_202', 'usr_demo_002', 'Room 202 Study Lamp Socket Sparking', 'The 5A power outlet beside Bed B is loose and intermittently sparks when plugging in study light.', 'ASSIGNED')
+     ON CONFLICT (id) DO NOTHING`
+  );
 }

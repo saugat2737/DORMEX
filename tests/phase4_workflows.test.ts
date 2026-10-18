@@ -265,4 +265,144 @@ describe('DORMEX Phase 4: Workflows, Onboarding, Roommates & Administration', ()
       expect(updatedProf.allocated_seat_id).toMatch(/st_rm_bvb_203_/);
     });
   });
+
+  describe('6. Critical Bug Regressions: Roommate Acceptance, Allocation Propagation & Admin Complaints Inbox', () => {
+    it('verifies that accepting a roommate invite updates membership without prematurely allocating a seat', async () => {
+      // Demo 1 creates roommate group for Room 204 inviting Demo 3 (Rank #3)
+      const grpRes = await app.inject({
+        method: 'POST',
+        url: '/api/roommate-groups',
+        headers: { 'x-user-id': 'usr_demo_001' },
+        payload: {
+          cycleId: 'cyc_bvb_pilot_2026',
+          leaderStudentId: 'prof_demo_001',
+          roomId: 'rm_bvb_204',
+          peerPriorityNumbers: [3],
+        },
+      });
+      expect(grpRes.statusCode).toBe(201);
+      const groupId = grpRes.json().groupId;
+
+      // Demo 3 accepts roommate invite
+      const acceptRes = await app.inject({
+        method: 'POST',
+        url: `/api/roommate-groups/${groupId}/respond`,
+        headers: { 'x-user-id': 'usr_demo_003' },
+        payload: {
+          studentProfileId: 'prof_demo_003',
+          accept: true,
+        },
+      });
+      expect(acceptRes.statusCode).toBe(200);
+      expect(acceptRes.json().status).toBe('ACCEPTED');
+
+      // Verify Demo 3 has NOT been allocated a seat simply by accepting the invitation
+      const demo3Prof = await app.inject({
+        method: 'GET',
+        url: '/api/students/prof_demo_003',
+        headers: { 'x-user-id': 'usr_demo_003' },
+      });
+      expect(demo3Prof.statusCode).toBe(200);
+      expect(demo3Prof.json().allocated_seat_id).toBeNull();
+
+      // Verify floor intent map shows room 204 seats as orange intent
+      const intentRes = await app.inject({
+        method: 'GET',
+        url: '/api/floors/flr_bvb_2/roommate-intent?cycleId=cyc_bvb_pilot_2026',
+      });
+      expect(intentRes.statusCode).toBe(200);
+      const intentMap = intentRes.json();
+      expect(intentMap['st_rm_bvb_204_A']?.isIntent).toBe(true);
+
+      // Verify seat state remains free on floor state (not red until confirmed allocation)
+      const floorStateRes = await app.inject({
+        method: 'GET',
+        url: '/api/floors/flr_bvb_2/state',
+      });
+      expect(floorStateRes.statusCode).toBe(200);
+      expect(floorStateRes.json()['st_rm_bvb_204_A']).toBe('free');
+    });
+
+    it('verifies that student public and private complaints appear in the Admin Complaint Desk and maintain privacy', async () => {
+      // 1. Demo 1 submits a public community complaint
+      const pubRes = await app.inject({
+        method: 'POST',
+        url: '/api/complaints',
+        headers: { 'x-user-id': 'usr_demo_001' },
+        payload: {
+          type: 'PUBLIC',
+          building_id: 'bld_bvb',
+          title: 'Corridor 2 North Wi-Fi Access Point Offline',
+          description: 'The Cisco AP outside room 220 has no power LED and residents have no signal.',
+        },
+      });
+      expect(pubRes.statusCode).toBe(201);
+      const pubId = pubRes.json().complaintId;
+
+      // 2. Demo 2 submits a confidential private room complaint
+      const privRes = await app.inject({
+        method: 'POST',
+        url: '/api/complaints',
+        headers: { 'x-user-id': 'usr_demo_002' },
+        payload: {
+          type: 'PRIVATE',
+          building_id: 'bld_bvb',
+          room_id: 'rm_bvb_202',
+          title: 'Room 202 Window Latch Broken',
+          description: 'The exterior window safety latch does not lock securely from inside.',
+        },
+      });
+      expect(privRes.statusCode).toBe(201);
+      const privId = privRes.json().complaintId;
+
+      // 3. Admin / Hostel Office inspects inbox: sees BOTH public and private tickets with author metadata
+      const adminRes = await app.inject({
+        method: 'GET',
+        url: '/api/complaints',
+        headers: { 'x-user-id': 'usr_admin' },
+      });
+      expect(adminRes.statusCode).toBe(200);
+      const adminComplaints = adminRes.json();
+      const adminPub = adminComplaints.find((c: any) => c.id === pubId);
+      const adminPriv = adminComplaints.find((c: any) => c.id === privId);
+      expect(adminPub).toBeDefined();
+      expect(adminPriv).toBeDefined();
+      expect(adminPriv.author_name).toBeDefined();
+
+      // 4. Peer student (Demo 3) checks complaints: can see the PUBLIC ticket, but CANNOT see Demo 2's private ticket
+      const studentRes = await app.inject({
+        method: 'GET',
+        url: '/api/complaints',
+        headers: { 'x-user-id': 'usr_demo_003' },
+      });
+      expect(studentRes.statusCode).toBe(200);
+      const studentComplaints = studentRes.json();
+      expect(studentComplaints.some((c: any) => c.id === pubId)).toBe(true);
+      expect(studentComplaints.some((c: any) => c.id === privId)).toBe(false);
+
+      // 5. Staff updates complaint status and assigns technician
+      const updateRes = await app.inject({
+        method: 'PUT',
+        url: `/api/complaints/${privId}`,
+        headers: { 'x-user-id': 'usr_office' },
+        payload: {
+          status: 'ASSIGNED',
+          assignedTo: 'usr_warden_bvb',
+          resolutionNotes: 'Work order #CW-882 dispatched for window latch repair.',
+        },
+      });
+      expect(updateRes.statusCode).toBe(200);
+
+      // 6. Author student (Demo 2) inspects own complaints: sees private ticket with updated status and resolution notes
+      const demo2Res = await app.inject({
+        method: 'GET',
+        url: '/api/complaints',
+        headers: { 'x-user-id': 'usr_demo_002' },
+      });
+      expect(demo2Res.statusCode).toBe(200);
+      const demo2Priv = demo2Res.json().find((c: any) => c.id === privId);
+      expect(demo2Priv).toBeDefined();
+      expect(demo2Priv.status).toBe('ASSIGNED');
+    });
+  });
 });
