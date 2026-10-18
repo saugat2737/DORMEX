@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.7.0] - 2026-10-18
+
+### Added
+- **Virtual Student Dataset Generator & Test Logger (`scripts/generateVirtualData.ts`)**:
+  - Implemented automated virtual test data generator enforcing strict institutional USN format: `1si25<branch 2-char><3-digit code>` (e.g. `1si25cs001`, `1si25ec042`).
+  - Added CLI test logger rendering console data tables with USN structure validation, branches (`CS`, `IS`, `EC`, `EE`, `ME`, `CV`, `AI`, `BT`), quota categories (`MERIT`, `SPORTS`, `PWD`, `GENERAL`), and chronological fee timestamps.
+  - Built transactional database seeder (`seedVirtualStudentsIntoDb`) synchronizing virtual profiles, user credentials, roles, and terms agreements for allocation testing and load simulation.
+- **Hostel Office Controllable 2D Floor Map Creator (`FloorPlanEditor.tsx`)**:
+  - Upgraded Floor Plan Maker to be fully accessible under **Hostel Office** and **Admin** portals.
+  - Aligned UI styling strictly to `bvb-floor-2.svg` (`viewBox="0 0 900 650"`, `#f0f0f0` background, `#bbb` structural corridors, white rooms with dark borders).
+  - Added **Load BVB SVG Template** button to instantly load the full authentic 72-room architecture (Rooms 201–272).
+  - Added **Add Room** modal allowing staff to place custom rooms and automatically generate child seat inventories (Type 1 single, Type 2 double, Type 3 triple).
+  - Added interactive **Geometry Inspector** panel to click any room or seat, view coordinates, adjust positions and dimensions, and delete elements.
+  - Added SVG Zoom controls (60% to 200%) and element filter dropdown (All, Rooms, Seats, Structural).
+- **Automated Verification Suite**:
+  - Added `tests/virtual_data_and_editor.test.ts` verifying USN format invariants, regex validation, student generation, database insertion, and floor map bounds.
+  - Test suite total expanded to 44 automated tests with a 100% pass rate.
+
+---
+
 ## [1.6.0] - 2026-10-18
 
 ### Added

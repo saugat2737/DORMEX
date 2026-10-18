@@ -165,7 +165,7 @@ export const AppLayout: React.FC<LayoutProps> = ({ currentTab, setCurrentTab, ch
                   </div>
                   <ChevronRight className="w-3.5 h-3.5 opacity-60" />
                 </button>
-                {isAdmin && (
+                {(isAdmin || isHostelOffice) && (
                   <button
                     onClick={() => setCurrentTab('admin_floor_editor')}
                     className={`w-full flex items-center justify-between px-3 py-2 rounded text-xs font-semibold transition-colors ${
