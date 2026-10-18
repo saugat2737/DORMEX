@@ -41,7 +41,7 @@ export const PortalSelectionView: React.FC = () => {
     <div className="min-h-screen bg-[#F7F6F1] flex flex-col justify-between font-sans">
       {/* Top Header */}
       <header className="bg-white border-b border-[#E2E6E8] px-6 py-3.5 flex items-center justify-between">
-        <DormexLogo variant="light" size="md" showSubtitle={true} />
+        <DormexLogo theme="primary" size="md" />
 
         <div className="flex items-center gap-3">
           <span className="text-xs text-[#627084] hidden sm:inline">Pilot Scope: BVB Block • Floor 2</span>

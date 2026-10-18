@@ -36,7 +36,7 @@ export const AppLayout: React.FC<LayoutProps> = ({ currentTab, setCurrentTab, ch
         <div>
           {/* Logo & System Brand matching Stitch Brand Board */}
           <div className="p-4 border-b border-[#17283B]">
-            <DormexLogo variant="dark" size="sm" showSubtitle={true} />
+            <DormexLogo theme="white" size="md" />
             <div className="flex items-center justify-between mt-2.5 pt-2 border-t border-[#17283B]/80 text-[10px]">
               <span className="text-slate-300 font-medium">B.V.B. Campus Allocation</span>
               {isDevMode ? (

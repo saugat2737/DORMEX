@@ -21,10 +21,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Added **Add Room** modal allowing staff to place custom rooms and automatically generate child seat inventories (Type 1 single, Type 2 double, Type 3 triple).
   - Added interactive **Geometry Inspector** panel to click any room or seat, view coordinates, adjust positions and dimensions, and delete elements.
   - Added SVG Zoom controls (60% to 200%) and element filter dropdown (All, Rooms, Seats, Structural).
-- **DORMEX Brand Identity Board Vector Logo Integration**:
-  - Engineered authoritative vector logo component (`DormexLogo.tsx` / `DormexSymbol`) reproducing the architectural `D` logomark, building towers, Muted Teal module (`#2C8279`), and Sandstone Gold base block (`#D4B779`) from `docs/DORMEX Hostel Brand Identity Board.png`.
-  - Integrated official brand typography: `"DORMEX"`, `"HOSTEL ALLOCATION PLATFORM"`, and `"SIT • TUMAKURU"` sub-brand tagline with gold rule dividers.
-  - Implemented responsive variants: Dark (for Deep Navy `#203653` sidebar navigation in `AppLayout.tsx`) and Light (for header in `PortalSelectionView.tsx`).
+- **DORMEX Brand Identity Board Cropped Transparent Image Assets & Logo Component**:
+  - Directly cropped and extracted all 5 visual themes from `docs/DORMEX Hostel Brand Identity Board.png` with background removal:
+    - Primary horizontal color logo (`public/assets/brand-logo-primary-transparent.png`).
+    - Crisp white logo for dark navy backgrounds (`public/assets/brand-logo-white-transparent.png`).
+    - High-rise architectural `D` symbol icon (`public/assets/brand-symbol-icon-transparent.png`).
+    - Stacked vertical brand logo (`public/assets/brand-logo-stacked-transparent.png`).
+    - Monochrome navy logo (`public/assets/brand-logo-monochrome-transparent.png`).
+  - Updated `DormexLogo.tsx` to directly load the cropped transparent theme assets, applied `theme="white"` on the dark `#203653` sidebar (`AppLayout.tsx`), and `theme="primary"` on the institutional header (`PortalSelectionView.tsx`).
 - **Automated Verification Suite**:
   - Added `tests/virtual_data_and_editor.test.ts` verifying USN format invariants, regex validation, student generation, database insertion, and floor map bounds.
   - Test suite total expanded to 44 automated tests with a 100% pass rate.
