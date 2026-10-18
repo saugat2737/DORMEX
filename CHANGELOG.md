@@ -10,6 +10,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.7.0] - 2026-10-18
 
 ### Added
+- **Autonomous Agent Skills (`git-issues`, `git-commits`, `documentation-standards`)**:
+  - Implemented `git-issues` skill enforcing web URL links (`https://github.com/...`) instead of raw local `file:///` URLs, preventing stray escape characters, and standardizing issue tracking.
+  - Implemented `git-commits` skill enforcing strict pre-commit verification (`npm test` 100% pass rate, `npm run typecheck` 0 errors, `npm run build:client` clean), conventional commits, and zero direct commits to `main`.
+  - Implemented `documentation-standards` skill enforcing GitHub Flavored Markdown integrity, link resolution, and mandatory synchronization across README, CHANGELOG, implementation status, and architecture specs.
+  - Deployed skills across project workspace (`.agents/skills/`), global configuration (`~/.gemini/config/skills/`), and the user directory (`S:/agent/skills/`).
 - **Virtual Student Dataset Generator & Test Logger (`scripts/generateVirtualData.ts`)**:
   - Implemented automated virtual test data generator enforcing strict institutional USN format: `1si25<branch 2-char><3-digit code>` (e.g. `1si25cs001`, `1si25ec042`).
   - Added CLI test logger rendering console data tables with USN structure validation, branches (`CS`, `IS`, `EC`, `EE`, `ME`, `CV`, `AI`, `BT`), quota categories (`MERIT`, `SPORTS`, `PWD`, `GENERAL`), and chronological fee timestamps.
