@@ -381,9 +381,18 @@ export class StudentRegistryService {
     }
 
     const res = await this.db.query(
-      `SELECT sp.*, u.email, u.phone, a.seat_id as allocated_seat_id FROM student_profiles sp
+      `SELECT sp.*, u.email, u.phone, 
+              a.seat_id as allocated_seat_id,
+              s.seat_label as allocated_seat_label,
+              r.room_number as allocated_room_number,
+              b.name as allocated_building_name
+       FROM student_profiles sp
        JOIN users u ON sp.user_id = u.id
        LEFT JOIN allocations a ON sp.id = a.student_id AND a.status = 'CURRENT'
+       LEFT JOIN seats s ON a.seat_id = s.id
+       LEFT JOIN rooms r ON s.room_id = r.id
+       LEFT JOIN floors fl ON r.floor_id = fl.id
+       LEFT JOIN buildings b ON fl.building_id = b.id
        WHERE sp.id = $1`,
       [studentProfileId]
     );

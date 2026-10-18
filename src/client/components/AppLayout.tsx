@@ -29,36 +29,36 @@ export const AppLayout: React.FC<LayoutProps> = ({ currentTab, setCurrentTab, ch
   const isAdmin = ['SUPER_ADMIN', 'CHIEF_WARDEN', 'WARDEN'].includes(session.role);
 
   return (
-    <div className="min-h-screen flex flex-col md:flex-row bg-slate-50 font-sans">
+    <div className="min-h-screen flex flex-col md:flex-row bg-[#F7F6F1] font-sans">
       {/* Sidebar Navigation */}
-      <aside className="w-full md:w-64 bg-navy-900 text-slate-200 flex flex-col justify-between shrink-0 border-r border-navy-800">
+      <aside className="w-full md:w-64 bg-[#203653] text-slate-200 flex flex-col justify-between shrink-0 border-r border-[#17283B]">
         <div>
-          {/* Logo & System Brand */}
-          <div className="p-5 border-b border-navy-800 flex items-center space-x-3">
-            <div className="w-9 h-9 rounded-lg bg-gradient-to-tr from-brand-teal to-emerald-400 flex items-center justify-center font-bold text-white shadow-md text-lg tracking-wider">
+          {/* Logo & System Brand matching Stitch Brand Board */}
+          <div className="p-5 border-b border-[#17283B] flex items-center space-x-3">
+            <div className="w-9 h-9 rounded bg-[#2C8279] flex items-center justify-center font-bold text-white shadow-xs text-base tracking-wider">
               DX
             </div>
             <div>
-              <div className="font-bold text-white tracking-tight text-lg flex items-center gap-1.5">
+              <div className="font-bold text-white tracking-tight text-base flex items-center gap-1.5">
                 DORMEX
                 {isDevMode ? (
-                  <span className="text-[10px] font-semibold bg-amber-500 text-navy-950 px-1.5 py-0.5 rounded uppercase tracking-wider font-mono">
+                  <span className="text-[9px] font-semibold bg-[#D4B779] text-[#203653] px-1.5 py-0.5 rounded uppercase tracking-wider font-mono">
                     DEV
                   </span>
                 ) : (
-                  <span className="text-[10px] font-semibold bg-brand-teal/30 text-teal-300 px-1.5 py-0.5 rounded uppercase tracking-wider">
+                  <span className="text-[9px] font-semibold bg-[#2C8279]/40 text-[#84d5ca] px-1.5 py-0.5 rounded uppercase tracking-wider">
                     PILOT
                   </span>
                 )}
               </div>
-              <div className="text-[11px] text-slate-400 font-medium">B.V.B. Hostel Platform</div>
+              <div className="text-[10px] text-slate-300 font-medium">B.V.B. Campus Allocation</div>
             </div>
           </div>
 
           {/* Dev Role Switcher Bar (Appears ONLY in explicitly enabled development mode) */}
           {isDevMode && (
-            <div className="p-3 bg-navy-800/60 border-b border-navy-700/60">
-              <label className="text-[10px] font-semibold text-amber-400 uppercase tracking-wider block mb-1.5 flex items-center gap-1">
+            <div className="p-3 bg-[#17283B]/80 border-b border-[#17283B]">
+              <label className="text-[9px] font-semibold text-[#D4B779] uppercase tracking-wider block mb-1 flex items-center gap-1">
                 <span>Dev Persona Switcher</span>
               </label>
               <select
@@ -66,7 +66,7 @@ export const AppLayout: React.FC<LayoutProps> = ({ currentTab, setCurrentTab, ch
                   Object.keys(DEV_USERS).find((k) => DEV_USERS[k].userId === session.userId) || 'demo1'
                 }
                 onChange={(e) => switchUser(e.target.value)}
-                className="w-full text-xs bg-navy-900 border border-navy-700 rounded-md px-2.5 py-1.5 text-white focus:outline-none focus:ring-1 focus:ring-brand-teal"
+                className="w-full text-xs bg-[#203653] border border-[#263345] rounded px-2.5 py-1.5 text-white focus:outline-none focus:ring-1 focus:ring-[#2C8279]"
               >
                 <optgroup label="BVB Pilot Demo Students (30 Seeded)">
                   <option value="demo1">Aarav Sharma (DEMO-001, Rank #1)</option>
@@ -92,31 +92,31 @@ export const AppLayout: React.FC<LayoutProps> = ({ currentTab, setCurrentTab, ch
               <>
                 <button
                   onClick={() => setCurrentTab('student_allocation')}
-                  className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+                  className={`w-full flex items-center justify-between px-3 py-2 rounded text-xs font-semibold transition-colors ${
                     currentTab === 'student_allocation'
-                      ? 'bg-brand-teal text-white shadow-sm'
-                      : 'text-slate-300 hover:bg-navy-800 hover:text-white'
+                      ? 'bg-[#2C8279] text-white shadow-xs'
+                      : 'text-slate-300 hover:bg-[#17283B] hover:text-white'
                   }`}
                 >
                   <div className="flex items-center space-x-3">
-                    <Clock className="w-4 h-4 text-emerald-300" />
+                    <Clock className="w-4 h-4 text-[#84d5ca]" />
                     <span>Onboarding & Allocation</span>
                   </div>
-                  <ChevronRight className="w-4 h-4 opacity-50" />
+                  <ChevronRight className="w-3.5 h-3.5 opacity-60" />
                 </button>
                 <button
                   onClick={() => setCurrentTab('student_complaints')}
-                  className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+                  className={`w-full flex items-center justify-between px-3 py-2 rounded text-xs font-semibold transition-colors ${
                     currentTab === 'student_complaints'
-                      ? 'bg-brand-teal text-white shadow-sm'
-                      : 'text-slate-300 hover:bg-navy-800 hover:text-white'
+                      ? 'bg-[#2C8279] text-white shadow-xs'
+                      : 'text-slate-300 hover:bg-[#17283B] hover:text-white'
                   }`}
                 >
                   <div className="flex items-center space-x-3">
-                    <AlertCircle className="w-4 h-4 text-amber-300" />
+                    <AlertCircle className="w-4 h-4 text-[#D4B779]" />
                     <span>Hostel Complaints</span>
                   </div>
-                  <ChevronRight className="w-4 h-4 opacity-50" />
+                  <ChevronRight className="w-3.5 h-3.5 opacity-60" />
                 </button>
               </>
             )}
@@ -125,60 +125,60 @@ export const AppLayout: React.FC<LayoutProps> = ({ currentTab, setCurrentTab, ch
               <>
                 <button
                   onClick={() => setCurrentTab('admin_overview')}
-                  className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+                  className={`w-full flex items-center justify-between px-3 py-2 rounded text-xs font-semibold transition-colors ${
                     currentTab === 'admin_overview'
-                      ? 'bg-brand-teal text-white shadow-sm'
-                      : 'text-slate-300 hover:bg-navy-800 hover:text-white'
+                      ? 'bg-[#2C8279] text-white shadow-xs'
+                      : 'text-slate-300 hover:bg-[#17283B] hover:text-white'
                   }`}
                 >
                   <div className="flex items-center space-x-3">
-                    <Building2 className="w-4 h-4 text-teal-300" />
-                    <span>BVB Pilot Overview</span>
+                    <Building2 className="w-4 h-4 text-[#84d5ca]" />
+                    <span>Allocation Console</span>
                   </div>
-                  <ChevronRight className="w-4 h-4 opacity-50" />
+                  <ChevronRight className="w-3.5 h-3.5 opacity-60" />
                 </button>
                 <button
                   onClick={() => setCurrentTab('admin_students')}
-                  className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+                  className={`w-full flex items-center justify-between px-3 py-2 rounded text-xs font-semibold transition-colors ${
                     currentTab === 'admin_students'
-                      ? 'bg-brand-teal text-white shadow-sm'
-                      : 'text-slate-300 hover:bg-navy-800 hover:text-white'
+                      ? 'bg-[#2C8279] text-white shadow-xs'
+                      : 'text-slate-300 hover:bg-[#17283B] hover:text-white'
                   }`}
                 >
                   <div className="flex items-center space-x-3">
-                    <Users className="w-4 h-4 text-emerald-300" />
-                    <span>Student Registry (30)</span>
+                    <Users className="w-4 h-4 text-[#84d5ca]" />
+                    <span>Hostel Office Registry (30)</span>
                   </div>
-                  <ChevronRight className="w-4 h-4 opacity-50" />
+                  <ChevronRight className="w-3.5 h-3.5 opacity-60" />
                 </button>
                 <button
                   onClick={() => setCurrentTab('admin_complaints')}
-                  className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+                  className={`w-full flex items-center justify-between px-3 py-2 rounded text-xs font-semibold transition-colors ${
                     currentTab === 'admin_complaints'
-                      ? 'bg-brand-teal text-white shadow-sm'
-                      : 'text-slate-300 hover:bg-navy-800 hover:text-white'
+                      ? 'bg-[#2C8279] text-white shadow-xs'
+                      : 'text-slate-300 hover:bg-[#17283B] hover:text-white'
                   }`}
                 >
                   <div className="flex items-center space-x-3">
-                    <AlertCircle className="w-4 h-4 text-amber-300" />
+                    <AlertCircle className="w-4 h-4 text-[#D4B779]" />
                     <span>Complaint Desk</span>
                   </div>
-                  <ChevronRight className="w-4 h-4 opacity-50" />
+                  <ChevronRight className="w-3.5 h-3.5 opacity-60" />
                 </button>
                 {isAdmin && (
                   <button
                     onClick={() => setCurrentTab('admin_floor_editor')}
-                    className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+                    className={`w-full flex items-center justify-between px-3 py-2 rounded text-xs font-semibold transition-colors ${
                       currentTab === 'admin_floor_editor'
-                        ? 'bg-brand-teal text-white shadow-sm'
-                        : 'text-slate-300 hover:bg-navy-800 hover:text-white'
+                        ? 'bg-[#2C8279] text-white shadow-xs'
+                        : 'text-slate-300 hover:bg-[#17283B] hover:text-white'
                     }`}
                   >
                     <div className="flex items-center space-x-3">
                       <Map className="w-4 h-4 text-cyan-300" />
                       <span>2D Floor Plan Maker</span>
                     </div>
-                    <ChevronRight className="w-4 h-4 opacity-50" />
+                    <ChevronRight className="w-3.5 h-3.5 opacity-60" />
                   </button>
                 )}
               </>
@@ -187,21 +187,21 @@ export const AppLayout: React.FC<LayoutProps> = ({ currentTab, setCurrentTab, ch
         </div>
 
         {/* User Card & Sign Out */}
-        <div className="p-4 border-t border-navy-800 bg-navy-950/40 flex items-center justify-between">
+        <div className="p-4 border-t border-[#17283B] bg-[#17283B]/50 flex items-center justify-between">
           <div className="flex items-center space-x-3 overflow-hidden">
-            <div className="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center font-bold text-xs text-white shrink-0">
+            <div className="w-8 h-8 rounded bg-[#263345] border border-slate-600 flex items-center justify-center font-bold text-xs text-white shrink-0">
               {session.fullName.substring(0, 2).toUpperCase()}
             </div>
             <div className="overflow-hidden">
               <div className="text-xs font-semibold text-white truncate">{session.fullName}</div>
-              <div className="text-[10px] text-brand-teal font-medium uppercase tracking-wider">{session.role}</div>
+              <div className="text-[10px] text-[#84d5ca] font-medium uppercase tracking-wider">{session.role}</div>
             </div>
           </div>
 
           <button
             onClick={logout}
             title="Sign Out"
-            className="p-1.5 text-slate-400 hover:text-white hover:bg-navy-800 rounded-lg transition-colors ml-2"
+            className="p-1.5 text-slate-400 hover:text-white hover:bg-[#203653] rounded transition-colors ml-2"
           >
             <LogOut className="w-4 h-4" />
           </button>

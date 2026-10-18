@@ -7,6 +7,49 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.4.0] - 2026-10-18
+
+### Fixed
+- **Roommate Group Acceptance & Seat Allocation Propagation**:
+  - Maintained strict operational distinction between roommate invitation acceptance and final seat allocation. Accepting an invitation updates group membership and consensus without prematurely allocating seats or falsely turning seats red before authorized confirmation.
+  - Added dedicated allocation success confirmation popup (`"Your Seat Is Allocated" · BVB Block · Floor 2 · Room: [number] · Seat: [label]`) triggered only when an authorized seat allocation is committed.
+  - Synchronized authoritative floor map state and roommate group intent immediately upon invitation response and seat confirmation.
+  - Implemented explicit user feedback (`"Roommate invitation accepted"` / `"Roommate invitation declined"`) with resilient error handling.
+- **Admin & Hostel Office Complaint Desk Visibility**:
+  - Enriched staff complaints query in `src/operations/service.ts` to join `users` and `rooms`, providing author student names, USNs, and room numbers for all authorized staff roles (`WARDEN`, `CHIEF_WARDEN`, `HOSTEL_OFFICE`, `SUPER_ADMIN`).
+  - Guaranteed that authorized administrators view all public facility community complaints and confidential private room tickets within their building/system scope, while strictly safeguarding peer student privacy so students only see public issues and their own private tickets.
+  - Upgraded `ComplaintsView.tsx` with Stitch institutional styling tokens, real-time ticket counters (Open, In Progress, Resolved), search, type/status filters, and full staff management actions (workflow progression, personnel assignment, resolution notes).
+- **Enriched Student Profile Read Model**:
+  - Enhanced `getProfile` query in `src/student/registry.ts` to join `seats`, `rooms`, `floors`, and `buildings`, providing full allocated seat labels, room numbers, and building names.
+
+### Added
+- **Automated Regression Test Suite**:
+  - Added Section 6 to `tests/phase4_workflows.test.ts` verifying:
+    1. Roommate invitation acceptance updates membership without prematurely allocating seats, surfaces orange intent, and leaves seats unallocated until priority turn confirmation.
+    2. Student public and private complaints appear in the Admin Complaint Desk with full author and room metadata while preserving peer privacy.
+    3. Complaint status updates and staff assignment work smoothly.
+  - Test suite expanded to 38 automated tests with a 100% pass rate.
+
+---
+
+## [1.3.0] - 2026-10-18
+
+### Added
+- **Stitch Design System Integration & Institutional Styling**:
+  - Normalized design system palette in `index.html` to official DORMEX brand tokens: Primary Deep Navy (`#203653`), Muted Teal (`#2C8279`), Sandstone Gold (`#D4B779`), Warm Ivory canvas (`#F7F6F1`), Soft Mint surface (`#E7F2ED`), Deep Text (`#263345`), Secondary Text (`#627084`), and Neutral Borders (`#E2E6E8`).
+  - Integrated 5-step institutional linear onboarding progress stepper matching `student_application_terms` prototype into `StudentProfileForm.tsx`.
+  - Upgraded `TermsAcknowledgementModal.tsx` with cryptographic accord styling, statutory disclaimer notice, and Agree & Continue workflow.
+  - Implemented 2-column master-detail layout in `StudentRegistryView.tsx` matching `hostel_office_registry` prototype with student dossier inspector, statutory allocation rule alert, and chronological tie-breaker notice.
+  - Upgraded `AdminDashboard.tsx` with Stitch `admin_allocation_control` executive KPI cards, pre-flight inventory certification banner, and live turn engine controls.
+  - Aligned `StudentAllocationView.tsx` floor map with authentic BVB Floor 2 CAD coordinates, institutional 3-color availability system (`#1E7B54` Green, `#E06A26` Orange, `#C93B3B` Red, `#1D63B8` Active Selection), and bed matrix inspection.
+  - Modernized `AppLayout.tsx` and `PortalSelectionView.tsx` with consistent institutional navigation chrome, collegiate branding, and role badges.
+
+### Changed
+- Refactored seat matrix rendering and room details inspection cards for crisp data density and architectural precision.
+- Preserved all server-authoritative turn scheduling, fee verification, terms gating, and RBAC constraints across all 6 roles.
+
+---
+
 ## [1.2.0] - 2026-10-18
 
 ### Added
