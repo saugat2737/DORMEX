@@ -1,44 +1,6 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 # DORMEX Implementation Status & Technical Decisions
 
-Last Updated: 2026-10-12
+Last Updated: 2026-10-18
 Repository Status: Active Development (Modular Monolith)
 
 ## 1. System Architecture & Stack
@@ -119,4 +81,33 @@ Repository Status: Active Development (Modular Monolith)
     - Added 2 new integration test cases to `tests/phase4_workflows.test.ts` (suite total: 38 tests, 100% pass rate).
     - Verified TypeScript type check (`npm run typecheck`, 0 errors).
     - Verified production client build (`npm run build:client`).
-
+- [x] **Phase 8: Dry-Run Allocation Cycle Simulation & Capacity Analytics (Acceptance Target 8)**:
+  - **Non-Mutating Cycle Simulation Engine**:
+    - Implemented `simulateCycle` in `AllocationEngineService` (`src/allocation/engine.ts`).
+    - Models expected turn durations, concurrent pool throughput, and calculates predicted wall-clock completion time.
+    - Evaluates cohort size versus available bed inventory, surfacing overflow warnings and waitlist projections before cycles go live.
+  - **Simulation API Endpoint**:
+    - Added `POST /api/allocation-cycles/:id/simulate` with strict RBAC enforcement (`HOSTEL_OFFICE`, `SUPER_ADMIN`).
+  - **Simulation Analytics Modal in Admin Dashboard**:
+    - Embedded Dry-Run Simulation Modal in `AdminDashboard.tsx` with KPI projection cards, inventory sufficiency indicators, and per-pool time breakdowns.
+  - **Comprehensive Verification**:
+    - Added integration test to `tests/architecture_enhancements.test.ts` (suite total: 39 tests, 100% pass rate).
+    - Verified TypeScript typecheck (`npm run typecheck`, 0 errors) and Vite production bundle (`npm run build:client`).
+- [x] **Phase 10: Virtual Student Dataset Generation & Hostel Office Floor Map Creator**:
+  - **Virtual Student Generation & Test Logger (`scripts/generateVirtualData.ts`)**:
+    - Generates institutional USNs conforming strictly to `1si25<branch 2-char><3-digit code>`.
+    - Features test logger table displaying branches, quota categories, fee statuses, and USN validity checks.
+    - Transactionally seeds virtual student records into database for turn testing and cycle simulation.
+  - **Hostel Office 2D Floor Map Creator (`FloorPlanEditor.tsx`)**:
+    - Enabled access under Hostel Office workspace alongside Admin portals.
+    - Standardized SVG canvas layout to `bvb-floor-2.svg` (`viewBox="0 0 900 650"`).
+    - Added one-click **Load BVB SVG Template** button restoring all 72 rooms (201–272).
+    - Added **Add Room** modal for custom room & seat placement and live **Geometry Inspector** with coordinate calibration and element deletion.
+  - **Automated Verification**:
+    - 44/44 tests passing across 7 test suites (`tests/virtual_data_and_editor.test.ts`).
+    - 0 TypeScript errors (`npm run typecheck`).
+    - Clean Vite production bundle (`npm run build:client`).
+- [x] **Phase 11: Official Brand Identity Integration & Transparent Assets**:
+  - Cropped official brand identities directly from `docs/DORMEX Hostel Brand Identity Board.png` with complete background removal.
+  - Generates transparent high-resolution PNG assets (`brand-logo-primary-transparent.png`, `brand-logo-white-transparent.png`, `brand-logo-stacked-transparent.png`, `brand-symbol-icon-transparent.png`, `brand-logo-monochrome-transparent.png`).
+  - Integrated `DormexLogo.tsx` across `AppLayout` sidebar and `PortalSelectionView` with multi-theme support.

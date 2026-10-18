@@ -26,6 +26,8 @@ export const ComplaintsView: React.FC = () => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [type, setType] = useState<'PUBLIC' | 'PRIVATE'>('PUBLIC');
+  const [buildingId, setBuildingId] = useState<string>('');
+  const [buildings, setBuildings] = useState<any[]>([]);
   const [typeFilter, setTypeFilter] = useState<string>('ALL');
   const [statusFilter, setStatusFilter] = useState<string>('ALL');
   const [search, setSearch] = useState('');
@@ -42,9 +44,19 @@ export const ComplaintsView: React.FC = () => {
 
   const fetchComplaints = async () => {
     try {
-      const res = await apiFetch('/api/complaints');
-      if (res.ok) {
-        setComplaints(await res.json());
+      const [cRes, bRes] = await Promise.all([
+        apiFetch('/api/complaints'),
+        apiFetch('/api/buildings'),
+      ]);
+      if (cRes.ok) {
+        setComplaints(await cRes.json());
+      }
+      if (bRes.ok) {
+        const bData = await bRes.json();
+        setBuildings(bData);
+        if (bData.length > 0 && !buildingId) {
+          setBuildingId(bData[0].id);
+        }
       }
     } catch (e) {}
   };
@@ -63,7 +75,7 @@ export const ComplaintsView: React.FC = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           type,
-          building_id: 'bld_bvb',
+          building_id: buildingId || 'bld_bvb',
           title,
           description,
         }),
@@ -297,6 +309,22 @@ export const ComplaintsView: React.FC = () => {
                     ? 'Public issues appear on the community board for peer verification and voting.'
                     : 'Private complaints are strictly confidential between you and hostel administration.'}
                 </p>
+              </div>
+
+              <div>
+                <label className="text-xs font-semibold text-[#263345] block mb-1">Hostel Building / Block</label>
+                <select
+                  value={buildingId}
+                  onChange={(e) => setBuildingId(e.target.value)}
+                  className="w-full text-xs border border-[#E2E6E8] rounded p-2.5 bg-[#F7F6F1] text-[#263345] focus:outline-none focus:ring-1 focus:ring-[#2C8279]"
+                >
+                  {buildings.map((b) => (
+                    <option key={b.id} value={b.id}>
+                      {b.name} ({b.code})
+                    </option>
+                  ))}
+                  {buildings.length === 0 && <option value="bld_bvb">BVB Block (Default)</option>}
+                </select>
               </div>
 
               <div>

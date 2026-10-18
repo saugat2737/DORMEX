@@ -505,4 +505,96 @@ export class AllocationEngineService {
       return { allocationId: newAllocId };
     });
   }
+
+  /**
+   * Dry-Run Simulation (Section 7 & Acceptance Target 8)
+   * Predicts cohort completion time, turn sequence, and potential unallocated overflow
+   * without mutating production seat allocations.
+   */
+  async simulateCycle(
+    cycleId: string,
+    actor: AuthActor
+  ): Promise<{
+    cycleId: string;
+    totalEligibleStudents: number;
+    totalAvailableSeats: number;
+    estimatedAverageSecondsPerTurn: number;
+    predictedDurationMinutes: number;
+    predictedUnallocatedCount: number;
+    poolBreakdown: Array<{
+      poolId: string;
+      poolName: string;
+      eligibleCount: number;
+      seatsCount: number;
+      durationMinutes: number;
+    }>;
+  }> {
+    if (!['HOSTEL_OFFICE', 'SUPER_ADMIN'].includes(actor.role)) {
+      throw new Error('FORBIDDEN: Only Hostel Office or Super Admin can run cycle simulations');
+    }
+
+    const cycleRes = await this.db.query(
+      `SELECT * FROM allocation_cycles WHERE id = $1`,
+      [cycleId]
+    );
+    if (cycleRes.rows.length === 0) {
+      throw new Error('NOT_FOUND: Allocation cycle not found');
+    }
+    const cycle = cycleRes.rows[0];
+    const turnDuration = cycle.turn_duration_seconds || 120;
+    const avgTurnSeconds = Math.round(turnDuration * 0.4); // Standard expected average (~45-50s)
+
+    // Query pools and seat counts
+    const poolsRes = await this.db.query(
+      `SELECT p.id, p.name, p.quota_category, p.academic_year,
+              COUNT(DISTINCT pi.seat_id) as seats_count
+       FROM allocation_pools p
+       LEFT JOIN pool_inventories pi ON p.id = pi.pool_id
+       WHERE p.cycle_id = $1 AND p.is_active = TRUE
+       GROUP BY p.id, p.name, p.quota_category, p.academic_year`,
+      [cycleId]
+    );
+
+    let totalStudents = 0;
+    let totalSeats = 0;
+    const breakdown = [];
+
+    for (const pool of poolsRes.rows) {
+      const seatsCount = parseInt(pool.seats_count, 10);
+      const stuRes = await this.db.query(
+        `SELECT COUNT(*) as cnt
+         FROM student_profiles
+         WHERE academic_year = $1 AND quota_category = $2 AND eligibility_status = 'ELIGIBLE'`,
+        [pool.academic_year, pool.quota_category]
+      );
+      const eligibleCount = parseInt(stuRes.rows[0].cnt, 10);
+      const poolDurationMin = Math.ceil((eligibleCount * avgTurnSeconds) / 60);
+
+      totalStudents += eligibleCount;
+      totalSeats += seatsCount;
+
+      breakdown.push({
+        poolId: pool.id,
+        poolName: pool.name,
+        eligibleCount,
+        seatsCount,
+        durationMinutes: poolDurationMin,
+      });
+    }
+
+    // Parallel pools run concurrently, so cohort time is governed by the largest pool
+    const maxPoolDuration = breakdown.length > 0 ? Math.max(...breakdown.map((b) => b.durationMinutes)) : 0;
+    const unallocated = Math.max(0, totalStudents - totalSeats);
+
+    return {
+      cycleId,
+      totalEligibleStudents: totalStudents,
+      totalAvailableSeats: totalSeats,
+      estimatedAverageSecondsPerTurn: avgTurnSeconds,
+      predictedDurationMinutes: maxPoolDuration,
+      predictedUnallocatedCount: unallocated,
+      poolBreakdown: breakdown,
+    };
+  }
 }
+

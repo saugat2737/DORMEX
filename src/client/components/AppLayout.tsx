@@ -12,6 +12,7 @@ import {
   ChevronRight,
   Sparkles
 } from 'lucide-react';
+import { DormexLogo } from './DormexLogo.js';
 
 interface LayoutProps {
   currentTab: string;
@@ -34,24 +35,19 @@ export const AppLayout: React.FC<LayoutProps> = ({ currentTab, setCurrentTab, ch
       <aside className="w-full md:w-64 bg-[#203653] text-slate-200 flex flex-col justify-between shrink-0 border-r border-[#17283B]">
         <div>
           {/* Logo & System Brand matching Stitch Brand Board */}
-          <div className="p-5 border-b border-[#17283B] flex items-center space-x-3">
-            <div className="w-9 h-9 rounded bg-[#2C8279] flex items-center justify-center font-bold text-white shadow-xs text-base tracking-wider">
-              DX
-            </div>
-            <div>
-              <div className="font-bold text-white tracking-tight text-base flex items-center gap-1.5">
-                DORMEX
-                {isDevMode ? (
-                  <span className="text-[9px] font-semibold bg-[#D4B779] text-[#203653] px-1.5 py-0.5 rounded uppercase tracking-wider font-mono">
-                    DEV
-                  </span>
-                ) : (
-                  <span className="text-[9px] font-semibold bg-[#2C8279]/40 text-[#84d5ca] px-1.5 py-0.5 rounded uppercase tracking-wider">
-                    PILOT
-                  </span>
-                )}
-              </div>
-              <div className="text-[10px] text-slate-300 font-medium">B.V.B. Campus Allocation</div>
+          <div className="p-4 border-b border-[#17283B]">
+            <DormexLogo theme="white" size="md" />
+            <div className="flex items-center justify-between mt-2.5 pt-2 border-t border-[#17283B]/80 text-[10px]">
+              <span className="text-slate-300 font-medium">B.V.B. Campus Allocation</span>
+              {isDevMode ? (
+                <span className="text-[9px] font-semibold bg-[#D4B779] text-[#203653] px-1.5 py-0.5 rounded uppercase tracking-wider font-mono">
+                  DEV
+                </span>
+              ) : (
+                <span className="text-[9px] font-semibold bg-[#2C8279]/40 text-[#84d5ca] px-1.5 py-0.5 rounded uppercase tracking-wider">
+                  PILOT
+                </span>
+              )}
             </div>
           </div>
 
@@ -165,7 +161,7 @@ export const AppLayout: React.FC<LayoutProps> = ({ currentTab, setCurrentTab, ch
                   </div>
                   <ChevronRight className="w-3.5 h-3.5 opacity-60" />
                 </button>
-                {isAdmin && (
+                {(isAdmin || isHostelOffice) && (
                   <button
                     onClick={() => setCurrentTab('admin_floor_editor')}
                     className={`w-full flex items-center justify-between px-3 py-2 rounded text-xs font-semibold transition-colors ${

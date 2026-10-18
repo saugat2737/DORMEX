@@ -185,10 +185,15 @@ Room change is configurable. When disabled, the backend rejects requests; hiding
 ```text
 One seat → max one current allocation
 One student → max one current allocation per cycle
+Active pools in cycle → strictly disjoint seat inventory
 Only active turn owner → can confirm
+Immediate turn advance → pool advances to next student upon confirm
 Expired turn → cannot confirm
 Client timer → never authoritative
 Client priority → never authoritative
+Priority rank → determined chronologically by verified fee timestamp
+Student USN → strictly validated institutional format (1si25<branch><code-3>)
+Terms of Responsibility → mandatory signed server acknowledgement before waiting room
 Wishlist → never reserves
 Recommendation → never reserves
 Recommendation → never chains

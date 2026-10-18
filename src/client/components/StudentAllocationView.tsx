@@ -17,17 +17,25 @@ import {
   Users,
   Send,
   HelpCircle,
-  Repeat
+  Repeat,
+  ZoomIn,
+  ZoomOut,
+  RotateCcw
 } from 'lucide-react';
 import { StudentProfileForm } from './StudentProfileForm.js';
 import { TermsAcknowledgementModal } from './TermsAcknowledgementModal.js';
 
 export const StudentAllocationView: React.FC = () => {
   const { session } = useAuth();
-  const [cycleId] = useState('cyc_bvb_pilot_2026');
+  const [cycleId, setCycleId] = useState('cyc_bvb_pilot_2026');
+  const [availableCycles, setAvailableCycles] = useState<any[]>([]);
+  const [buildings, setBuildings] = useState<any[]>([]);
+  const [floors, setFloors] = useState<any[]>([]);
+  const [selectedBuildingId, setSelectedBuildingId] = useState<string>('bld_bvb');
+  const [floorId, setFloorId] = useState('flr_bvb_2');
+  const [zoomLevel, setZoomLevel] = useState<number>(1);
   const [waitingEntry, setWaitingEntry] = useState<any>(null);
   const [activeSession, setActiveSession] = useState<any>(null);
-  const [floorId, setFloorId] = useState('flr_bvb_2');
   const [floorMap, setFloorMap] = useState<any>(null);
   const [seatStates, setSeatStates] = useState<Record<string, string>>({});
   const [roommateIntentMap, setRoommateIntentMap] = useState<Record<string, any>>({});
@@ -165,6 +173,37 @@ export const StudentAllocationView: React.FC = () => {
     return () => clearInterval(tInterval);
   }, [activeSession?.expiresAt]);
 
+  // Load cycles and buildings on mount
+  useEffect(() => {
+    Promise.all([
+      apiFetch('/api/allocation-cycles').then((r) => r.ok ? r.json() : []),
+      apiFetch('/api/buildings').then((r) => r.ok ? r.json() : []),
+    ]).then(([cycs, blds]) => {
+      setAvailableCycles(cycs);
+      if (cycs.length > 0 && !cycs.find((c: any) => c.id === cycleId)) {
+        setCycleId(cycs[0].id);
+      }
+      setBuildings(blds);
+      if (blds.length > 0 && !blds.find((b: any) => b.id === selectedBuildingId)) {
+        setSelectedBuildingId(blds[0].id);
+      }
+    });
+  }, []);
+
+  // Fetch floors whenever selected building changes
+  useEffect(() => {
+    if (!selectedBuildingId) return;
+    apiFetch(`/api/buildings/${selectedBuildingId}/floors`).then(async (r) => {
+      if (r.ok) {
+        const flrs = await r.json();
+        setFloors(flrs);
+        if (flrs.length > 0 && !flrs.find((f: any) => f.id === floorId)) {
+          setFloorId(flrs[0].id);
+        }
+      }
+    });
+  }, [selectedBuildingId]);
+
   useEffect(() => {
     fetchMyData();
     apiFetch(`/api/floors/${floorId}/map`).then(async (r) => {
@@ -176,7 +215,7 @@ export const StudentAllocationView: React.FC = () => {
 
     const interval = setInterval(refreshStatus, 3000);
     return () => clearInterval(interval);
-  }, [floorId, waitingEntry?.poolId, session?.profileId]);
+  }, [floorId, cycleId, waitingEntry?.poolId, session?.profileId]);
 
   // Join waiting room
   const handleJoinWaitingRoom = async () => {
@@ -712,25 +751,95 @@ export const StudentAllocationView: React.FC = () => {
           {/* Interactive SVG Canvas & Seat Details */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div className="lg:col-span-2 bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-3">
-              <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 pb-3 gap-3">
                 <div>
-                  <div className="text-xs font-bold text-navy-900 uppercase tracking-wider">
-                    BVB Block — Floor 2 (Original Floor Plan Geometry: 201..272)
+                  <div className="text-xs font-bold text-navy-900 uppercase tracking-wider flex items-center gap-2">
+                    <Building className="w-4 h-4 text-teal-600" />
+                    Interactive Floor Map Geometry
                   </div>
                   <div className="text-[11px] text-slate-400">
                     Click any numbered room marker to view its beds. Click a seat to select.
                   </div>
                 </div>
-                {selectedRoomNumber && (
-                  <span className="text-xs font-bold bg-teal-50 text-teal-800 border border-teal-200 px-2.5 py-1 rounded">
-                    Room {selectedRoomNumber} Selected
-                  </span>
-                )}
+
+                <div className="flex flex-wrap items-center gap-2">
+                  {/* Building Selector */}
+                  <select
+                    value={selectedBuildingId}
+                    onChange={(e) => setSelectedBuildingId(e.target.value)}
+                    className="text-xs bg-slate-50 border border-slate-200 rounded px-2.5 py-1 text-slate-700 font-semibold focus:outline-none focus:ring-1 focus:ring-teal-500"
+                  >
+                    {buildings.map((b) => (
+                      <option key={b.id} value={b.id}>
+                        {b.name}
+                      </option>
+                    ))}
+                  </select>
+
+                  {/* Floor Selector */}
+                  <select
+                    value={floorId}
+                    onChange={(e) => setFloorId(e.target.value)}
+                    className="text-xs bg-slate-50 border border-slate-200 rounded px-2.5 py-1 text-slate-700 font-semibold focus:outline-none focus:ring-1 focus:ring-teal-500"
+                  >
+                    {floors.map((f) => (
+                      <option key={f.id} value={f.id}>
+                        {f.name || `Floor ${f.floor_number}`}
+                      </option>
+                    ))}
+                    {floors.length === 0 && <option value="flr_bvb_2">Floor 2</option>}
+                  </select>
+
+                  {/* SVG Zoom Controls */}
+                  <div className="flex items-center border border-slate-200 rounded bg-slate-50 p-0.5">
+                    <button
+                      type="button"
+                      onClick={() => setZoomLevel((z) => Math.max(0.6, parseFloat((z - 0.2).toFixed(1))))}
+                      title="Zoom Out"
+                      className="p-1 text-slate-600 hover:text-navy-900 hover:bg-slate-200 rounded"
+                    >
+                      <ZoomOut className="w-3.5 h-3.5" />
+                    </button>
+                    <span className="text-[10px] font-mono font-bold px-1.5 text-slate-600">
+                      {Math.round(zoomLevel * 100)}%
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setZoomLevel((z) => Math.min(2.0, parseFloat((z + 0.2).toFixed(1))))}
+                      title="Zoom In"
+                      className="p-1 text-slate-600 hover:text-navy-900 hover:bg-slate-200 rounded"
+                    >
+                      <ZoomIn className="w-3.5 h-3.5" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setZoomLevel(1)}
+                      title="Reset Zoom"
+                      className="p-1 text-slate-400 hover:text-navy-900 hover:bg-slate-200 rounded border-l border-slate-200 ml-0.5"
+                    >
+                      <RotateCcw className="w-3 h-3" />
+                    </button>
+                  </div>
+
+                  {selectedRoomNumber && (
+                    <span className="text-xs font-bold bg-teal-50 text-teal-800 border border-teal-200 px-2.5 py-1 rounded">
+                      Room {selectedRoomNumber}
+                    </span>
+                  )}
+                </div>
               </div>
 
-              <div className="w-full bg-[#f8fafc] rounded-lg p-3 border border-slate-200 overflow-x-auto min-h-[440px] flex items-center justify-center">
+              <div className="w-full bg-[#f8fafc] rounded-lg p-3 border border-slate-200 overflow-auto min-h-[440px] flex items-center justify-center">
                 {floorMap && (
-                  <svg viewBox="0 0 900 650" className="w-full max-h-[500px] border border-slate-300 rounded shadow-inner bg-[#f0f0f0]">
+                  <div
+                    style={{
+                      transform: `scale(${zoomLevel})`,
+                      transformOrigin: 'center center',
+                      transition: 'transform 0.15s ease-out',
+                      width: '100%',
+                    }}
+                  >
+                  <svg viewBox="0 0 900 650" className="w-full max-h-[520px] border border-slate-300 rounded shadow-inner bg-[#f0f0f0]">
                     {/* Corridors and structural lines */}
                     <rect x="50" y="50" width="800" height="550" fill="none" stroke="#bbb" strokeWidth="1" rx="4" ry="4"/>
                     <rect x="110" y="50" width="680" height="70" fill="#e2e8f0" stroke="#cbd5e1" strokeWidth="1"/>
@@ -835,6 +944,7 @@ export const StudentAllocationView: React.FC = () => {
                       return null;
                     })}
                   </svg>
+                  </div>
                 )}
               </div>
             </div>

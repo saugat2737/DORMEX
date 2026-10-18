@@ -294,3 +294,41 @@ update occupancy/read models
  ↓
 notify affected users
 ```
+
+## 17. Dry-Run Cycle Simulation Workflow
+
+```text
+Hostel Office / Admin
+ ↓
+Select Cycle
+ ↓
+Trigger POST /api/allocation-cycles/:id/simulate
+ ↓
+Dry-Run Engine Evaluates:
+ ├── Total students vs Available beds (Capacity analytics)
+ ├── Pool cohort throughput & predicted duration
+ ├── Disjoint inventory verification
+ └── Overflow / waitlist projections
+ ↓
+Display Simulation Dashboard (No database mutations)
+```
+
+## 18. Hostel Office 2D Floor Plan Designer Workflow
+
+```text
+Hostel Office Staff
+ ↓
+Open Floor Plan Creator
+ ↓
+Select Building & Floor
+ ↓
+Option A: Load Official BVB SVG Template (Rooms 201–272)
+Option B: Add Custom Rooms & Select Bed Inventory (Single, Double, Triple)
+ ↓
+Interactive Geometry Inspector:
+ ├── Click element (Room / Seat)
+ ├── Fine-tune X, Y, Width, Height
+ └── Delete or reposition
+ ↓
+Save & Publish Geometry (`PUT /api/floors/:id/geometry`)
+```

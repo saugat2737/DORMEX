@@ -1,4 +1,4 @@
-/# DORMEX — College Hostel Allocation System
+# DORMEX — College Hostel Allocation System
 
 DORMEX is a secure, production-grade, centralized college hostel registration, priority-based seat allocation, floor-plan visualization, occupancy management, complaints, and room change platform.
 
@@ -53,18 +53,29 @@ The pilot implementation is configured for:
 
 ### End-to-End API Flow
 1. **Health Check**: `GET /health`
-2. **Interactive SVG Map**: `GET /api/floors/:id/svg`
+2. **Interactive SVG Map & Geometry**: `GET /api/floors/:id/svg`, `GET /api/floors/:id/geometry`, `PUT /api/floors/:id/geometry`
 3. **Student Registration & Profile**: `PUT /api/students/:id/profile`, `POST /api/students/:id/submit-profile`
 4. **Terms of Responsibility Agreement**: `GET /api/terms/latest`, `POST /api/terms/accept`
 5. **Fee Verification & Priority Recalculation**: `POST /api/students/:id/verify-fee`, `POST /api/allocation/recalculate-priorities`
 6. **Roommate Coordination & Seat Intent**: `POST /api/roommate-groups`, `POST /api/roommate-groups/:id/respond`, `GET /api/floors/:id/roommate-intent`
-7. **Join Waiting Room & Turn Execution**: `POST /api/allocation-cycles/:id/join`, `POST /api/allocation-pools/:id/advance`, `POST /api/booking-sessions/:id/confirm-seat`
-8. **48-Hour Room Change Window**: `POST /api/room-change-requests`, `PUT /api/room-change-requests/:id/review`, `POST /api/room-change-requests/in-person`
-9. **Complaints & Operations**: `POST /api/complaints`, `PUT /api/complaints/:id`, `POST /api/complaints/:id/vote`
-10. **Admin Allocation Controls**: `PUT /api/allocation-cycles/:id/status`, `POST /api/admin/allocations/force-override`
+7. **Dry-Run Cycle Simulation**: `POST /api/allocation-cycles/:id/simulate`
+8. **Join Waiting Room & Turn Execution**: `POST /api/allocation-cycles/:id/join`, `POST /api/allocation-pools/:id/advance`, `POST /api/booking-sessions/:id/confirm-seat`
+9. **48-Hour Room Change Window**: `POST /api/room-change-requests`, `PUT /api/room-change-requests/:id/review`, `POST /api/room-change-requests/in-person`
+10. **Complaints & Operations**: `POST /api/complaints`, `PUT /api/complaints/:id`, `POST /api/complaints/:id/vote`
+11. **Admin Allocation Controls**: `PUT /api/allocation-cycles/:id/status`, `POST /api/admin/allocations/force-override`
+
+### Virtual Student Dataset Generator
+DORMEX includes a dedicated script to generate virtual student cohorts and seed them into the database for testing and simulation:
+```bash
+# Display virtual student dataset with USN format validation (1si25<branch><code-3>)
+npm run generate:virtual-data
+
+# Generate and seed 50 virtual students into PostgreSQL
+npx tsx scripts/generateVirtualData.ts --count 50 --seed
+```
 
 ### Portals & Login Experience
 When accessing DORMEX, users are presented with 3 distinct portals:
 - **Student Portal**: Student registration, terms agreement, fee status check, live map turn selection, roommate groups, 48h room changes, complaints.
-- **Admin / Staff Portal**: Allocation cycle lifecycle control (Start, Pause, Resume, Close), central complaint inbox, room change approvals, in-person requests.
-- **Hostel Office Portal**: Student application review, fee payment verification, chronological priority recalculation, allocation readiness monitoring.
+- **Admin / Staff Portal**: Allocation cycle lifecycle control (Start, Pause, Resume, Close), dry-run cohort simulation, central complaint inbox, room change approvals, in-person requests.
+- **Hostel Office Portal**: Student application review, fee payment verification, chronological priority recalculation, allocation readiness monitoring, and interactive 2D floor plan creator.

@@ -272,6 +272,18 @@ export async function buildApp(db?: DatabaseService): Promise<FastifyInstance> {
     }
   });
 
+  // Cycle Simulation / Dry-Run Prediction
+  app.post('/api/allocation-cycles/:id/simulate', async (req: any, reply) => {
+    try {
+      const actor = await extractActor(req);
+      const simulation = await allocationEngine.simulateCycle(req.params.id, actor);
+      return reply.send(simulation);
+    } catch (err: any) {
+      const code = err.message?.startsWith('FORBIDDEN') ? 403 : 400;
+      return reply.code(code).send({ error: err.message });
+    }
+  });
+
   // Inventory & Floor Plan routes
   app.post('/api/floors/:id/draft', async (req: any, reply) => {
     try {

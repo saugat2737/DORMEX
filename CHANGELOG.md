@@ -7,6 +7,58 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.7.0] - 2026-10-18
+
+### Added
+- **Virtual Student Dataset Generator & Test Logger (`scripts/generateVirtualData.ts`)**:
+  - Implemented automated virtual test data generator enforcing strict institutional USN format: `1si25<branch 2-char><3-digit code>` (e.g. `1si25cs001`, `1si25ec042`).
+  - Added CLI test logger rendering console data tables with USN structure validation, branches (`CS`, `IS`, `EC`, `EE`, `ME`, `CV`, `AI`, `BT`), quota categories (`MERIT`, `SPORTS`, `PWD`, `GENERAL`), and chronological fee timestamps.
+  - Built transactional database seeder (`seedVirtualStudentsIntoDb`) synchronizing virtual profiles, user credentials, roles, and terms agreements for allocation testing and load simulation.
+- **Hostel Office Controllable 2D Floor Map Creator (`FloorPlanEditor.tsx`)**:
+  - Upgraded Floor Plan Maker to be fully accessible under **Hostel Office** and **Admin** portals.
+  - Aligned UI styling strictly to `bvb-floor-2.svg` (`viewBox="0 0 900 650"`, `#f0f0f0` background, `#bbb` structural corridors, white rooms with dark borders).
+  - Added **Load BVB SVG Template** button to instantly load the full authentic 72-room architecture (Rooms 201–272).
+  - Added **Add Room** modal allowing staff to place custom rooms and automatically generate child seat inventories (Type 1 single, Type 2 double, Type 3 triple).
+  - Added interactive **Geometry Inspector** panel to click any room or seat, view coordinates, adjust positions and dimensions, and delete elements.
+  - Added SVG Zoom controls (60% to 200%) and element filter dropdown (All, Rooms, Seats, Structural).
+- **DORMEX Brand Identity Board Cropped Transparent Image Assets & Logo Component**:
+  - Directly cropped and extracted all 5 visual themes from `docs/DORMEX Hostel Brand Identity Board.png` with background removal:
+    - Primary horizontal color logo (`public/assets/brand-logo-primary-transparent.png`).
+    - Crisp white logo for dark navy backgrounds (`public/assets/brand-logo-white-transparent.png`).
+    - High-rise architectural `D` symbol icon (`public/assets/brand-symbol-icon-transparent.png`).
+    - Stacked vertical brand logo (`public/assets/brand-logo-stacked-transparent.png`).
+    - Monochrome navy logo (`public/assets/brand-logo-monochrome-transparent.png`).
+  - Updated `DormexLogo.tsx` to directly load the cropped transparent theme assets, applied `theme="white"` on the dark `#203653` sidebar (`AppLayout.tsx`), and `theme="primary"` on the institutional header (`PortalSelectionView.tsx`).
+- **Automated Verification Suite**:
+  - Added `tests/virtual_data_and_editor.test.ts` verifying USN format invariants, regex validation, student generation, database insertion, and floor map bounds.
+  - Test suite total expanded to 44 automated tests with a 100% pass rate.
+
+---
+
+## [1.6.0] - 2026-10-18
+
+### Added
+- **Dynamic Building & Floor Selection Across Student & Admin Portals**:
+  - Replaced hardcoded values with dynamic data fetching from `/api/buildings`, `/api/buildings/:id/floors`, and `/api/allocation-cycles`.
+  - Added building and floor selector dropdowns in `AdminDashboard.tsx`, allowing administrators to inspect room and seat inventory across any building and floor dynamically.
+  - Added building and floor selector dropdowns in `StudentAllocationView.tsx`, enabling students to inspect real floor map geometry and seat allocations across available buildings and floors.
+  - Added dynamic building selection dropdown in `ComplaintsView.tsx` submission modal, allowing students and staff to file tickets for any hostel building rather than defaulting to a hardcoded block.
+  - Added interactive Zoom controls (`Zoom In`, `Zoom Out`, `Reset`) with percentage scale indicator in `StudentAllocationView.tsx` for responsive SVG floor plan inspection on all viewports.
+
+---
+
+## [1.5.0] - 2026-10-18
+
+### Added
+- **Dry-Run Allocation Cycle Simulation (Acceptance Target 8)**:
+  - Added `simulateCycle(cycleId, actor)` method to `AllocationEngineService` in `src/allocation/engine.ts`.
+  - Computes predictive cohort duration, pool breakdown, average turn time, and capacity overflow warnings without mutating production allocations.
+  - Added `POST /api/allocation-cycles/:id/simulate` endpoint restricted to `HOSTEL_OFFICE` and `SUPER_ADMIN`.
+  - Built interactive Dry-Run Simulation Modal in `AdminDashboard.tsx` with pool duration projections, capacity analysis, and disjoint inventory verification.
+  - Added test case to `tests/architecture_enhancements.test.ts` (test suite total: 39 tests, 100% pass rate).
+
+---
+
 ## [1.4.0] - 2026-10-18
 
 ### Fixed

@@ -6,11 +6,12 @@ import {
   Building, 
   ArrowRight, 
   CheckCircle2, 
-  AlertCircle,
-  Lock,
-  Sparkles,
-  School
+  AlertCircle, 
+  Lock, 
+  Sparkles, 
+  School 
 } from 'lucide-react';
+import { DormexLogo } from './DormexLogo.js';
 
 export const PortalSelectionView: React.FC = () => {
   const { login, isDevMode } = useAuth();
@@ -39,21 +40,8 @@ export const PortalSelectionView: React.FC = () => {
   return (
     <div className="min-h-screen bg-[#F7F6F1] flex flex-col justify-between font-sans">
       {/* Top Header */}
-      <header className="bg-white border-b border-[#E2E6E8] px-6 py-4 flex items-center justify-between">
-        <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 rounded bg-[#203653] flex items-center justify-center font-bold text-white shadow-xs text-lg tracking-wider">
-            DX
-          </div>
-          <div>
-            <div className="font-bold text-[#203653] tracking-tight text-lg flex items-center gap-2">
-              DORMEX
-              <span className="text-[10px] font-semibold bg-[#E7F2ED] text-[#2C8279] border border-[#2C8279]/30 px-2 py-0.5 rounded uppercase tracking-wider">
-                Pilot Portal
-              </span>
-            </div>
-            <div className="text-xs text-[#627084] font-medium">B.V.B. Campus Hostel Allocation Platform</div>
-          </div>
-        </div>
+      <header className="bg-white border-b border-[#E2E6E8] px-6 py-3.5 flex items-center justify-between">
+        <DormexLogo theme="primary" size="md" />
 
         <div className="flex items-center gap-3">
           <span className="text-xs text-[#627084] hidden sm:inline">Pilot Scope: BVB Block • Floor 2</span>
