@@ -257,6 +257,10 @@ export async function buildApp(db?: DatabaseService): Promise<FastifyInstance> {
       }
       const { status, waitingRoomThreshold } = req.body as any;
       if (status) {
+        if (['READY', 'SIMULATING'].includes(status)) {
+          // Architectural guarantee: Validate disjoint seat inventories across active pools
+          await allocationEngine.validatePoolDisjointInventory(req.params.id);
+        }
         await database.query(`UPDATE allocation_cycles SET status = $1 WHERE id = $2`, [status, req.params.id]);
       }
       if (waitingRoomThreshold !== undefined) {
@@ -369,6 +373,15 @@ export async function buildApp(db?: DatabaseService): Promise<FastifyInstance> {
       const actor = await extractActor(req);
       const { seatId, idempotencyKey } = req.body as any;
       const result = await allocationEngine.confirmSeat(req.params.id, seatId, actor, idempotencyKey);
+      
+      // Architectural optimization: Advance turn immediately on confirm
+      // To prevent waiting out the wall clock when the current student completes early
+      const sessRes = await database.query('SELECT pool_id FROM booking_sessions WHERE id = $1', [req.params.id]);
+      if (sessRes.rows.length > 0 && sessRes.rows[0].pool_id) {
+        // Asynchronously advance to the next waiting student without blocking the confirmation response
+        allocationEngine.advancePoolTurn(sessRes.rows[0].pool_id).catch(() => {});
+      }
+
       return reply.send(result);
     } catch (err: any) {
       const msg = err.message || '';

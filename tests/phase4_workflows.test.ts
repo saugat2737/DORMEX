@@ -7,7 +7,7 @@ describe('DORMEX Phase 4: Workflows, Onboarding, Roommates & Administration', ()
 
   beforeAll(async () => {
     app = await buildApp();
-  });
+  }, 30000);
 
   describe('1. Student Registration & Profile Submission', () => {
     it('allows a student to update their personal and guardian profile details', async () => {

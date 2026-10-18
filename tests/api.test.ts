@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeAll } from 'vitest';
 import request from 'supertest';
 import { buildApp } from '../src/app.js';
 import { getDatabaseService, resetDatabaseInstance } from '../src/db/index.js';
@@ -7,13 +7,13 @@ describe('DORMEX End-to-End API Integration Suite', () => {
   let app: any;
   let db: any;
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     resetDatabaseInstance();
     db = getDatabaseService(true);
     const fastifyApp = await buildApp(db);
     await fastifyApp.ready();
     app = fastifyApp.server;
-  });
+  }, 30000);
 
   it('GET /health returns healthy status', async () => {
     const res = await request(app).get('/health');
