@@ -96,4 +96,13 @@ Repository Status: Active Development (Modular Monolith)
   - **Roommate Group Coordination via Priority Numbers**: Consent-based group formation where students link up using priority numbers without exposing private student contact details or internal preferences. Conflicting intents are automatically cleaned up when seats are confirmed.
   - **48-Hour Room Change Management**: Supports student-initiated room change requests within a 48-hour cycle window, validation of active allocations, staff review, atomic transfers between seats, and in-person staff recorded changes.
   - **Admin Allocation Controls & Central Complaint Inbox**: Admin lifecycle actions (`Start`, `Pause`, `Resume`, `Close`); central complaint triage supporting public facility tickets and confidential room tickets with staff assignment and resolution tracking.
-  - **Verified with 32 automated tests passing across 5 test suites** (`npm test` 100% pass rate).
+  - **Verified with 32 automated tests passing across 5 test suites**.
+- [x] **Phase 5: PostgreSQL Integration & Architectural Hardening (Production Standards)**:
+  - **PostgreSQL Connection Pool & Resilience**: Built robust PostgreSQL database service (`PostgresDatabaseService` via `pg`) with environment-based configuration (`DATABASE_URL`, `PG_MAX_CONNECTIONS`, `PG_IDLE_TIMEOUT_MS`, `PG_CONNECTION_TIMEOUT_MS`, and `PG_SSL`), client pool error handling, and connection healthcheck diagnostics (`SELECT 1`).
+  - **Docker Compose for Local PostgreSQL**: Added `docker-compose.yml` defining an isolated, persistent PostgreSQL 16 container (`dormex-postgres`) with alpine image, volume persistence, and container healthcheck for instant local setup.
+  - **Environment Configuration**: Added `.env.example` defining standard production and local credentials, cookie secrets, JWT keys, and database connection options.
+  - **Disjoint Pool Inventory Safeguard**: Enforced architectural invariant guaranteeing that concurrent active pools within an allocation cycle must have strictly disjoint seat inventory. Prevents pool-overlap race conditions and priority inversion across disjoint student cohorts.
+  - **Immediate Turn Advance Optimization**: Optimized `confirmSeat` endpoint to advance the pool turn immediately upon confirmation rather than waiting out the remainder of the 2-minute selection window. Reduces total wall-clock duration for the cohort.
+  - **Hook Lifecycle & Timeout Optimization**: Standardized Vitest integration suites to use optimized setup hooks with graceful timeouts, eliminating test runner timeouts.
+  - **Verified with 36 automated tests passing across 6 test suites** (`npm test` 100% pass rate).
+

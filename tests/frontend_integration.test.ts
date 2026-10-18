@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeAll } from 'vitest';
 import request from 'supertest';
 import { buildApp } from '../src/app.js';
 import { getDatabaseService, resetDatabaseInstance } from '../src/db/index.js';
@@ -7,13 +7,13 @@ describe('DORMEX Phase 2: Frontend & Map Integration Verifications', () => {
   let app: any;
   let db: any;
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     resetDatabaseInstance();
     db = getDatabaseService(true);
     const fastifyApp = await buildApp(db);
     await fastifyApp.ready();
     app = fastifyApp.server;
-  });
+  }, 30000);
 
   describe('Vertical Slice A: Admin Floor Plan Maker Lifecycle', () => {
     it('creates draft geometry, saves it, and publishes an immutable version', async () => {

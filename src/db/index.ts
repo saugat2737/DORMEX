@@ -13,14 +13,37 @@ export interface DatabaseService {
   close(): Promise<void>;
 }
 
+import dotenv from 'dotenv';
+dotenv.config();
+
 class PostgresDatabaseService implements DatabaseService {
   private pool: Pool;
 
   constructor(connectionString?: string) {
+    const connStr = connectionString || process.env.DATABASE_URL || 'postgresql://postgres:postgres@localhost:5432/dormex';
+    const isSsl = process.env.PG_SSL === 'true';
+
     this.pool = new Pool({
-      connectionString: connectionString || process.env.DATABASE_URL || 'postgresql://postgres:postgres@localhost:5432/dormex',
-      max: 20,
+      connectionString: connStr,
+      max: parseInt(process.env.PG_MAX_CONNECTIONS || '20', 10),
+      idleTimeoutMillis: parseInt(process.env.PG_IDLE_TIMEOUT_MS || '30000', 10),
+      connectionTimeoutMillis: parseInt(process.env.PG_CONNECTION_TIMEOUT_MS || '5000', 10),
+      ssl: isSsl ? { rejectUnauthorized: false } : undefined,
     });
+
+    this.pool.on('error', (err) => {
+      console.error('Unexpected idle client error in PostgreSQL pool', err);
+    });
+  }
+
+  async testConnection(): Promise<boolean> {
+    try {
+      const res = await this.pool.query('SELECT 1 as alive');
+      return res.rows[0]?.alive === 1;
+    } catch (err) {
+      console.error('PostgreSQL connection check failed:', err);
+      return false;
+    }
   }
 
   async query<T extends QueryResultRow = any>(text: string, params?: any[]): Promise<QueryResult<T>> {

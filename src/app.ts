@@ -257,6 +257,10 @@ export async function buildApp(db?: DatabaseService): Promise<FastifyInstance> {
       }
       const { status, waitingRoomThreshold } = req.body as any;
       if (status) {
+        if (['READY', 'SIMULATING'].includes(status)) {
+          // Architectural guarantee: Validate disjoint seat inventories across active pools
+          await allocationEngine.validatePoolDisjointInventory(req.params.id);
+        }
         await database.query(`UPDATE allocation_cycles SET status = $1 WHERE id = $2`, [status, req.params.id]);
       }
       if (waitingRoomThreshold !== undefined) {
@@ -369,6 +373,15 @@ export async function buildApp(db?: DatabaseService): Promise<FastifyInstance> {
       const actor = await extractActor(req);
       const { seatId, idempotencyKey } = req.body as any;
       const result = await allocationEngine.confirmSeat(req.params.id, seatId, actor, idempotencyKey);
+      
+      // Architectural optimization: Advance turn immediately on confirm
+      // To prevent waiting out the wall clock when the current student completes early
+      const sessRes = await database.query('SELECT pool_id FROM booking_sessions WHERE id = $1', [req.params.id]);
+      if (sessRes.rows.length > 0 && sessRes.rows[0].pool_id) {
+        // Asynchronously advance to the next waiting student without blocking the confirmation response
+        allocationEngine.advancePoolTurn(sessRes.rows[0].pool_id).catch(() => {});
+      }
+
       return reply.send(result);
     } catch (err: any) {
       const msg = err.message || '';
@@ -376,6 +389,26 @@ export async function buildApp(db?: DatabaseService): Promise<FastifyInstance> {
       if (msg.startsWith('FORBIDDEN') || msg.startsWith('NOT_YOUR_TURN')) code = 403;
       if (msg.startsWith('SEAT_UNAVAILABLE')) code = 409;
       return reply.code(code).send({ error: msg });
+    }
+  });
+
+  // Administrative Audit Trail Endpoint
+  app.get('/api/admin/audit-logs', async (req: any, reply) => {
+    try {
+      const actor = await extractActor(req);
+      if (!['HOSTEL_OFFICE', 'SUPER_ADMIN'].includes(actor.role)) {
+        return reply.code(403).send({ error: 'FORBIDDEN: Insufficient permissions to inspect administrative audit logs' });
+      }
+      const res = await database.query(
+        `SELECT a.*, u.full_name as actor_name, u.email as actor_email
+         FROM audit_logs a
+         LEFT JOIN users u ON a.actor_id = u.id
+         ORDER BY a.created_at DESC
+         LIMIT 50`
+      );
+      return reply.send(res.rows);
+    } catch (err: any) {
+      return reply.code(400).send({ error: err.message });
     }
   });
 

@@ -24,6 +24,29 @@ export class AllocationEngineService {
   constructor(private db: DatabaseService) {}
 
   /**
+   * Validate that concurrent active pools have strictly disjoint seat inventory.
+   * If two active pools share any seats, an error is thrown.
+   */
+  async validatePoolDisjointInventory(cycleId: string): Promise<boolean> {
+    const conflictRes = await this.db.query(
+      `SELECT pi1.seat_id, p1.name as pool1_name, p2.name as pool2_name
+       FROM pool_inventories pi1
+       JOIN pool_inventories pi2 ON pi1.seat_id = pi2.seat_id AND pi1.pool_id != pi2.pool_id
+       JOIN allocation_pools p1 ON pi1.pool_id = p1.id
+       JOIN allocation_pools p2 ON pi2.pool_id = p2.id
+       WHERE p1.cycle_id = $1 AND p2.cycle_id = $1 AND p1.is_active = TRUE AND p2.is_active = TRUE
+       LIMIT 1`,
+      [cycleId]
+    );
+
+    if (conflictRes.rows.length > 0) {
+      const c = conflictRes.rows[0];
+      throw new Error(`DISJOINT_INVENTORY_VIOLATION: Seat ${c.seat_id} is assigned to multiple active pools (${c.pool1_name} and ${c.pool2_name}) in cycle ${cycleId}`);
+    }
+    return true;
+  }
+
+  /**
    * Calculate late penalty turn shift using the agreed provisional default:
    * lateness = now - student's scheduled turn start
    * grace = 6 min (360s), turn_len = 2 min (120s), max_penalty_turns = 10
