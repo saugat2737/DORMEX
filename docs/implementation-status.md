@@ -1,44 +1,6 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 # DORMEX Implementation Status & Technical Decisions
 
-Last Updated: 2026-10-12
+Last Updated: 2026-10-18
 Repository Status: Active Development (Modular Monolith)
 
 ## 1. System Architecture & Stack
@@ -145,7 +107,7 @@ Repository Status: Active Development (Modular Monolith)
     - 44/44 tests passing across 7 test suites (`tests/virtual_data_and_editor.test.ts`).
     - 0 TypeScript errors (`npm run typecheck`).
     - Clean Vite production bundle (`npm run build:client`).
-
-
-
-
+- [x] **Phase 11: Official Brand Identity Integration & Transparent Assets**:
+  - Cropped official brand identities directly from `docs/DORMEX Hostel Brand Identity Board.png` with complete background removal.
+  - Generates transparent high-resolution PNG assets (`brand-logo-primary-transparent.png`, `brand-logo-white-transparent.png`, `brand-logo-stacked-transparent.png`, `brand-symbol-icon-transparent.png`, `brand-logo-monochrome-transparent.png`).
+  - Integrated `DormexLogo.tsx` across `AppLayout` sidebar and `PortalSelectionView` with multi-theme support.

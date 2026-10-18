@@ -29,19 +29,21 @@
 - Occupancy
 - Maintenance/block state
 - Eligibility restrictions
-- Floor maps
-- Room maps
+- Floor maps (SVG rendering & 2D geometry)
+- Room maps & Bed inventories (provisional and verified)
 - Future buildings without code changes
+- Interactive 2D Floor Plan Editor (Hostel Office controllable canvas with SVG template loading, room/seat placement, and geometry inspection)
 
 ## Allocation cycles
 - Scheduled start
-- Allocation pool
-- Priority configuration
+- Allocation pool with disjoint seat inventory guarantee
+- Priority configuration (chronological fee payment timestamp with deterministic USN tie-break)
 - Year/quota eligibility
 - Inventory eligibility
 - Waiting threshold
 - Booking duration
 - Late-arrival policy
+- Dry-run cohort simulation (`POST /api/allocation-cycles/:id/simulate`)
 - Publication control
 - Special cases
 - Cycle state: DRAFT/SIMULATING/READY/PUBLISHED/LOCKED
@@ -181,6 +183,18 @@ Record:
 - Atomic allocation
 - Audit logging
 - No client-controlled priority/timer/allocation state
+
+## Testing & Development Tooling
+- Virtual Student Dataset Generator (`1si25<branch><code-3>`)
+- Formatted console test data tables
+- Automated database seeder for load simulation and turn testing
+- In-memory PostgreSQL engine (`pg-mem`) and live PostgreSQL server compatibility
+
+## Brand Identity & Design System
+- Official brand assets cropped from Brand Identity Board
+- 5 multi-theme logo variants (Primary horizontal, White, Stacked, D-Symbol, Monochrome)
+- Background removal with transparent alpha channels
+- Integrated across portals and layouts
 
 ## Future/reporting support
 - Occupancy reports

@@ -514,6 +514,12 @@ Recommendation invalidated automatically.
 ### Target chooses another seat
 Recommendation becomes obsolete.
 
+### Concurrent pools in cycle
+Pools must have disjoint seat inventory. Any intersection fails validation before cycle start.
+
+### Seat confirmation advance
+Immediate turn advance signals next student queue turn without waiting out the full 2-minute booking window.
+
 ### Super Admin override
 Recorded with reason and before/after state.
 
