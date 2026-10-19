@@ -101,4 +101,24 @@ describe('DORMEX Phase 2: Frontend & Map Integration Verifications', () => {
       expect(updatedStatesRes.body['st_rm_aryabhata_101_A']).toBe('taken');
     });
   });
+
+  describe('Vertical Slice C: Brand Identity Favicon Integration', () => {
+    it('verifies index.html links to authentic brand favicon assets', async () => {
+      const res = await request(app).get('/');
+      expect(res.status).toBe(200);
+      expect(res.text).toContain('rel="icon" type="image/x-icon" href="/favicon.ico"');
+      expect(res.text).toContain('rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"');
+      expect(res.text).toContain('rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"');
+      expect(res.text).toContain('rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"');
+    });
+
+    it('successfully serves favicon.ico and favicon-32x32.png static assets', async () => {
+      const icoRes = await request(app).get('/favicon.ico');
+      expect(icoRes.status).toBe(200);
+
+      const pngRes = await request(app).get('/favicon-32x32.png');
+      expect(pngRes.status).toBe(200);
+      expect(pngRes.headers['content-type']).toContain('image/png');
+    });
+  });
 });

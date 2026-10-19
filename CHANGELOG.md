@@ -9,6 +9,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.9.0] - 2026-10-19
 
+- **DORMEX Brand Identity Favicon Suite**:
+  - Extracted the authentic high-rise architectural `D` symbol logomark from the official Brand Identity Board (`docs/stitch_dormex_hostel_allocation_platform/dormex_hostel_brand_identity_board.png/screen.png`).
+  - Generated anti-aliased, transparent, multi-resolution browser favicon assets placed in `public/`:
+    - `favicon.ico` (multi-resolution 16x16, 32x32, 48x48 icon).
+    - `favicon.png` & `favicon-32x32.png` (32x32 standard web icon).
+    - `favicon-16x16.png` (16x16 compact tab icon).
+    - `apple-touch-icon.png` (180x180 iOS/macOS touch icon).
+    - `icon-192.png` & `icon-512.png` (PWA and Android launcher icons).
+  - Integrated favicon `<link>` tags in `index.html` across standard ICO, PNG, and Apple Touch icon standards.
+  - Added Vertical Slice C to `tests/frontend_integration.test.ts` verifying static serving and HTML link references (48/48 automated tests passing across 7 suites).
+
 - **Phase 13: Allocation Results Publication & Locking Lifecycle**:
   - **State Machine Extension (`READY -> ACTIVE -> COMPLETED -> PUBLISHED -> LOCKED`)**:
     - Enhanced `PUT /api/allocation-cycles/:id/status` in [`src/app.ts`](file:///S:/Common/projects/comm%20proj/src/app.ts) to record `results_published_at = CURRENT_TIMESTAMP` upon publication and `config_frozen_at = CURRENT_TIMESTAMP` upon cycle locking.

@@ -30,6 +30,7 @@ Repository Status: Active Development (Modular Monolith)
   - Reorganized floor map toolbar into clean two-row layout with wing filters, room search, and zoom controls.
   - Separated status legend from 3-card summary metric strip (Vacant, Intent, Confirmed).
   - Balanced floor map master-detail layout to 70% map and 30% room inspector.
+  - Extracted authentic geometric D logomark from Brand Identity Board and implemented multi-resolution browser favicon suite (`favicon.ico`, `favicon-32x32.png`, `favicon-16x16.png`, `apple-touch-icon.png`, PWA `icon-192.png`/`icon-512.png`).
 - [x] **Phase A: Repository Foundation** (Node v22, TypeScript, Fastify, Zod, Vitest, pg-mem/Postgres DB harness)
 - [x] **Phase B: Schema & Authorization Engine** (Full relational schema, migrations, `can(actor, action, resource)` policy layer, seed data, auth)
 - [x] **Phase C: Hostel Inventory & Floor Plan Geometry Engine** (Buildings, floors, rooms, seats, 2D floor map schema, validation, SVG viewer)
