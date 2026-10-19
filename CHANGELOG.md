@@ -9,7 +9,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.9.0] - 2026-10-19
 
-### Added
+- **Phase 13: Allocation Results Publication & Locking Lifecycle**:
+  - **State Machine Extension (`READY -> ACTIVE -> COMPLETED -> PUBLISHED -> LOCKED`)**:
+    - Enhanced `PUT /api/allocation-cycles/:id/status` in [`src/app.ts`](file:///S:/Common/projects/comm%20proj/src/app.ts) to record `results_published_at = CURRENT_TIMESTAMP` upon publication and `config_frozen_at = CURRENT_TIMESTAMP` upon cycle locking.
+    - Enforced administrative-only RBAC protection rejecting unauthorized student status transitions with 403 Forbidden.
+  - **Administrative Dashboard Action Controls**:
+    - Integrated **Publish Results** (with `Globe` icon) and **Lock** (with `Lock` icon) action buttons into the cycle management cards in [`AdminDashboard.tsx`](file:///S:/Common/projects/comm%20proj/src/client/components/AdminDashboard.tsx).
+    - Added status badges distinguishing `RESULTS PUBLISHED` and `LOCKED (ARCHIVED)` states.
+  - **Student View Official Certification Badge**:
+    - Added high-contrast certified results indicator (`Official Results Certified`) in [`StudentAllocationView.tsx`](file:///S:/Common/projects/comm%20proj/src/client/components/StudentAllocationView.tsx) when the parent allocation cycle transitions to `PUBLISHED` or `LOCKED`, distinguishing final official allocations from provisional in-flight allocations.
+  - **Automated Verification**:
+    - Added Test 7 in [`tests/architecture_enhancements.test.ts`](file:///S:/Common/projects/comm%20proj/tests/architecture_enhancements.test.ts) covering the publication lifecycle, timestamp recording, and student RBAC denial (46/46 automated tests passing across 7 suites).
+
 - **Visual Refinement & Anti-Crowding Layout Architecture**:
   - **Spacious Application Topbar & High-Contrast Sidebar (`AppLayout.tsx`)**:
     - Refactored top navigation header into a clean 64px desktop bar with breadcrumb path, pilot context tag, notifications trigger, and compact user profile badge with name and USN.

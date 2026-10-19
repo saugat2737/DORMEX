@@ -653,6 +653,19 @@ export const StudentAllocationView: React.FC = () => {
                   #{myProfile?.assigned_priority || '1'}
                 </span>
                 <span className="text-slate-400">/ 30 Pilot Cohort</span>
+                {(() => {
+                  const activeCycle = availableCycles.find((c: any) => c.id === cycleId);
+                  const isPublished = activeCycle?.status === 'PUBLISHED' || activeCycle?.status === 'LOCKED';
+                  return (
+                    <span className={`ml-2 text-[10px] font-bold px-2 py-0.5 rounded border ${
+                      isPublished 
+                        ? 'bg-[#E7F2ED] text-[#1E7B54] border-[#A8D5C2]' 
+                        : 'bg-[#FAF4E6] text-[#9C7A2E] border-[#D4B779]'
+                    }`}>
+                      {isPublished ? 'Official Results Certified' : 'Provisional Allocation'}
+                    </span>
+                  );
+                })()}
               </div>
             </div>
 

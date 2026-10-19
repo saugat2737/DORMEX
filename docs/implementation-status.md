@@ -124,3 +124,10 @@ Repository Status: Active Development (Modular Monolith)
   - Enforced RBAC security (`WARDEN`, `CHIEF_WARDEN`, `HOSTEL_OFFICE`, `SUPER_ADMIN`).
   - Integrated **Export Occupancy CSV** button with Download icon in `AdminDashboard.tsx`.
   - Expanded test suite to **45 automated tests passing across 7 test suites** (100% pass rate).
+- [x] **Phase 13: Allocation Results Publication & Locking Lifecycle**:
+  - **Authoritative Publication State Machine**: Extended cycle status transitions to support `PUBLISHED` and `LOCKED`.
+  - **Immutable Timestamp Ledger**: Sets `results_published_at = CURRENT_TIMESTAMP` upon publishing and `config_frozen_at = CURRENT_TIMESTAMP` upon locking.
+  - **RBAC Enforcement**: Guaranteed that only administrative personnel (`HOSTEL_OFFICE`, `SUPER_ADMIN`, `CHIEF_WARDEN`) can publish and lock cycles; students are strictly forbidden (403).
+  - **Admin Action Controls**: Added one-click **Publish Results** and **Lock** buttons and state indicators to `AdminDashboard.tsx`.
+  - **Student Certification Badge**: Added `Official Results Certified` vs `Provisional Allocation` badge in `StudentAllocationView.tsx`.
+  - **Automated Verification**: Verified via Test 7 in `tests/architecture_enhancements.test.ts` (46/46 automated tests passing across 7 test suites, 0 type errors, clean build).

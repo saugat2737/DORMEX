@@ -334,12 +334,18 @@ export async function buildApp(db?: DatabaseService): Promise<FastifyInstance> {
           // Architectural guarantee: Validate disjoint seat inventories across active pools
           await allocationEngine.validatePoolDisjointInventory(req.params.id);
         }
-        await database.query(`UPDATE allocation_cycles SET status = $1 WHERE id = $2`, [status, req.params.id]);
+        if (status === 'PUBLISHED') {
+          await database.query(`UPDATE allocation_cycles SET status = $1, results_published_at = CURRENT_TIMESTAMP WHERE id = $2`, [status, req.params.id]);
+        } else if (status === 'LOCKED') {
+          await database.query(`UPDATE allocation_cycles SET status = $1, config_frozen_at = CURRENT_TIMESTAMP WHERE id = $2`, [status, req.params.id]);
+        } else {
+          await database.query(`UPDATE allocation_cycles SET status = $1 WHERE id = $2`, [status, req.params.id]);
+        }
       }
       if (waitingRoomThreshold !== undefined) {
         await database.query(`UPDATE allocation_cycles SET waiting_room_threshold = $1 WHERE id = $2`, [waitingRoomThreshold, req.params.id]);
       }
-      return reply.send({ success: true, message: 'Cycle updated successfully' });
+      return reply.send({ success: true, message: `Cycle updated to ${status} successfully` });
     } catch (err: any) {
       return reply.code(400).send({ error: err.message });
     }

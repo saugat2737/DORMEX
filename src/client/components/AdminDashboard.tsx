@@ -20,7 +20,9 @@ import {
   Repeat,
   FileCheck,
   Sparkles,
-  Download
+  Download,
+  Globe,
+  Lock
 } from 'lucide-react';
 
 export const AdminDashboard: React.FC = () => {
@@ -412,6 +414,26 @@ export const AdminDashboard: React.FC = () => {
                       <Sparkles className="w-3.5 h-3.5 text-[#1E7B54]" />
                       Simulate
                     </button>
+                    {c.status !== 'PUBLISHED' && c.status !== 'LOCKED' && (
+                      <button
+                        onClick={() => handleUpdateCycleStatus(c.id, 'PUBLISHED')}
+                        className="px-3 py-1.5 bg-[#E7F2ED] hover:bg-[#d8eadd] text-[#1E7B54] border border-[#A8D5C2] text-xs font-bold rounded shadow-xs transition-colors flex items-center justify-center gap-1"
+                        title="Publish final allocation results so all students can view certified outcomes"
+                      >
+                        <Globe className="w-3.5 h-3.5" />
+                        Publish Results
+                      </button>
+                    )}
+                    {c.status === 'PUBLISHED' && (
+                      <button
+                        onClick={() => handleUpdateCycleStatus(c.id, 'LOCKED')}
+                        className="px-3 py-1.5 bg-[#203653] hover:bg-[#17283B] text-white text-xs font-bold rounded shadow-xs transition-colors flex items-center justify-center gap-1"
+                        title="Lock allocations permanently to freeze room changes and administrative edits"
+                      >
+                        <Lock className="w-3.5 h-3.5" />
+                        Lock
+                      </button>
+                    )}
                     <button
                       onClick={() => handleUpdateCycleStatus(c.id, 'CLOSED')}
                       className="px-3 py-1.5 bg-white hover:bg-[#F7F6F1] text-[#627084] border border-[#E2E6E8] text-xs font-semibold rounded transition-colors flex items-center justify-center gap-1"

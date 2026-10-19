@@ -135,4 +135,42 @@ describe('DORMEX Architecture & PostgreSQL Enhancements Suite', () => {
     });
     expect(unauthRes.statusCode).toBe(403);
   });
+
+  it('7. Enforces cycle publication lifecycle (READY -> PUBLISHED -> LOCKED) with timestamp auditing', async () => {
+    // 1. Publish results
+    const pubRes = await app.inject({
+      method: 'PUT',
+      url: '/api/allocation-cycles/cyc_bvb_pilot_2026/status',
+      headers: { 'x-user-id': 'usr_office' },
+      payload: { status: 'PUBLISHED' },
+    });
+    expect(pubRes.statusCode).toBe(200);
+
+    const checkPub = await db.query(`SELECT status, results_published_at FROM allocation_cycles WHERE id = $1`, ['cyc_bvb_pilot_2026']);
+    expect(checkPub.rows[0].status).toBe('PUBLISHED');
+    expect(checkPub.rows[0].results_published_at).not.toBeNull();
+
+    // 2. Lock cycle
+    const lockRes = await app.inject({
+      method: 'PUT',
+      url: '/api/allocation-cycles/cyc_bvb_pilot_2026/status',
+      headers: { 'x-user-id': 'usr_admin' },
+      payload: { status: 'LOCKED' },
+    });
+    expect(lockRes.statusCode).toBe(200);
+
+    const checkLock = await db.query(`SELECT status, config_frozen_at FROM allocation_cycles WHERE id = $1`, ['cyc_bvb_pilot_2026']);
+    expect(checkLock.rows[0].status).toBe('LOCKED');
+    expect(checkLock.rows[0].config_frozen_at).not.toBeNull();
+
+    // 3. Student forbidden from changing cycle status
+    const studentMutate = await app.inject({
+      method: 'PUT',
+      url: '/api/allocation-cycles/cyc_bvb_pilot_2026/status',
+      headers: { 'x-user-id': 'usr_demo_001' },
+      payload: { status: 'READY' },
+    });
+    expect(studentMutate.statusCode).toBe(403);
+  });
 });
+
