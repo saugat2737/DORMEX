@@ -555,50 +555,69 @@ export const StudentAllocationView: React.FC = () => {
         </div>
       )}
 
-      {/* Student Onboarding & Operational Sub-Navigation matching Stitch Navigation */}
-      <div className="flex flex-wrap items-center justify-between gap-3 bg-white p-3 rounded-xl border border-[#E2E6E8] shadow-sm">
-        <div className="flex items-center gap-2">
+      {/* Student Onboarding & Operational Sub-Navigation: Clean Segmented Stepper */}
+      <div className="bg-white p-3.5 rounded-xl border border-[#E2E6E8] shadow-xs flex flex-wrap items-center justify-between gap-4">
+        <div className="flex items-center gap-2 flex-wrap">
           <button
             onClick={() => setActiveSubTab('workflow')}
-            className={`px-3.5 py-2 rounded text-xs font-bold transition-colors ${
+            className={`px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-2 ${
               activeSubTab === 'workflow'
                 ? 'bg-[#203653] text-white shadow-xs'
                 : 'text-[#627084] hover:bg-[#F7F6F1] hover:text-[#263345]'
             }`}
           >
-            1. Registration & Application Terms
+            <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold ${
+              activeSubTab === 'workflow' ? 'bg-white/20 text-white' : 'bg-[#E5E9EB] text-[#627084]'
+            }`}>1</span>
+            <span>Registration & Terms</span>
           </button>
+
           <button
             onClick={() => setActiveSubTab('allocation_map')}
-            className={`px-3.5 py-2 rounded text-xs font-bold transition-colors ${
+            className={`px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-2 ${
               activeSubTab === 'allocation_map'
                 ? 'bg-[#203653] text-white shadow-xs'
                 : 'text-[#627084] hover:bg-[#F7F6F1] hover:text-[#263345]'
             }`}
           >
-            2. BVB Floor 2 Live Map & Coordination
+            <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold ${
+              activeSubTab === 'allocation_map' ? 'bg-white/20 text-white' : 'bg-[#E5E9EB] text-[#627084]'
+            }`}>2</span>
+            <span>Live Floor Map & Selection</span>
           </button>
+
           {myAllocation && (
             <button
               onClick={() => setActiveSubTab('room_change')}
-              className={`px-3.5 py-2 rounded text-xs font-bold transition-colors ${
+              className={`px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-2 ${
                 activeSubTab === 'room_change'
                   ? 'bg-[#203653] text-white shadow-xs'
-                : 'text-[#627084] hover:bg-[#F7F6F1] hover:text-[#263345]'
+                  : 'text-[#627084] hover:bg-[#F7F6F1] hover:text-[#263345]'
               }`}
             >
-              3. 48-Hour Room Change
+              <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold ${
+                activeSubTab === 'room_change' ? 'bg-white/20 text-white' : 'bg-[#E5E9EB] text-[#627084]'
+              }`}>3</span>
+              <span>48-Hour Room Change</span>
             </button>
           )}
         </div>
 
-        <div className="flex items-center gap-2">
-          <span className="text-[11px] font-medium text-[#627084]">
-            Terms: {termsStatus?.accepted ? '✓ Accepted Accord' : 'Pending Acceptance'}
+        {/* Clean right status pills */}
+        <div className="flex items-center gap-2 text-xs">
+          <span className={`px-2.5 py-1 rounded-full text-[11px] font-semibold border ${
+            termsStatus?.accepted 
+              ? 'bg-[#E7F2ED] text-[#1E7B54] border-[#A8D5C2]' 
+              : 'bg-[#FAF4E6] text-[#9C7A2E] border-[#D4B779]'
+          }`}>
+            Terms: {termsStatus?.accepted ? 'Accepted Accord' : 'Pending Sign-off'}
           </span>
-          <span className="text-[#E2E6E8]">•</span>
-          <span className="text-[11px] font-medium text-[#627084]">
-            Fee: {myProfile?.fee_status === 'VERIFIED' ? '✓ Verified (SBI)' : (myProfile?.fee_status || 'Pending')}
+          <span className={`px-2.5 py-1 rounded-full text-[11px] font-semibold border ${
+            myProfile?.fee_status === 'VERIFIED'
+              ? 'bg-[#E7F2ED] text-[#1E7B54] border-[#A8D5C2]'
+              : 'bg-[#FAF4E6] text-[#9C7A2E] border-[#D4B779]'
+          }`}>
+            Fee: {myProfile?.fee_status === 'VERIFIED' ? 'Verified' : 'Pending Audit'}
           </span>
         </div>
       </div>
@@ -606,7 +625,6 @@ export const StudentAllocationView: React.FC = () => {
       {/* Tab 1: Registration, Profile & Terms Status */}
       {activeSubTab === 'workflow' && (
         <div className="space-y-6">
-          {/* Student Profile Form with 5-Step Stepper */}
           <StudentProfileForm onProfileUpdated={fetchMyData} />
         </div>
       )}
@@ -614,131 +632,320 @@ export const StudentAllocationView: React.FC = () => {
       {/* Tab 2: Live Floor Map & Roommate Coordination */}
       {activeSubTab === 'allocation_map' && (
         <div className="space-y-6">
-          {/* Allocation Header Banner */}
-          <div className="bg-white rounded-xl p-5 border border-[#E2E6E8] shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-            <div>
-              <div className="text-[11px] font-bold text-[#627084] uppercase tracking-wider flex items-center gap-2">
-                <span>BVB Block • Floor 2 (Rooms 201–272 CAD Schema)</span>
-                <span className="bg-[#E7F2ED] text-[#1E7B54] border border-[#A8D5C2] px-2 py-0.5 rounded text-[10px]">
-                  Cycle: READY
+          {/* Focused Allocation Status Card with High Contrast */}
+          <div className="bg-[#203653] text-white rounded-xl p-6 shadow-sm border border-[#17283B] flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <span className="w-2.5 h-2.5 rounded-full bg-[#84d5ca] animate-pulse" />
+                <span className="text-[11px] font-bold uppercase tracking-wider text-[#84d5ca]">
+                  Allocation Cycle Active · BVB Block Floor 2
                 </span>
               </div>
-              <div className="text-lg font-bold text-[#203653] mt-1 flex flex-wrap items-center gap-2">
+              <div className="text-xl font-bold tracking-tight text-white flex items-center gap-3">
                 <span>{session?.fullName}</span>
-                <span className="text-xs font-mono bg-[#F7F6F1] text-[#263345] px-2 py-0.5 rounded border border-[#E2E6E8]">
+                <span className="text-xs font-mono font-medium bg-[#112947] text-slate-200 px-2.5 py-1 rounded border border-[#263345]">
                   {session?.collegeId}
                 </span>
-                {myProfile?.assigned_priority && (
-                  <span className="text-xs font-semibold px-2 py-0.5 rounded bg-[#FAF4E6] text-[#9C7A2E] border border-[#D4B779]">
-                    Priority Rank #{myProfile.assigned_priority}
-                  </span>
-                )}
+              </div>
+              <div className="text-xs text-slate-300 flex items-center gap-2">
+                <span>Assigned Priority Rank:</span>
+                <span className="font-bold text-[#D4B779] font-mono text-sm">
+                  #{myProfile?.assigned_priority || '1'}
+                </span>
+                <span className="text-slate-400">/ 30 Pilot Cohort</span>
               </div>
             </div>
 
-            <div>
-              {!waitingEntry && !myAllocation && (
-                <button
-                  onClick={handleJoinWaitingRoom}
-                  disabled={loading || (myProfile && myProfile.eligibility_status !== 'ELIGIBLE')}
-                  className="px-4 py-2 bg-[#203653] hover:bg-[#17283B] text-white text-xs font-bold rounded shadow-xs transition-colors flex items-center gap-1.5 disabled:opacity-50"
-                >
-                  {loading && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
-                  Enter Allocation Queue
-                </button>
-              )}
+            {/* Turn Action / Timer Box */}
+            <div className="bg-[#07203C] p-4 rounded-xl border border-[#263345] min-w-[260px] flex flex-col items-start gap-3">
+              <div className="text-[11px] font-medium text-slate-300 flex items-center justify-between w-full">
+                <span>Turn Status:</span>
+                {activeSession ? (
+                  <span className="text-[#84d5ca] font-bold uppercase text-[10px] tracking-wider flex items-center gap-1">
+                    <span className="w-2 h-2 rounded-full bg-[#84d5ca] animate-ping" /> Active Window
+                  </span>
+                ) : waitingEntry ? (
+                  <span className="text-[#D4B779] font-semibold text-[10px] uppercase">In Queue</span>
+                ) : myAllocation ? (
+                  <span className="text-[#84d5ca] font-semibold text-[10px] uppercase">Allocated</span>
+                ) : (
+                  <span className="text-slate-400 text-[10px] uppercase">Ready</span>
+                )}
+              </div>
 
-              {waitingEntry && !activeSession && !myAllocation && (
-                <div className="flex items-center gap-2 bg-[#FAF4E6] text-[#9C7A2E] border border-[#D4B779] px-3.5 py-2 rounded text-xs font-semibold">
-                  <Clock className="w-4 h-4 text-[#D4B779] animate-pulse" />
-                  <span>In Queue — Priority Rank #{waitingEntry.priorityNumber}</span>
+              {activeSession && !myAllocation && (
+                <div className="w-full">
+                  <div className="text-2xl font-bold font-mono text-white tracking-wide">
+                    {timeLeft !== null ? `${Math.floor(timeLeft / 60)}m : ${String(timeLeft % 60).padStart(2, '0')}s` : '02m : 00s'}
+                  </div>
+                  <div className="text-[11px] text-[#84d5ca] font-medium mt-0.5">
+                    Your allocation pick window is open
+                  </div>
                 </div>
               )}
 
-              {activeSession && !myAllocation && (
-                <div className="flex items-center gap-3 bg-[#E7F2ED] text-[#1E7B54] border border-[#A8D5C2] px-4 py-2 rounded text-xs font-bold shadow-xs">
-                  <div className="w-2.5 h-2.5 rounded-full bg-[#1E7B54] animate-ping" />
-                  <span>YOUR TURN IS ACTIVE! Remaining Window: <span className="font-mono text-[#1E7B54] text-sm">{timeLeft !== null ? `${timeLeft}s` : '120s'}</span></span>
+              {waitingEntry && !activeSession && !myAllocation && (
+                <div className="text-xs text-slate-200">
+                  <span className="font-bold text-white">Turn scheduled.</span> Waiting for active student turn completion.
                 </div>
               )}
 
               {myAllocation && (
-                <div className="flex items-center gap-2 bg-[#E7F2ED] text-[#1E7B54] border border-[#A8D5C2] px-4 py-2 rounded text-xs font-bold">
-                  <Check className="w-4 h-4 text-[#1E7B54]" />
-                  <span>Allocated: {myAllocation.seatId}</span>
+                <div className="text-xs text-slate-200 flex items-center gap-1.5 font-medium">
+                  <Check className="w-4 h-4 text-[#84d5ca]" />
+                  <span>Confirmed Seat: <strong className="text-white font-mono">{myAllocation.seatId}</strong></span>
                 </div>
+              )}
+
+              {!waitingEntry && !myAllocation && (
+                <button
+                  onClick={handleJoinWaitingRoom}
+                  disabled={loading || (myProfile && myProfile.eligibility_status !== 'ELIGIBLE')}
+                  className="w-full py-2.5 px-4 bg-[#2C8279] hover:bg-[#236B63] text-white text-xs font-bold rounded-lg shadow-sm transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                >
+                  {loading && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
+                  <span>Enter Allocation Queue</span>
+                </button>
               )}
             </div>
           </div>
 
           {errorMsg && (
-            <div className="p-3.5 bg-[#FDE8E8] border border-[#F8B4B4] text-[#C93B3B] text-xs font-medium rounded flex items-center gap-2">
+            <div className="p-3.5 bg-[#FDE8E8] border border-[#F8B4B4] text-[#C93B3B] text-xs font-medium rounded-lg flex items-center gap-2">
               <AlertCircle className="w-4 h-4 text-[#C93B3B] shrink-0" />
               <span>{errorMsg}</span>
             </div>
           )}
 
           {successMsg && (
-            <div className="p-3.5 bg-[#E7F2ED] border border-[#A8D5C2] text-[#1E7B54] text-xs font-medium rounded flex items-center gap-2">
+            <div className="p-3.5 bg-[#E7F2ED] border border-[#A8D5C2] text-[#1E7B54] text-xs font-medium rounded-lg flex items-center gap-2">
               <CheckCircle className="w-4 h-4 text-[#1E7B54] shrink-0" />
               <span>{successMsg}</span>
             </div>
           )}
 
-          {/* Three-Color Availability System Legend matching Stitch Design System */}
-          <div className="bg-white p-4 rounded-xl border border-[#E2E6E8] text-xs font-medium text-[#263345] flex flex-wrap items-center justify-between gap-4">
-            <div className="flex items-center gap-4">
-              <span className="text-[10px] uppercase font-bold text-[#627084]">Seat Availability System:</span>
-              <div className="flex items-center gap-1.5">
-                <div className="w-4 h-4 rounded bg-[#1E7B54] border border-[#166041]" />
-                <span className="font-semibold text-[#1E7B54]">Green — Available</span>
+          {/* Clean Floor Map Header Bar: Row 1 Title, Row 2 Wing Filters, Search, Zoom */}
+          <div className="bg-white rounded-xl p-5 border border-[#E2E6E8] shadow-xs space-y-4">
+            {/* First Row: Title & Context */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#E2E6E8] pb-3">
+              <div>
+                <div className="flex items-center gap-2">
+                  <h2 className="text-lg font-bold text-[#203653] tracking-tight">
+                    BVB Block — Floor 2 Allocation Map
+                  </h2>
+                  <span className="text-[10px] font-bold uppercase tracking-wider bg-[#E7F2ED] text-[#1E7B54] border border-[#A8D5C2] px-2 py-0.5 rounded-full">
+                    Pilot Active
+                  </span>
+                </div>
+                <p className="text-xs text-[#627084] mt-0.5">
+                  Official 72-room residential layout (Rooms 201–272). Select any room to inspect bed matrix and configure roommate intent.
+                </p>
               </div>
-              <div className="flex items-center gap-1.5">
-                <div className="w-4 h-4 rounded bg-[#E06A26] border border-[#b35118]" />
-                <span className="font-semibold text-[#E06A26]">Orange — Roommate Intent</span>
+
+              {/* Building & Floor Selectors */}
+              <div className="flex items-center gap-2">
+                <select
+                  value={selectedBuildingId}
+                  onChange={(e) => setSelectedBuildingId(e.target.value)}
+                  className="text-xs bg-[#F7F6F1] border border-[#E2E6E8] rounded-lg px-3 py-1.5 text-[#263345] font-semibold focus:outline-none focus:ring-1 focus:ring-[#2C8279]"
+                >
+                  {buildings.map((b) => (
+                    <option key={b.id} value={b.id}>
+                      {b.name}
+                    </option>
+                  ))}
+                </select>
+
+                <select
+                  value={floorId}
+                  onChange={(e) => setFloorId(e.target.value)}
+                  className="text-xs bg-[#F7F6F1] border border-[#E2E6E8] rounded-lg px-3 py-1.5 text-[#263345] font-semibold focus:outline-none focus:ring-1 focus:ring-[#2C8279]"
+                >
+                  {floors.map((f) => (
+                    <option key={f.id} value={f.id}>
+                      {f.name || `Floor ${f.floor_number}`}
+                    </option>
+                  ))}
+                  {floors.length === 0 && <option value="flr_bvb_2">Floor 2</option>}
+                </select>
               </div>
-              <div className="flex items-center gap-1.5">
-                <div className="w-4 h-4 rounded bg-[#C93B3B] border border-[#a12828]" />
-                <span className="font-semibold text-[#C93B3B]">Red — Occupied / Unavailable</span>
+            </div>
+
+            {/* Second Row: Wing Filter Pills, Room Search, and Zoom Controls */}
+            <div className="flex flex-wrap items-center justify-between gap-4">
+              {/* Wing Filter Pills */}
+              <div className="flex items-center gap-1.5 flex-wrap">
+                <span className="text-[11px] font-bold text-[#627084] uppercase mr-1">Wings:</span>
+                {[
+                  { id: 'ALL', label: 'All 72 Rooms' },
+                  { id: 'NORTH', label: 'North Wing (201–224)' },
+                  { id: 'SOUTH', label: 'South Wing (225–248)' },
+                  { id: 'EAST', label: 'East Wing (249–272)' },
+                ].map((w) => (
+                  <button
+                    key={w.id}
+                    type="button"
+                    onClick={() => {
+                      if (w.id === 'ALL') {
+                        setSelectedRoomNumber(null);
+                      } else if (w.id === 'NORTH') {
+                        setSelectedRoomNumber('202');
+                      } else if (w.id === 'SOUTH') {
+                        setSelectedRoomNumber('226');
+                      } else if (w.id === 'EAST') {
+                        setSelectedRoomNumber('250');
+                      }
+                    }}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors border ${
+                      (w.id === 'ALL' && !selectedRoomNumber) ||
+                      (w.id === 'NORTH' && selectedRoomNumber && parseInt(selectedRoomNumber) <= 224) ||
+                      (w.id === 'SOUTH' && selectedRoomNumber && parseInt(selectedRoomNumber) >= 225 && parseInt(selectedRoomNumber) <= 248) ||
+                      (w.id === 'EAST' && selectedRoomNumber && parseInt(selectedRoomNumber) >= 249)
+                        ? 'bg-[#203653] text-white border-[#203653]'
+                        : 'bg-[#F7F6F1] text-[#627084] border-[#E2E6E8] hover:bg-slate-200/60 hover:text-[#263345]'
+                    }`}
+                  >
+                    {w.label}
+                  </button>
+                ))}
+              </div>
+
+              {/* Room Search & Zoom Toolbar */}
+              <div className="flex items-center gap-3">
+                {/* Search Room */}
+                <div className="relative">
+                  <input
+                    type="text"
+                    placeholder="Search room (e.g. 202)..."
+                    value={selectedRoomNumber || ''}
+                    onChange={(e) => setSelectedRoomNumber(e.target.value.trim() || null)}
+                    className="text-xs bg-[#F7F6F1] border border-[#E2E6E8] rounded-lg px-3 py-1.5 text-[#263345] font-mono focus:outline-none focus:ring-1 focus:ring-[#2C8279] w-44"
+                  />
+                </div>
+
+                {/* SVG Zoom Controls */}
+                <div className="flex items-center border border-[#E2E6E8] rounded-lg bg-[#F7F6F1] p-0.5">
+                  <button
+                    type="button"
+                    onClick={() => setZoomLevel((z) => Math.max(0.6, parseFloat((z - 0.2).toFixed(1))))}
+                    title="Zoom Out"
+                    className="p-1.5 text-[#627084] hover:text-[#203653] hover:bg-white rounded transition-colors"
+                  >
+                    <ZoomOut className="w-3.5 h-3.5" />
+                  </button>
+                  <span className="text-[11px] font-mono font-bold px-2 text-[#203653]">
+                    {Math.round(zoomLevel * 100)}%
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setZoomLevel((z) => Math.min(2.0, parseFloat((z + 0.2).toFixed(1))))}
+                    title="Zoom In"
+                    className="p-1.5 text-[#627084] hover:text-[#203653] hover:bg-white rounded transition-colors"
+                  >
+                    <ZoomIn className="w-3.5 h-3.5" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setZoomLevel(1)}
+                    title="Reset Zoom"
+                    className="p-1.5 text-[#627084] hover:text-[#203653] hover:bg-white rounded border-l border-[#E2E6E8] ml-0.5 transition-colors"
+                  >
+                    <RotateCcw className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Dedicated Status Legend Section */}
+          <div className="bg-white p-4 rounded-xl border border-[#E2E6E8] shadow-xs flex flex-wrap items-center justify-between gap-4">
+            <div className="flex items-center gap-6 flex-wrap">
+              <span className="text-[11px] uppercase font-bold text-[#627084] tracking-wider">Status Legend:</span>
+              <div className="flex items-center gap-2">
+                <span className="w-3.5 h-3.5 rounded bg-[#1E7B54] border border-[#166041]" />
+                <span className="text-xs font-semibold text-[#1E7B54]">Available</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="w-3.5 h-3.5 rounded bg-[#E06A26] border border-[#b35118]" />
+                <span className="text-xs font-semibold text-[#E06A26]">Roommate Intent</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="w-3.5 h-3.5 rounded bg-[#C93B3B] border border-[#a12828]" />
+                <span className="text-xs font-semibold text-[#C93B3B]">Occupied / Blocked</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="w-3.5 h-3.5 rounded bg-[#1D63B8] border border-[#134887]" />
+                <span className="text-xs font-semibold text-[#1D63B8]">Active Selection</span>
               </div>
             </div>
 
             <div className="text-[11px] text-[#627084]">
-              Roommate intent is non-reserving preference. Orange seats present a confirmation warning.
+              Roommate intent is non-binding until confirmed during an active turn.
             </div>
           </div>
 
-          {/* Incoming Roommate Invitations Alert */}
+          {/* Three Compact Summary Metrics Directly Below Legend */}
+          {(() => {
+            const allSeats = floorMap?.elements?.filter((e: any) => e.t === 'seat') || [];
+            const totalCount = allSeats.length || 216;
+            const occupiedCount = allSeats.filter((s: any) => seatStates[s.id] === 'taken').length;
+            const intentCount = allSeats.filter((s: any) => roommateIntentMap[s.id] && seatStates[s.id] !== 'taken').length;
+            const vacantCount = Math.max(0, totalCount - occupiedCount - intentCount);
+
+            return (
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div className="bg-white p-4 rounded-xl border border-[#E2E6E8] shadow-xs space-y-1">
+                  <div className="text-[11px] font-bold uppercase tracking-wider text-[#1E7B54]">Vacant Beds</div>
+                  <div className="text-2xl font-bold font-mono text-[#1E7B54]">{vacantCount}</div>
+                  <div className="text-[11px] text-[#627084]">Open for selection by active candidate</div>
+                </div>
+
+                <div className="bg-white p-4 rounded-xl border border-[#E2E6E8] shadow-xs space-y-1">
+                  <div className="text-[11px] font-bold uppercase tracking-wider text-[#E06A26]">Intent Reservations</div>
+                  <div className="text-2xl font-bold font-mono text-[#E06A26]">{intentCount}</div>
+                  <div className="text-[11px] text-[#627084]">Provisional roommate group requests</div>
+                </div>
+
+                <div className="bg-white p-4 rounded-xl border border-[#E2E6E8] shadow-xs space-y-1">
+                  <div className="text-[11px] font-bold uppercase tracking-wider text-[#203653]">Confirmed Occupancy</div>
+                  <div className="text-2xl font-bold font-mono text-[#203653]">{occupiedCount}</div>
+                  <div className="text-[11px] text-[#627084]">Finalized authoritative seat assignments</div>
+                </div>
+              </div>
+            );
+          })()}
+
+          {/* Incoming Roommate Invitations Alert (if any) */}
           {myRoommateGroups.incoming.length > 0 && (
-            <div className="p-4 bg-teal-50 border border-teal-200 rounded-xl space-y-2">
-              <div className="text-xs font-bold text-teal-900 flex items-center gap-2">
-                <Users className="w-4 h-4 text-brand-teal" />
+            <div className="p-4 bg-[#E7F2ED] border border-[#A8D5C2] rounded-xl space-y-2">
+              <div className="text-xs font-bold text-[#1E7B54] flex items-center gap-2">
+                <Users className="w-4 h-4 text-[#2C8279]" />
                 Pending Roommate Group Invitations ({myRoommateGroups.incoming.length})
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {myRoommateGroups.incoming.map((inc: any) => (
-                  <div key={inc.group_id} className="p-3 bg-white rounded-lg border border-teal-200 flex items-center justify-between text-xs">
+                  <div key={inc.group_id} className="p-3 bg-white rounded-lg border border-[#A8D5C2] flex items-center justify-between text-xs">
                     <div>
-                      <div className="font-bold text-navy-900">Room {inc.room_number}</div>
-                      <div className="text-[11px] text-slate-500">Invited by: {inc.leader_name}</div>
+                      <div className="font-bold text-[#203653]">Room {inc.room_number}</div>
+                      <div className="text-[11px] text-[#627084]">Invited by: {inc.leader_name}</div>
                     </div>
                     {inc.my_status === 'PENDING' ? (
                       <div className="flex items-center gap-2">
                         <button
                           onClick={() => handleRespondRoommateInvite(inc.group_id, true)}
-                          className="px-2.5 py-1 bg-emerald-600 text-white rounded text-[11px] font-bold"
+                          className="px-2.5 py-1 bg-[#2C8279] text-white rounded text-[11px] font-bold hover:bg-[#20635c]"
                         >
                           Accept
                         </button>
                         <button
                           onClick={() => handleRespondRoommateInvite(inc.group_id, false)}
-                          className="px-2.5 py-1 bg-slate-200 text-slate-700 rounded text-[11px] font-semibold"
+                          className="px-2.5 py-1 bg-[#F7F6F1] text-[#263345] border border-[#E2E6E8] rounded text-[11px] font-semibold hover:bg-slate-200"
                         >
                           Decline
                         </button>
                       </div>
                     ) : (
-                      <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded">
+                      <span className="text-[11px] font-bold text-[#1E7B54] bg-[#E7F2ED] px-2 py-0.5 rounded">
                         {inc.my_status}
                       </span>
                     )}
@@ -748,88 +955,23 @@ export const StudentAllocationView: React.FC = () => {
             </div>
           )}
 
-          {/* Interactive SVG Canvas & Seat Details */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-2 bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-3">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 pb-3 gap-3">
-                <div>
-                  <div className="text-xs font-bold text-navy-900 uppercase tracking-wider flex items-center gap-2">
-                    <Building className="w-4 h-4 text-teal-600" />
-                    Interactive Floor Map Geometry
-                  </div>
-                  <div className="text-[11px] text-slate-400">
-                    Click any numbered room marker to view its beds. Click a seat to select.
-                  </div>
+          {/* Master-Detail Layout: 70% Floor Map, 30% Room Inspector */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            {/* 70% Map Panel (8 cols on lg) */}
+            <div className="lg:col-span-8 bg-white p-5 rounded-xl border border-[#E2E6E8] shadow-xs space-y-3">
+              <div className="flex items-center justify-between text-xs text-[#627084] pb-2 border-b border-[#E2E6E8]">
+                <div className="flex items-center gap-1.5 font-medium">
+                  <Building className="w-4 h-4 text-[#2C8279]" />
+                  <span>Interactive 2D Architectural Projection (900 × 650)</span>
                 </div>
-
-                <div className="flex flex-wrap items-center gap-2">
-                  {/* Building Selector */}
-                  <select
-                    value={selectedBuildingId}
-                    onChange={(e) => setSelectedBuildingId(e.target.value)}
-                    className="text-xs bg-slate-50 border border-slate-200 rounded px-2.5 py-1 text-slate-700 font-semibold focus:outline-none focus:ring-1 focus:ring-teal-500"
-                  >
-                    {buildings.map((b) => (
-                      <option key={b.id} value={b.id}>
-                        {b.name}
-                      </option>
-                    ))}
-                  </select>
-
-                  {/* Floor Selector */}
-                  <select
-                    value={floorId}
-                    onChange={(e) => setFloorId(e.target.value)}
-                    className="text-xs bg-slate-50 border border-slate-200 rounded px-2.5 py-1 text-slate-700 font-semibold focus:outline-none focus:ring-1 focus:ring-teal-500"
-                  >
-                    {floors.map((f) => (
-                      <option key={f.id} value={f.id}>
-                        {f.name || `Floor ${f.floor_number}`}
-                      </option>
-                    ))}
-                    {floors.length === 0 && <option value="flr_bvb_2">Floor 2</option>}
-                  </select>
-
-                  {/* SVG Zoom Controls */}
-                  <div className="flex items-center border border-slate-200 rounded bg-slate-50 p-0.5">
-                    <button
-                      type="button"
-                      onClick={() => setZoomLevel((z) => Math.max(0.6, parseFloat((z - 0.2).toFixed(1))))}
-                      title="Zoom Out"
-                      className="p-1 text-slate-600 hover:text-navy-900 hover:bg-slate-200 rounded"
-                    >
-                      <ZoomOut className="w-3.5 h-3.5" />
-                    </button>
-                    <span className="text-[10px] font-mono font-bold px-1.5 text-slate-600">
-                      {Math.round(zoomLevel * 100)}%
-                    </span>
-                    <button
-                      type="button"
-                      onClick={() => setZoomLevel((z) => Math.min(2.0, parseFloat((z + 0.2).toFixed(1))))}
-                      title="Zoom In"
-                      className="p-1 text-slate-600 hover:text-navy-900 hover:bg-slate-200 rounded"
-                    >
-                      <ZoomIn className="w-3.5 h-3.5" />
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setZoomLevel(1)}
-                      title="Reset Zoom"
-                      className="p-1 text-slate-400 hover:text-navy-900 hover:bg-slate-200 rounded border-l border-slate-200 ml-0.5"
-                    >
-                      <RotateCcw className="w-3 h-3" />
-                    </button>
-                  </div>
-
-                  {selectedRoomNumber && (
-                    <span className="text-xs font-bold bg-teal-50 text-teal-800 border border-teal-200 px-2.5 py-1 rounded">
-                      Room {selectedRoomNumber}
-                    </span>
-                  )}
-                </div>
+                {selectedRoomNumber && (
+                  <span className="font-bold text-[#203653] bg-[#F7F6F1] border border-[#E2E6E8] px-2.5 py-1 rounded">
+                    Inspecting Room {selectedRoomNumber}
+                  </span>
+                )}
               </div>
 
-              <div className="w-full bg-[#f8fafc] rounded-lg p-3 border border-slate-200 overflow-auto min-h-[440px] flex items-center justify-center">
+              <div className="w-full bg-[#f8fafc] rounded-lg p-3 border border-[#E2E6E8] overflow-auto min-h-[460px] flex items-center justify-center">
                 {floorMap && (
                   <div
                     style={{
@@ -903,7 +1045,7 @@ export const StudentAllocationView: React.FC = () => {
                         const isSelected = selectedSeatId === el.id;
                         const isMine = myAllocation?.seatId === el.id;
 
-                        // 3-COLOR SYSTEM IMPLEMENTATION (Matching Stitch Institutional Palette)
+                        // 4-COLOR STATUS PALETTE
                         let fillColor = '#1E7B54'; // GREEN - Available Bed (#1E7B54)
                         if (isOrangeIntent) fillColor = '#E06A26'; // ORANGE - Roommate Intent (#E06A26)
                         if (isTaken) fillColor = '#C93B3B'; // RED - Occupied / Unavailable (#C93B3B)
@@ -949,25 +1091,41 @@ export const StudentAllocationView: React.FC = () => {
               </div>
             </div>
 
-            {/* Room & Seat Action Panel + Roommate Group Form matching Stitch Bed Matrix */}
-            <div className="bg-white p-5 rounded-xl border border-[#E2E6E8] shadow-sm space-y-4">
-              <div className="text-xs font-bold text-[#203653] uppercase tracking-wider border-b border-[#E2E6E8] pb-2">
-                Room & Roommate Inspection
+            {/* 30% Purposeful Room Inspector (4 cols on lg) */}
+            <div className="lg:col-span-4 bg-white p-5 rounded-xl border border-[#E2E6E8] shadow-xs space-y-4">
+              <div className="flex items-center justify-between border-b border-[#E2E6E8] pb-2.5">
+                <span className="text-xs font-bold text-[#203653] uppercase tracking-wider">
+                  Selected Room Inspector
+                </span>
+                {selectedRoomNumber && (
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-[#E7F2ED] text-[#1E7B54]">
+                    Room {selectedRoomNumber}
+                  </span>
+                )}
               </div>
 
               {selectedRoomNumber ? (
                 <div className="space-y-4">
-                  <div className="p-3.5 bg-[#F7F6F1] rounded-lg border border-[#E2E6E8] space-y-2">
+                  {/* Room Overview Summary */}
+                  <div className="p-4 bg-[#F7F6F1] rounded-xl border border-[#E2E6E8] space-y-2.5">
                     <div className="flex items-center justify-between">
                       <div className="text-base font-bold text-[#203653]">Room {selectedRoomNumber}</div>
-                      <span className="text-[10px] font-semibold bg-[#E5E9EB] text-[#203653] px-2 py-0.5 rounded">
-                        BVB Block • Floor 2
+                      <span className="text-[11px] font-semibold text-[#627084]">
+                        {parseInt(selectedRoomNumber) <= 224 ? 'North Wing' : (parseInt(selectedRoomNumber) <= 248 ? 'South Wing' : 'East Wing')}
                       </span>
                     </div>
 
-                    <div className="space-y-1.5 pt-1">
-                      <div className="text-[11px] font-bold text-[#627084]">Configured Beds:</div>
-                      <div className="grid grid-cols-1 gap-1.5">
+                    <div className="flex items-center justify-between text-xs text-[#627084] pt-1 border-t border-[#E2E6E8]">
+                      <span>Configured Capacity:</span>
+                      <span className="font-bold text-[#203653]">{roomSeats.length} Beds (Triple)</span>
+                    </div>
+
+                    {/* Beds Grid */}
+                    <div className="space-y-2 pt-2">
+                      <div className="text-[11px] font-bold text-[#203653] uppercase tracking-wider">
+                        Beds & Current Availability:
+                      </div>
+                      <div className="space-y-1.5">
                         {roomSeats.map((st: any) => {
                           const isTaken = seatStates[st.id] === 'taken';
                           const isOrangeIntent = !!roommateIntentMap[st.id] && !isTaken;
@@ -978,9 +1136,9 @@ export const StudentAllocationView: React.FC = () => {
                             <div
                               key={st.id}
                               onClick={() => handleSeatClick(st.id, st.meta?.roomId)}
-                              className={`p-2.5 rounded border text-xs flex items-center justify-between cursor-pointer transition-colors ${
+                              className={`p-2.5 rounded-lg border text-xs flex items-center justify-between cursor-pointer transition-all ${
                                 isSelected || isMine
-                                  ? 'bg-[#EBF3FC] border-[#1D63B8] text-[#1D63B8]'
+                                  ? 'bg-[#EBF3FC] border-[#1D63B8] text-[#1D63B8] ring-1 ring-[#1D63B8]'
                                   : isTaken
                                   ? 'bg-[#FDE8E8] border-[#F8B4B4] text-[#C93B3B] cursor-not-allowed'
                                   : isOrangeIntent
@@ -991,7 +1149,7 @@ export const StudentAllocationView: React.FC = () => {
                               <div className="flex items-center gap-2">
                                 <Bed className="w-4 h-4 text-[#627084]" />
                                 <span className="font-mono font-bold">Seat {st.label}</span>
-                                <span className="text-[10px] font-mono text-[#627084]">({st.id})</span>
+                                <span className="text-[10px] font-mono text-[#627084]">({st.id.replace('st_', '')})</span>
                               </div>
                               <span className={`text-[10px] font-semibold px-2 py-0.5 rounded ${
                                 isMine 
@@ -1002,7 +1160,7 @@ export const StudentAllocationView: React.FC = () => {
                                   ? 'bg-[#E06A26] text-white'
                                   : 'bg-[#1E7B54] text-white'
                               }`}>
-                                {isMine ? 'Allocated to You' : (isTaken ? 'Red (Occupied)' : isOrangeIntent ? 'Orange (Group Intent)' : 'Green (Available)')}
+                                {isMine ? 'Allocated to You' : (isTaken ? 'Occupied' : isOrangeIntent ? 'Intent Reserve' : 'Available')}
                               </span>
                             </div>
                           );
@@ -1011,28 +1169,28 @@ export const StudentAllocationView: React.FC = () => {
                     </div>
                   </div>
 
-                  {/* Roommate Group Coordinator Section (Enter Priority Numbers) */}
-                  <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200 space-y-3">
-                    <div className="text-xs font-bold text-navy-900 flex items-center gap-1.5">
-                      <Users className="w-4 h-4 text-brand-teal" />
-                      Coordinate Roommates (Priority # Entry)
+                  {/* Roommate Priority Coordination Form */}
+                  <div className="p-4 bg-white rounded-xl border border-[#E2E6E8] space-y-3">
+                    <div className="text-xs font-bold text-[#203653] flex items-center gap-1.5">
+                      <Users className="w-4 h-4 text-[#2C8279]" />
+                      <span>Coordinate Roommates (Priority Ranks)</span>
                     </div>
-                    <p className="text-[11px] text-slate-500">
-                      Enter up to 2 intended roommates' verified priority ranks to propose sharing Room {selectedRoomNumber}.
+                    <p className="text-[11px] text-[#627084]">
+                      Enter peer priority ranks to propose sharing Room {selectedRoomNumber}. Intent generates an orange badge.
                     </p>
 
                     {roommateMsg && (
-                      <div className={`p-2 rounded text-[11px] font-medium ${
-                        roommateMsg.type === 'success' ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'
+                      <div className={`p-2.5 rounded text-xs font-medium ${
+                        roommateMsg.type === 'success' ? 'bg-[#E7F2ED] text-[#1E7B54] border border-[#A8D5C2]' : 'bg-[#FDE8E8] text-[#C93B3B] border border-[#F8B4B4]'
                       }`}>
                         {roommateMsg.text}
                       </div>
                     )}
 
-                    <form onSubmit={handleCreateRoommateGroup} className="space-y-2">
+                    <form onSubmit={handleCreateRoommateGroup} className="space-y-2.5">
                       <div className="grid grid-cols-2 gap-2">
                         <div>
-                          <label className="text-[10px] font-semibold text-slate-600 block mb-0.5">Roommate 1 Rank #</label>
+                          <label className="text-[10px] font-semibold text-[#627084] block mb-1">Roommate 1 Rank #</label>
                           <input
                             type="number"
                             min="1"
@@ -1040,11 +1198,11 @@ export const StudentAllocationView: React.FC = () => {
                             value={roommatePriority1}
                             onChange={(e) => setRoommatePriority1(e.target.value)}
                             placeholder="e.g. 2"
-                            className="w-full text-xs bg-white border border-slate-300 rounded px-2.5 py-1.5 text-navy-900 font-mono"
+                            className="w-full text-xs bg-[#F7F6F1] border border-[#E2E6E8] rounded px-2.5 py-1.5 text-[#263345] font-mono focus:outline-none focus:ring-1 focus:ring-[#2C8279]"
                           />
                         </div>
                         <div>
-                          <label className="text-[10px] font-semibold text-slate-600 block mb-0.5">Roommate 2 Rank #</label>
+                          <label className="text-[10px] font-semibold text-[#627084] block mb-1">Roommate 2 Rank #</label>
                           <input
                             type="number"
                             min="1"
@@ -1052,38 +1210,40 @@ export const StudentAllocationView: React.FC = () => {
                             value={roommatePriority2}
                             onChange={(e) => setRoommatePriority2(e.target.value)}
                             placeholder="e.g. 3"
-                            className="w-full text-xs bg-white border border-slate-300 rounded px-2.5 py-1.5 text-navy-900 font-mono"
+                            className="w-full text-xs bg-[#F7F6F1] border border-[#E2E6E8] rounded px-2.5 py-1.5 text-[#263345] font-mono focus:outline-none focus:ring-1 focus:ring-[#2C8279]"
                           />
                         </div>
                       </div>
 
                       <button
                         type="submit"
-                        className="w-full py-1.5 px-3 bg-brand-teal hover:bg-brand-tealHover text-white text-xs font-bold rounded shadow-sm transition-colors flex items-center justify-center gap-1.5"
+                        className="w-full py-2 px-3 bg-[#203653] hover:bg-[#17283B] text-white text-xs font-bold rounded shadow-xs transition-colors flex items-center justify-center gap-1.5"
                       >
-                        <Send className="w-3 h-3" />
-                        Send Roommate Group Invites
+                        <Send className="w-3.5 h-3.5" />
+                        Send Roommate Proposal
                       </button>
                     </form>
                   </div>
 
                   {/* Seat Confirmation Box */}
                   {selectedSeatId && (
-                    <div className="p-3 bg-emerald-50 rounded-xl border border-emerald-200 space-y-2">
-                      <div className="text-[10px] font-bold uppercase tracking-wider text-emerald-800">
-                        Selected Seat: {selectedSeatId}
+                    <div className="p-4 bg-[#EBF3FC] rounded-xl border border-[#1D63B8]/30 space-y-3">
+                      <div className="flex items-center justify-between text-xs">
+                        <span className="font-semibold text-[#627084]">Target Seat:</span>
+                        <span className="font-bold font-mono text-[#1D63B8]">{selectedSeatId}</span>
                       </div>
+
                       {activeSession && !myAllocation ? (
                         <button
                           onClick={handleConfirmSeat}
                           disabled={loading}
-                          className="w-full py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-lg shadow-sm transition-colors flex items-center justify-center gap-2"
+                          className="w-full py-2.5 bg-[#1E7B54] hover:bg-[#166041] text-white text-xs font-bold rounded-lg shadow-sm transition-colors flex items-center justify-center gap-2"
                         >
                           {loading && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
                           Confirm Seat Allocation
                         </button>
                       ) : (
-                        <div className="text-[11px] text-emerald-900">
+                        <div className="text-xs text-[#203653] font-medium text-center py-1">
                           {myAllocation ? 'Seat confirmed.' : 'Seat selected. Confirm when your active turn starts.'}
                         </div>
                       )}
@@ -1091,15 +1251,19 @@ export const StudentAllocationView: React.FC = () => {
                   )}
                 </div>
               ) : (
-                <div className="p-6 bg-slate-50 rounded-xl border border-slate-200 text-center text-xs text-slate-500 space-y-2">
-                  <Info className="w-5 h-5 mx-auto text-slate-400" />
-                  <div>Click any room marker on the BVB floor map to view its seats and enter roommate priority numbers.</div>
+                <div className="p-8 bg-[#F7F6F1] rounded-xl border border-[#E2E6E8] text-center space-y-2">
+                  <Info className="w-6 h-6 mx-auto text-[#627084]" />
+                  <div className="text-xs font-semibold text-[#203653]">No Room Selected</div>
+                  <p className="text-[11px] text-[#627084] leading-relaxed">
+                    Select a room on the floor map to view its beds, live availability, and roommate coordination controls.
+                  </p>
                 </div>
               )}
             </div>
           </div>
         </div>
       )}
+
 
       {/* Tab 3: 48-Hour Room Change Workflow */}
       {activeSubTab === 'room_change' && (

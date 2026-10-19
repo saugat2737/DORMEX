@@ -7,7 +7,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [1.8.0] - 2026-10-19
+## [1.9.0] - 2026-10-19
+
+### Added
+- **Visual Refinement & Anti-Crowding Layout Architecture**:
+  - **Spacious Application Topbar & High-Contrast Sidebar (`AppLayout.tsx`)**:
+    - Refactored top navigation header into a clean 64px desktop bar with breadcrumb path, pilot context tag, notifications trigger, and compact user profile badge with name and USN.
+    - Upgraded dark-navy sidebar (`#07203C`) with 100% readable white text, muted teal accents (`#2C8279`), isolated dev persona switcher, and mobile drawer support.
+  - **Streamlined Student Onboarding Stepper (`StudentAllocationView.tsx`)**:
+    - Replaced dense tabs with a clean 3-step numbered segmented stepper (`1. Registration & Terms`, `2. Live Floor Map & Selection`, `3. 48-Hour Room Change`).
+    - Positioned terms sign-off and fee verification badges neatly on the right.
+  - **Focused Allocation Status Card**:
+    - High-contrast navy card (`#203653`) clearly presenting candidate identity, USN, assigned priority rank, and real-time turn countdown timer without visual crowding.
+  - **Two-Row Floor Map Header & Wing Filters**:
+    - Clear title, pilot tag, and building/floor selectors on row 1.
+    - Wing filter buttons (`All 72 Rooms`, `North Wing`, `South Wing`, `East Wing`), room search bar, and SVG zoom controls on row 2.
+  - **Dedicated Status Legend & Compact Summary Metrics**:
+    - Visually separated legend strip with 4 accessible swatches (Green Available, Orange Roommate Intent, Red Occupied, Blue Active Selection).
+    - Distinct 3-card metric strip directly below legend showing exact counts for Vacant Beds, Intent Reservations, and Confirmed Occupancy.
+  - **70/30 Master-Detail Architectural Workspace**:
+    - 70% width allocated to the authentic 900 × 650 CAD projection floor map.
+    - 30% width dedicated to the Room Inspector with clear bed matrix, roommate priority coordination form, and seat allocation confirmation.
+
 
 ### Added
 - **Administrative Occupancy & Allocation Reports Engine**:

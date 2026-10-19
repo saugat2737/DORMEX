@@ -22,6 +22,14 @@ Repository Status: Active Development (Modular Monolith)
 10. **Cycle configuration**: Frozen and immutable once state transitions to `READY`. Rule modifications necessitate a new cycle configuration version.
 
 ## 3. Implementation Phases
+- [x] **Phase 5: Visual Refinement, Hierarchy & Anti-Crowding Architecture**:
+  - Restructured top navigation into a clean 64px bar separating breadcrumbs, pilot badges, notifications, and user profiles.
+  - Resolved sidebar contrast issues using high-contrast white labels on deep navy (`#07203C`).
+  - Redesigned student workflow into a 3-step segmented stepper with terms and fee badges neatly aligned.
+  - Implemented focused allocation status card with turn window timer and candidate metadata.
+  - Reorganized floor map toolbar into clean two-row layout with wing filters, room search, and zoom controls.
+  - Separated status legend from 3-card summary metric strip (Vacant, Intent, Confirmed).
+  - Balanced floor map master-detail layout to 70% map and 30% room inspector.
 - [x] **Phase A: Repository Foundation** (Node v22, TypeScript, Fastify, Zod, Vitest, pg-mem/Postgres DB harness)
 - [x] **Phase B: Schema & Authorization Engine** (Full relational schema, migrations, `can(actor, action, resource)` policy layer, seed data, auth)
 - [x] **Phase C: Hostel Inventory & Floor Plan Geometry Engine** (Buildings, floors, rooms, seats, 2D floor map schema, validation, SVG viewer)
