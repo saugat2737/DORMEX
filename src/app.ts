@@ -204,6 +204,79 @@ export async function buildApp(db?: DatabaseService): Promise<FastifyInstance> {
     }
   });
 
+  // Administrative Occupancy and Allocation Reports Export Endpoint
+  app.get('/api/admin/reports/occupancy', async (req: any, reply) => {
+    try {
+      const actor = await extractActor(req);
+      if (!['WARDEN', 'CHIEF_WARDEN', 'HOSTEL_OFFICE', 'SUPER_ADMIN'].includes(actor.role)) {
+        return reply.code(403).send({ error: 'FORBIDDEN: Insufficient permissions to generate occupancy reports' });
+      }
+
+      const format = req.query?.format || 'json';
+      const buildingId = req.query?.buildingId;
+
+      let query = `
+        SELECT 
+          b.name as building_name,
+          f.floor_number,
+          r.room_number,
+          r.room_type,
+          s.seat_label,
+          s.status as seat_status,
+          a.status as allocation_status,
+          sp.college_id as student_usn,
+          sp.full_name as student_name,
+          sp.department as branch,
+          sp.quota_category,
+          a.allocated_at as confirmed_at
+        FROM seats s
+        JOIN rooms r ON s.room_id = r.id
+        JOIN floors f ON r.floor_id = f.id
+        JOIN buildings b ON f.building_id = b.id
+        LEFT JOIN allocations a ON s.id = a.seat_id AND a.status = 'CURRENT'
+        LEFT JOIN student_profiles sp ON a.student_id = sp.id
+      `;
+      const params: any[] = [];
+      if (buildingId) {
+        query += ` WHERE b.id = $1`;
+        params.push(buildingId);
+      }
+      query += ` ORDER BY b.name ASC, f.floor_number ASC, r.room_number ASC, s.seat_label ASC`;
+
+      const res = await database.query(query, params);
+
+      if (format === 'csv') {
+        const header = ['Building', 'Floor', 'Room', 'Type', 'Seat', 'Seat Status', 'Allocated', 'Student USN', 'Student Name', 'Branch', 'Quota', 'Confirmed At'];
+        const rows = res.rows.map((row: any) => [
+          `"${row.building_name}"`,
+          row.floor_number,
+          `"${row.room_number}"`,
+          `"${row.room_type || 'STANDARD'}"`,
+          `"${row.seat_number}"`,
+          `"${row.seat_status}"`,
+          row.allocation_status ? '"YES"' : '"NO"',
+          `"${row.student_usn || ''}"`,
+          `"${row.student_name || ''}"`,
+          `"${row.branch || ''}"`,
+          `"${row.quota_category || ''}"`,
+          `"${row.confirmed_at ? new Date(row.confirmed_at).toISOString() : ''}"`
+        ]);
+        const csvContent = [header.join(','), ...rows.map((r: any) => r.join(','))].join('\n');
+        reply.header('Content-Type', 'text/csv');
+        reply.header('Content-Disposition', 'attachment; filename="dormex_occupancy_report.csv"');
+        return reply.send(csvContent);
+      }
+
+      return reply.send({
+        generatedAt: new Date().toISOString(),
+        totalRecords: res.rows.length,
+        records: res.rows
+      });
+    } catch (err: any) {
+      return reply.code(400).send({ error: err.message });
+    }
+  });
+
   // Admin rooms inventory endpoint with status updates
   app.get('/api/floors/:id/rooms', async (req: any, reply) => {
     try {

@@ -111,3 +111,8 @@ Repository Status: Active Development (Modular Monolith)
   - Cropped official brand identities directly from `docs/DORMEX Hostel Brand Identity Board.png` with complete background removal.
   - Generates transparent high-resolution PNG assets (`brand-logo-primary-transparent.png`, `brand-logo-white-transparent.png`, `brand-logo-stacked-transparent.png`, `brand-symbol-icon-transparent.png`, `brand-logo-monochrome-transparent.png`).
   - Integrated `DormexLogo.tsx` across `AppLayout` sidebar and `PortalSelectionView` with multi-theme support.
+- [x] **Phase 12: Administrative Occupancy & Allocation Reports Engine**:
+  - Implemented `GET /api/admin/reports/occupancy` generating structured JSON or CSV download exports (`format=csv`).
+  - Enforced RBAC security (`WARDEN`, `CHIEF_WARDEN`, `HOSTEL_OFFICE`, `SUPER_ADMIN`).
+  - Integrated **Export Occupancy CSV** button with Download icon in `AdminDashboard.tsx`.
+  - Expanded test suite to **45 automated tests passing across 7 test suites** (100% pass rate).

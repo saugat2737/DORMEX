@@ -19,7 +19,8 @@ import {
   Info,
   Repeat,
   FileCheck,
-  Sparkles
+  Sparkles,
+  Download
 } from 'lucide-react';
 
 export const AdminDashboard: React.FC = () => {
@@ -238,6 +239,31 @@ export const AdminDashboard: React.FC = () => {
         </div>
 
         <div className="flex items-center gap-2">
+          <button
+            onClick={async () => {
+              try {
+                const res = await apiFetch('/api/admin/reports/occupancy?format=csv');
+                if (!res.ok) throw new Error('Failed to export occupancy report');
+                const blob = await res.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `dormex_occupancy_report_${new Date().toISOString().slice(0, 10)}.csv`;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                window.URL.revokeObjectURL(url);
+                setActionMsg({ type: 'success', text: 'Occupancy CSV report downloaded successfully!' });
+              } catch (err: any) {
+                setActionMsg({ type: 'error', text: err.message });
+              }
+            }}
+            className="px-3.5 py-2 bg-white hover:bg-[#F7F6F1] text-[#203653] border border-[#E2E6E8] text-xs font-bold rounded shadow-xs transition-colors flex items-center gap-1.5"
+            title="Download CSV export of building occupancy and allocations"
+          >
+            <Download className="w-4 h-4 text-[#2C8279]" />
+            Export Occupancy CSV
+          </button>
           <button
             onClick={() => setShowInPersonModal(true)}
             className="px-3.5 py-2 bg-[#203653] hover:bg-[#17283B] text-white text-xs font-bold rounded shadow-xs transition-colors flex items-center gap-1.5"

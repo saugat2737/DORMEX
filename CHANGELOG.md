@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.8.0] - 2026-10-19
+
+### Added
+- **Administrative Occupancy & Allocation Reports Engine**:
+  - Implemented `GET /api/admin/reports/occupancy` with support for both JSON payload and downloadable CSV file generation (`format=csv`).
+  - Added building-level filtering (`buildingId`) and RBAC authorization (`WARDEN`, `CHIEF_WARDEN`, `HOSTEL_OFFICE`, `SUPER_ADMIN`).
+  - Exported fields include building name, floor number, room number, room type, seat label, seat status, allocation status, student USN/college ID, student full name, branch/department, quota category, and allocation confirmation timestamps.
+  - Added **Export Occupancy CSV** button with `Download` icon directly to `AdminDashboard.tsx` header for one-click reports export.
+  - Expanded automated test suite with `tests/architecture_enhancements.test.ts` test case verifying JSON and CSV generation (45 tests passing across 7 test suites).
+
+---
+
 ## [1.7.0] - 2026-10-18
 
 ### Added

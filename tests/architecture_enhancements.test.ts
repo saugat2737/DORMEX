@@ -103,6 +103,36 @@ describe('DORMEX Architecture & PostgreSQL Enhancements Suite', () => {
     expect(sim.predictedDurationMinutes).toBeGreaterThanOrEqual(0);
     expect(Array.isArray(sim.poolBreakdown)).toBe(true);
   });
+
+  it('6. Generates administrative occupancy and allocation reports in JSON and CSV formats', async () => {
+    // 1. JSON Report Export
+    const jsonRes = await app.inject({
+      method: 'GET',
+      url: '/api/admin/reports/occupancy?format=json',
+      headers: { 'x-user-id': 'usr_office' },
+    });
+    expect(jsonRes.statusCode).toBe(200);
+    const jsonBody = jsonRes.json();
+    expect(jsonBody.generatedAt).toBeDefined();
+    expect(jsonBody.totalRecords).toBeGreaterThan(0);
+    expect(Array.isArray(jsonBody.records)).toBe(true);
+
+    // 2. CSV Report Export
+    const csvRes = await app.inject({
+      method: 'GET',
+      url: '/api/admin/reports/occupancy?format=csv',
+      headers: { 'x-user-id': 'usr_warden_bvb' },
+    });
+    expect(csvRes.statusCode).toBe(200);
+    expect(csvRes.headers['content-type']).toContain('text/csv');
+    expect(csvRes.payload).toContain('Building,Floor,Room,Type,Seat,Seat Status,Allocated');
+
+    // 3. Unauthorized access check (Student forbidden)
+    const unauthRes = await app.inject({
+      method: 'GET',
+      url: '/api/admin/reports/occupancy?format=csv',
+      headers: { 'x-user-id': 'usr_demo_001' },
+    });
+    expect(unauthRes.statusCode).toBe(403);
+  });
 });
-
-

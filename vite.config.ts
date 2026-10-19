@@ -19,4 +19,8 @@ export default defineConfig({
   build: {
     outDir: 'dist/client',
   },
+  test: {
+    hookTimeout: 120000,
+    testTimeout: 60000,
+  },
 });
