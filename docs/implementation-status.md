@@ -31,6 +31,7 @@ Repository Status: Active Development (Modular Monolith)
   - Separated status legend from 3-card summary metric strip (Vacant, Intent, Confirmed).
   - Balanced floor map master-detail layout to 70% map and 30% room inspector.
   - Extracted authentic geometric D logomark from Brand Identity Board and implemented multi-resolution browser favicon suite (`favicon.ico`, `favicon-32x32.png`, `favicon-16x16.png`, `apple-touch-icon.png`, PWA `icon-192.png`/`icon-512.png`).
+  - Integrated interactive Notification Center (`NotificationCenter.tsx`) in top navigation with unread badge counter, category filtering (`Notices`, `Allotments`, `Complaints`), Web Audio API synthesized harmonic chime (`audioChime.ts`), live 10-second polling, and Admin Notice Broadcast modal (`AdminBroadcastNoticeModal.tsx`).
 - [x] **Phase A: Repository Foundation** (Node v22, TypeScript, Fastify, Zod, Vitest, pg-mem/Postgres DB harness)
 - [x] **Phase B: Schema & Authorization Engine** (Full relational schema, migrations, `can(actor, action, resource)` policy layer, seed data, auth)
 - [x] **Phase C: Hostel Inventory & Floor Plan Geometry Engine** (Buildings, floors, rooms, seats, 2D floor map schema, validation, SVG viewer)

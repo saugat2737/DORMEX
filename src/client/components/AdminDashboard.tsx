@@ -22,8 +22,10 @@ import {
   Sparkles,
   Download,
   Globe,
-  Lock
+  Lock,
+  Megaphone
 } from 'lucide-react';
+import { AdminBroadcastNoticeModal } from './AdminBroadcastNoticeModal.js';
 
 export const AdminDashboard: React.FC = () => {
   const { session } = useAuth();
@@ -46,6 +48,7 @@ export const AdminDashboard: React.FC = () => {
   const [simulationData, setSimulationData] = useState<any | null>(null);
   const [showSimModal, setShowSimModal] = useState(false);
   const [simLoading, setSimLoading] = useState(false);
+  const [showNoticeModal, setShowNoticeModal] = useState(false);
 
   // Dynamic Building & Floor Selection
   const [buildings, setBuildings] = useState<any[]>([]);
@@ -265,6 +268,14 @@ export const AdminDashboard: React.FC = () => {
           >
             <Download className="w-4 h-4 text-[#2C8279]" />
             Export Occupancy CSV
+          </button>
+          <button
+            onClick={() => setShowNoticeModal(true)}
+            className="px-3.5 py-2 bg-[#2C8279] hover:bg-[#236B63] text-white text-xs font-bold rounded shadow-xs transition-colors flex items-center gap-1.5"
+            title="Broadcast an official notice or allocation announcement with audio chime dispatch"
+          >
+            <Megaphone className="w-4 h-4 text-[#FAF4E6]" />
+            Broadcast Notice
           </button>
           <button
             onClick={() => setShowInPersonModal(true)}
@@ -895,6 +906,18 @@ export const AdminDashboard: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* Broadcast Official Notice Modal */}
+      <AdminBroadcastNoticeModal
+        isOpen={showNoticeModal}
+        onClose={() => setShowNoticeModal(false)}
+        onNoticePublished={() => {
+          setActionMsg({
+            type: 'success',
+            text: 'Official notice broadcast successfully! All active sessions will receive the notification and audio chime.',
+          });
+        }}
+      />
     </div>
   );
 };

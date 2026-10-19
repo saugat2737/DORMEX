@@ -12,6 +12,7 @@ import { FloorPlanService } from './inventory/floorPlan.js';
 import { StudentRegistryService } from './student/registry.js';
 import { PreferencesService } from './preferences/service.js';
 import { OperationsService } from './operations/service.js';
+import { NotificationService } from './notifications/service.js';
 import { AuthActor } from './auth/policy.js';
 
 export async function buildApp(db?: DatabaseService): Promise<FastifyInstance> {
@@ -55,6 +56,7 @@ export async function buildApp(db?: DatabaseService): Promise<FastifyInstance> {
   const studentRegistry = new StudentRegistryService(database);
   const preferencesService = new PreferencesService(database);
   const operationsService = new OperationsService(database);
+  const notificationService = new NotificationService(database);
 
   // Helper auth extractor (supports dev token/header for seamless verification)
   const extractActor = async (req: any): Promise<AuthActor> => {
@@ -336,8 +338,28 @@ export async function buildApp(db?: DatabaseService): Promise<FastifyInstance> {
         }
         if (status === 'PUBLISHED') {
           await database.query(`UPDATE allocation_cycles SET status = $1, results_published_at = CURRENT_TIMESTAMP WHERE id = $2`, [status, req.params.id]);
+          await notificationService.createNotification({
+            category: 'ALLOTMENT',
+            priority: 'HIGH',
+            title: 'Official Allocation Results Certified & Published',
+            message: `Official allocation results are now live for cycle ${req.params.id}. You can inspect final room allocations and submit 48-hour room change requests.`,
+            target_audience: 'ALL',
+            reference_id: req.params.id,
+            reference_type: 'ALLOCATION_CYCLE',
+            author_name: 'Hostel Office',
+          });
         } else if (status === 'LOCKED') {
           await database.query(`UPDATE allocation_cycles SET status = $1, config_frozen_at = CURRENT_TIMESTAMP WHERE id = $2`, [status, req.params.id]);
+          await notificationService.createNotification({
+            category: 'ALLOTMENT',
+            priority: 'NORMAL',
+            title: 'Allocation Cycle Archived & Locked',
+            message: `Allocation cycle ${req.params.id} has been formally locked. Final seat configurations are permanent.`,
+            target_audience: 'ALL',
+            reference_id: req.params.id,
+            reference_type: 'ALLOCATION_CYCLE',
+            author_name: 'System Administration',
+          });
         } else {
           await database.query(`UPDATE allocation_cycles SET status = $1 WHERE id = $2`, [status, req.params.id]);
         }
@@ -744,6 +766,43 @@ export async function buildApp(db?: DatabaseService): Promise<FastifyInstance> {
       return reply.send(map);
     } catch (err: any) {
       return reply.code(400).send({ error: err.message });
+    }
+  });
+
+  // Notifications & Announcements Endpoints
+  app.get('/api/notifications', async (req: any, reply) => {
+    try {
+      const actor = await extractActor(req);
+      const res = await notificationService.listNotifications(actor);
+      return reply.send(res);
+    } catch (err: any) {
+      return reply.code(400).send({ error: err.message });
+    }
+  });
+
+  app.post('/api/notifications/mark-read', async (req: any, reply) => {
+    try {
+      const actor = await extractActor(req);
+      const { id, all } = (req.body as any) || {};
+      if (all) {
+        await notificationService.markAllAsRead(actor);
+      } else if (id) {
+        await notificationService.markAsRead(id, actor);
+      }
+      return reply.send({ success: true });
+    } catch (err: any) {
+      return reply.code(400).send({ error: err.message });
+    }
+  });
+
+  app.post('/api/admin/notices', async (req: any, reply) => {
+    try {
+      const actor = await extractActor(req);
+      const notice = await notificationService.publishNotice(req.body as any, actor);
+      return reply.code(201).send(notice);
+    } catch (err: any) {
+      const code = err.message?.startsWith('FORBIDDEN') ? 403 : 400;
+      return reply.code(code).send({ error: err.message });
     }
   });
 

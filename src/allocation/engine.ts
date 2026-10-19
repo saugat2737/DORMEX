@@ -424,6 +424,19 @@ export class AllocationEngineService {
         ]
       );
 
+      // 6b. Emit allotment notification for confirmed seat
+      const notifId = `notif_alloc_${Date.now()}_${Math.random().toString(36).substring(7)}`;
+      await client.query(
+        `INSERT INTO notifications (id, category, priority, title, message, target_audience, reference_id, reference_type, author_name)
+         VALUES ($1, 'ALLOTMENT', 'NORMAL', $2, $3, 'ALL', $4, 'ALLOCATION', 'Allocation Engine')`,
+        [
+          notifId,
+          `Room Seat Allocation Confirmed`,
+          `Seat ${seatId} was claimed and confirmed in cycle ${session.cycle_id}.`,
+          allocationId,
+        ]
+      );
+
       return {
         allocationId,
         seatId,

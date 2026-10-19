@@ -332,6 +332,30 @@ CREATE TABLE IF NOT EXISTS outbox_events (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     processed_at TIMESTAMP WITH TIME ZONE
 );
+
+CREATE TABLE IF NOT EXISTS notifications (
+    id TEXT PRIMARY KEY,
+    user_id TEXT, -- NULL for broadcast to all users, or specific user_id
+    category TEXT NOT NULL, -- 'NOTICE', 'COMPLAINT', 'ALLOTMENT', 'SYSTEM'
+    priority TEXT NOT NULL DEFAULT 'NORMAL', -- 'NORMAL', 'URGENT', 'HIGH'
+    title TEXT NOT NULL,
+    message TEXT NOT NULL,
+    target_audience TEXT NOT NULL DEFAULT 'ALL', -- 'ALL', 'STUDENTS', 'ADMIN', 'BVB_BLOCK'
+    building_id TEXT,
+    reference_id TEXT,
+    reference_type TEXT,
+    author_id TEXT REFERENCES users(id) ON DELETE SET NULL,
+    author_name TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS user_notification_reads (
+    id TEXT PRIMARY KEY,
+    notification_id TEXT NOT NULL REFERENCES notifications(id) ON DELETE CASCADE,
+    user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    read_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(notification_id, user_id)
+);
 `;
 
 export async function runMigrations(db: DatabaseService): Promise<void> {

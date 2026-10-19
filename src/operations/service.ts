@@ -29,6 +29,24 @@ export class OperationsService {
       [complaintId, input.type, input.building_id, input.room_id || null, actor.id, input.title, input.description]
     );
 
+    if (input.type === 'PUBLIC') {
+      const notifId = `notif_cmp_${complaintId}`;
+      const msg = input.description.length > 120 ? input.description.substring(0, 117) + '...' : input.description;
+      await this.db.query(
+        `INSERT INTO notifications (id, category, priority, title, message, target_audience, building_id, reference_id, reference_type, author_id, author_name)
+         VALUES ($1, 'COMPLAINT', 'NORMAL', $2, $3, 'ALL', $4, $5, 'COMPLAINT', $6, $7)`,
+        [
+          notifId,
+          `New Public Complaint: ${input.title}`,
+          msg,
+          input.building_id,
+          complaintId,
+          actor.id,
+          actor.college_id || 'Resident',
+        ]
+      );
+    }
+
     return { complaintId };
   }
 

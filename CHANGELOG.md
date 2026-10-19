@@ -9,6 +9,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.9.0] - 2026-10-19
 
+- **Real-Time Notification Center, Audio Chime Feedback & Admin Notice Broadcast**:
+  - **Relational Notification Schema & Storage**:
+    - Implemented `notifications` table storing category (`NOTICE`, `COMPLAINT`, `ALLOTMENT`, `SYSTEM`), priority (`NORMAL`, `URGENT`, `HIGH`), target audience (`ALL`, `STUDENTS`, `ADMIN`, `BVB_BLOCK`), and reference linkages.
+    - Implemented `user_notification_reads` tracking read receipts per user.
+    - Added `NotificationService` (`src/notifications/service.ts`) with methods `createNotification`, `publishNotice`, `listNotifications`, `markAsRead`, and `markAllAsRead`.
+  - **Automatic System Event Triggers**:
+    - **Public Complaints**: When residents file a public complaint (`submitComplaint`), a notification is automatically broadcast across all students and staff.
+    - **Seat Allocation Confirmed**: When a candidate confirms a seat (`confirmSeat`), an allotment confirmation notification is recorded.
+    - **Official Allocation Results Published**: Transitioning a cycle status to `PUBLISHED` dispatches a high-priority broadcast alerting candidates that official allocations are certified and room changes are active.
+  - **Interactive Notification Center (`NotificationCenter.tsx`)**:
+    - Replaced the static header bell icon in `AppLayout.tsx` with a live Notification Center dropdown.
+    - Added unread badge counter with pulsing animation for unread notifications.
+    - Category filtering tabs (`All`, `Notices`, `Allotments`, `Complaints`), mark as read, mark all as read, and direct navigation links to Complaints Desk and Allocation Map.
+    - Integrated Web Audio API synthesized harmonic two-tone chime (`audioChime.ts`) with mute/unmute toggle that plays when new unread notifications arrive or notices are broadcast.
+    - Background polling every 10 seconds and reactive window broadcast listener (`dormex-notification-broadcast`).
+  - **Admin Notice Broadcast Modal (`AdminBroadcastNoticeModal.tsx` & `AdminDashboard.tsx`)**:
+    - Added **Broadcast Notice** button to `AdminDashboard.tsx` header for wardens and administrative staff.
+    - Comprehensive notice composer supporting title, message body, category selection, urgency level, and audience targeting.
+    - RBAC authorization rejecting unauthorized student notice creation with 403 Forbidden.
+  - **Automated Verification Suite (`tests/notifications.test.ts`)**:
+    - Added 6 automated tests verifying notification feed retrieval, admin publishing, student RBAC denial, public complaint event generation, individual read marking, bulk mark-read, and cycle publication alerts (54/54 automated tests passing across 8 suites).
+
 - **DORMEX Brand Identity Favicon Suite**:
   - Extracted the authentic high-rise architectural `D` symbol logomark from the official Brand Identity Board (`docs/stitch_dormex_hostel_allocation_platform/dormex_hostel_brand_identity_board.png/screen.png`).
   - Generated anti-aliased, transparent, multi-resolution browser favicon assets placed in `public/`:

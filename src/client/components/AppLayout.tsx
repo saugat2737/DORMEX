@@ -14,6 +14,7 @@ import {
   UserCheck
 } from 'lucide-react';
 import { DormexLogo } from './DormexLogo.js';
+import { NotificationCenter } from './NotificationCenter.js';
 
 interface LayoutProps {
   currentTab: string;
@@ -258,13 +259,7 @@ export const AppLayout: React.FC<LayoutProps> = ({ currentTab, setCurrentTab, ch
               <span>Pilot Cycle: Floor 2</span>
             </div>
 
-            <button
-              title="Notifications"
-              className="p-2 text-[#627084] hover:text-[#203653] hover:bg-[#F7F6F1] rounded-full transition-colors relative"
-            >
-              <Bell className="w-4 h-4" />
-              <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-[#2C8279] rounded-full" />
-            </button>
+            <NotificationCenter onNavigateTab={setCurrentTab} />
 
             <div className="h-6 w-px bg-[#E2E6E8] hidden sm:block" />
 

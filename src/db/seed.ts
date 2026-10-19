@@ -401,4 +401,14 @@ Students who wish to request a room change must apply within the official 48-hou
       ('cmp_bvb_seed_002', 'PRIVATE', 'bld_bvb', 'rm_bvb_202', 'usr_demo_002', 'Room 202 Study Lamp Socket Sparking', 'The 5A power outlet beside Bed B is loose and intermittently sparks when plugging in study light.', 'ASSIGNED')
      ON CONFLICT (id) DO NOTHING`
   );
+
+  // 9. Seed Initial Notifications & Official Notices
+  await db.query(
+    `INSERT INTO notifications (id, category, priority, title, message, target_audience, reference_id, reference_type, author_name)
+     VALUES
+      ('notif_seed_001', 'NOTICE', 'HIGH', 'BVB Campus Floor 2 Allocation Cycle Open', 'The AY 2024–25 hostel room allocation has commenced. Verify priority ranks and review CAD floor plans.', 'ALL', 'cyc_bvb_yr2_pilot', 'ALLOCATION_CYCLE', 'Chief Warden Dr. Sharma'),
+      ('notif_seed_002', 'NOTICE', 'NORMAL', 'Hostel Agreement & Terms Sign-off Required', 'All eligible candidates must complete their digital terms sign-off prior to their active turn window.', 'STUDENTS', 'terms_v1', 'TERMS', 'Hostel Office'),
+      ('notif_seed_003', 'COMPLAINT', 'NORMAL', 'New Public Complaint: BVB Floor 2 RO Water Purifier', 'Drinking water dispenser near Room 215 reported with low pressure. Review at the Complaints Desk.', 'ALL', 'cmp_bvb_seed_001', 'COMPLAINT', 'usr_demo_001')
+     ON CONFLICT (id) DO NOTHING`
+  );
 }
