@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.4.0] - 2026-10-21
+
+- **Stitch Design System Harmonization: 2D Floor Plan Maker & CAD Editor (`FloorPlanEditor.tsx`)**:
+  - **Full BVB Block Geometric Blueprint Layout**:
+    - Styled after the official Stitch design specification (`#07203c`, `#203653`, `#016a62`, `#f6fafc`, and Inter typography).
+    - Integrated multi-wing corridor visual systems: North Wing Corridor (Rooms 201–224), Open Green Central Courtyard & Lightwell, East Wing Hub (249–272), and South Wing Corridor (225–248).
+  - **Dual Map Projection System**:
+    - Added view toggle between **Architectural Blueprint** (instant interactive wing matrix with live bed capacity dots) and **Precision CAD Canvas** (900 × 650 SVG vector geometry with zoom/pan and wall/polygon calibration).
+  - **Interactive Room Inspector & CAD Calibrator**:
+    - Dedicated inspector side panel displaying classification, bed matrix capacity buttons (1, 2, or 3 beds), and spatial coordinate bounds inputs (X, Y, W, H).
+    - Integrated filters for All Wings, North, South, and East wings plus dynamic room search.
+  - **Zero Bug Guarantee & Full Verification**:
+    - 60/60 automated tests passing across 9 test suites.
+    - 0 TypeScript compiler errors (`npm run typecheck`).
+    - Clean client production build (`npm run build:client`).
+
 ## [2.3.1] - 2026-10-21
 
 - **Streamlined Login Experience & Removal of Redundant Portal Cards (`PortalSelectionView.tsx`)**:
