@@ -13,10 +13,15 @@ import { StudentRegistryService } from './student/registry.js';
 import { PreferencesService } from './preferences/service.js';
 import { OperationsService } from './operations/service.js';
 import { NotificationService } from './notifications/service.js';
+import { StudentAdmissionService } from './student/admissionService.js';
+import { MessMenuService } from './operations/messMenuService.js';
 import { AuthActor } from './auth/policy.js';
 
 export async function buildApp(db?: DatabaseService): Promise<FastifyInstance> {
-  const app = Fastify({ logger: false });
+  const app = Fastify({ 
+    logger: false,
+    bodyLimit: 15 * 1024 * 1024, // 15MB to comfortably accommodate high-res weekly mess menu images
+  });
   const database = db || getDatabaseService();
 
   // Initialize DB schema & seed
@@ -57,6 +62,8 @@ export async function buildApp(db?: DatabaseService): Promise<FastifyInstance> {
   const preferencesService = new PreferencesService(database);
   const operationsService = new OperationsService(database);
   const notificationService = new NotificationService(database);
+  const admissionService = new StudentAdmissionService(database);
+  const messMenuService = new MessMenuService(database);
 
   // Helper auth extractor (supports dev token/header for seamless verification)
   const extractActor = async (req: any): Promise<AuthActor> => {
@@ -380,7 +387,7 @@ export async function buildApp(db?: DatabaseService): Promise<FastifyInstance> {
       const simulation = await allocationEngine.simulateCycle(req.params.id, actor);
       return reply.send(simulation);
     } catch (err: any) {
-      const code = err.message?.startsWith('FORBIDDEN') ? 403 : 400;
+            const code = err.message?.startsWith('FORBIDDEN') ? 403 : 400;
       return reply.code(code).send({ error: err.message });
     }
   });
@@ -393,7 +400,7 @@ export async function buildApp(db?: DatabaseService): Promise<FastifyInstance> {
       const result = await floorPlanService.saveDraft(req.params.id, geometry, actor);
       return reply.code(201).send(result);
     } catch (err: any) {
-      const code = err.message?.startsWith('FORBIDDEN') ? 403 : 400;
+            const code = err.message?.startsWith('FORBIDDEN') ? 403 : 400;
       return reply.code(code).send({ error: err.message });
     }
   });
@@ -405,7 +412,7 @@ export async function buildApp(db?: DatabaseService): Promise<FastifyInstance> {
       await floorPlanService.publishMap(req.params.id, version, actor);
       return reply.send({ success: true, message: 'Floor map published successfully' });
     } catch (err: any) {
-      const code = err.message?.startsWith('FORBIDDEN') ? 403 : 400;
+            const code = err.message?.startsWith('FORBIDDEN') ? 403 : 400;
       return reply.code(code).send({ error: err.message });
     }
   });
@@ -467,7 +474,7 @@ export async function buildApp(db?: DatabaseService): Promise<FastifyInstance> {
       const res = await allocationEngine.joinWaitingRoom(req.params.id, studentProfileId, actor);
       return reply.send(res);
     } catch (err: any) {
-      const code = err.message?.startsWith('FORBIDDEN') ? 403 : 400;
+            const code = err.message?.startsWith('FORBIDDEN') ? 403 : 400;
       return reply.code(code).send({ error: err.message });
     }
   });
@@ -533,7 +540,7 @@ export async function buildApp(db?: DatabaseService): Promise<FastifyInstance> {
       const result = await allocationEngine.forceOverrideAllocation(cycleId, studentId, seatId, reason, actor);
       return reply.send(result);
     } catch (err: any) {
-      const code = err.message?.startsWith('FORBIDDEN') ? 403 : 400;
+            const code = err.message?.startsWith('FORBIDDEN') ? 403 : 400;
       return reply.code(code).send({ error: err.message });
     }
   });
@@ -546,7 +553,7 @@ export async function buildApp(db?: DatabaseService): Promise<FastifyInstance> {
       await preferencesService.addWishlist(cycleId, studentProfileId, req.params.id, actor);
       return reply.send({ success: true });
     } catch (err: any) {
-      const code = err.message?.startsWith('FORBIDDEN') ? 403 : 400;
+            const code = err.message?.startsWith('FORBIDDEN') ? 403 : 400;
       return reply.code(code).send({ error: err.message });
     }
   });
@@ -558,7 +565,7 @@ export async function buildApp(db?: DatabaseService): Promise<FastifyInstance> {
       const result = await preferencesService.createInvite(cycleId, fromStudentId, seatId, actor);
       return reply.code(201).send(result);
     } catch (err: any) {
-      const code = err.message?.startsWith('FORBIDDEN') ? 403 : 400;
+            const code = err.message?.startsWith('FORBIDDEN') ? 403 : 400;
       return reply.code(code).send({ error: err.message });
     }
   });
@@ -590,7 +597,7 @@ export async function buildApp(db?: DatabaseService): Promise<FastifyInstance> {
       await operationsService.updateComplaint(req.params.id, req.body as any, actor);
       return reply.send({ success: true, message: 'Complaint updated' });
     } catch (err: any) {
-      const code = err.message?.startsWith('FORBIDDEN') ? 403 : 400;
+            const code = err.message?.startsWith('FORBIDDEN') ? 403 : 400;
       return reply.code(code).send({ error: err.message });
     }
   });
@@ -622,7 +629,7 @@ export async function buildApp(db?: DatabaseService): Promise<FastifyInstance> {
       const requests = await operationsService.listRoomChangeRequests(actor, req.query?.cycleId);
       return reply.send(requests);
     } catch (err: any) {
-      const code = err.message?.startsWith('FORBIDDEN') ? 403 : 400;
+            const code = err.message?.startsWith('FORBIDDEN') ? 403 : 400;
       return reply.code(code).send({ error: err.message });
     }
   });
@@ -634,7 +641,7 @@ export async function buildApp(db?: DatabaseService): Promise<FastifyInstance> {
       await operationsService.reviewRoomChange(req.params.id, decision, notes, actor, targetSeatId);
       return reply.send({ success: true, message: `Room change request ${decision.toLowerCase()} successfully` });
     } catch (err: any) {
-      const code = err.message?.startsWith('FORBIDDEN') ? 403 : 400;
+            const code = err.message?.startsWith('FORBIDDEN') ? 403 : 400;
       return reply.code(code).send({ error: err.message });
     }
   });
@@ -646,7 +653,7 @@ export async function buildApp(db?: DatabaseService): Promise<FastifyInstance> {
       const res = await operationsService.recordInPersonRoomChange(cycleId, studentProfileId, targetRoomId, reason, actor, autoApprove);
       return reply.code(201).send(res);
     } catch (err: any) {
-      const code = err.message?.startsWith('FORBIDDEN') ? 403 : 400;
+            const code = err.message?.startsWith('FORBIDDEN') ? 403 : 400;
       return reply.code(code).send({ error: err.message });
     }
   });
@@ -672,7 +679,7 @@ export async function buildApp(db?: DatabaseService): Promise<FastifyInstance> {
       await studentRegistry.acceptTerms(req.params.id, termsVersion, actor, req.ip);
       return reply.send({ success: true, message: 'Hostel Responsibility terms accepted successfully' });
     } catch (err: any) {
-      const code = err.message?.startsWith('FORBIDDEN') ? 403 : 400;
+            const code = err.message?.startsWith('FORBIDDEN') ? 403 : 400;
       return reply.code(code).send({ error: err.message });
     }
   });
@@ -684,7 +691,7 @@ export async function buildApp(db?: DatabaseService): Promise<FastifyInstance> {
       await studentRegistry.updateStudentProfile(req.params.id, req.body as any, actor);
       return reply.send({ success: true, message: 'Profile updated successfully' });
     } catch (err: any) {
-      const code = err.message?.startsWith('FORBIDDEN') ? 403 : 400;
+            const code = err.message?.startsWith('FORBIDDEN') ? 403 : 400;
       return reply.code(code).send({ error: err.message });
     }
   });
@@ -695,7 +702,7 @@ export async function buildApp(db?: DatabaseService): Promise<FastifyInstance> {
       await studentRegistry.submitStudentProfile(req.params.id, actor);
       return reply.send({ success: true, message: 'Profile submitted for Hostel Office review' });
     } catch (err: any) {
-      const code = err.message?.startsWith('FORBIDDEN') ? 403 : 400;
+            const code = err.message?.startsWith('FORBIDDEN') ? 403 : 400;
       return reply.code(code).send({ error: err.message });
     }
   });
@@ -707,7 +714,7 @@ export async function buildApp(db?: DatabaseService): Promise<FastifyInstance> {
       await studentRegistry.verifyFeePayment(req.params.id, req.body as any, actor);
       return reply.send({ success: true, message: 'Fee payment verified successfully' });
     } catch (err: any) {
-      const code = err.message?.startsWith('FORBIDDEN') ? 403 : 400;
+            const code = err.message?.startsWith('FORBIDDEN') ? 403 : 400;
       return reply.code(code).send({ error: err.message });
     }
   });
@@ -719,7 +726,7 @@ export async function buildApp(db?: DatabaseService): Promise<FastifyInstance> {
       const res = await studentRegistry.recalculatePrioritiesByPayment(academicYear || 2, quotaCategory || 'GENERAL', actor);
       return reply.send({ success: true, updatedCount: res.updatedCount });
     } catch (err: any) {
-      const code = err.message?.startsWith('FORBIDDEN') ? 403 : 400;
+            const code = err.message?.startsWith('FORBIDDEN') ? 403 : 400;
       return reply.code(code).send({ error: err.message });
     }
   });
@@ -732,7 +739,7 @@ export async function buildApp(db?: DatabaseService): Promise<FastifyInstance> {
       const res = await preferencesService.createRoommateGroup(cycleId, leaderStudentId, roomId, peerPriorityNumbers, actor);
       return reply.code(201).send(res);
     } catch (err: any) {
-      const code = err.message?.startsWith('FORBIDDEN') ? 403 : 400;
+            const code = err.message?.startsWith('FORBIDDEN') ? 403 : 400;
       return reply.code(code).send({ error: err.message });
     }
   });
@@ -744,7 +751,7 @@ export async function buildApp(db?: DatabaseService): Promise<FastifyInstance> {
       const res = await preferencesService.respondToRoommateInvite(req.params.id, studentProfileId, accept, actor);
       return reply.send(res);
     } catch (err: any) {
-      const code = err.message?.startsWith('FORBIDDEN') ? 403 : 400;
+            const code = err.message?.startsWith('FORBIDDEN') ? 403 : 400;
       return reply.code(code).send({ error: err.message });
     }
   });
@@ -801,8 +808,110 @@ export async function buildApp(db?: DatabaseService): Promise<FastifyInstance> {
       const notice = await notificationService.publishNotice(req.body as any, actor);
       return reply.code(201).send(notice);
     } catch (err: any) {
-      const code = err.message?.startsWith('FORBIDDEN') ? 403 : 400;
+            const code = err.message?.startsWith('FORBIDDEN') ? 403 : 400;
       return reply.code(code).send({ error: err.message });
+    }
+  });
+
+  // Student Admission Management Endpoints (Hostel Office Workspace)
+  app.post('/api/admissions', async (req: any, reply) => {
+    try {
+      const actor = await extractActor(req);
+      const result = await admissionService.createAdmission(req.body as any, actor);
+      return reply.code(201).send(result);
+    } catch (err: any) {
+            const code = err.message?.startsWith('FORBIDDEN') ? 403 : 400;
+      return reply.code(code).send({ error: err.message });
+    }
+  });
+
+  app.get('/api/admissions', async (req: any, reply) => {
+    try {
+      const actor = await extractActor(req);
+      const list = await admissionService.listAdmissions(actor, req.query as any);
+      return reply.send(list);
+    } catch (err: any) {
+            const code = err.message?.startsWith('FORBIDDEN') ? 403 : 400;
+      return reply.code(code).send({ error: err.message });
+    }
+  });
+
+  app.get('/api/admissions/proctors', async (req: any, reply) => {
+    try {
+      const actor = await extractActor(req);
+      const proctors = await admissionService.listProctors(actor);
+      return reply.send(proctors);
+    } catch (err: any) {
+            const code = err.message?.startsWith('FORBIDDEN') ? 403 : 400;
+      return reply.code(code).send({ error: err.message });
+    }
+  });
+
+  app.get('/api/admissions/:id', async (req: any, reply) => {
+    try {
+      const actor = await extractActor(req);
+      const admission = await admissionService.getAdmission(req.params.id, actor);
+      return reply.send(admission);
+    } catch (err: any) {
+      const code = err.message?.startsWith('FORBIDDEN') ? 403 : err.message?.startsWith('NOT_FOUND') ? 404 : 400;
+      return reply.code(code).send({ error: err.message });
+    }
+  });
+
+  app.put('/api/admissions/:id', async (req: any, reply) => {
+    try {
+      const actor = await extractActor(req);
+      const updated = await admissionService.updateAdmission(req.params.id, req.body as any, actor);
+      return reply.send(updated);
+    } catch (err: any) {
+      const code = err.message?.startsWith('FORBIDDEN') ? 403 : err.message?.startsWith('NOT_FOUND') ? 404 : 400;
+      return reply.code(code).send({ error: err.message });
+    }
+  });
+
+  // Weekly Mess Menu Management Endpoints
+  app.post('/api/mess/menus', async (req: any, reply) => {
+    try {
+      const actor = await extractActor(req);
+      const menu = await messMenuService.uploadMenu(req.body as any, actor);
+      return reply.code(201).send(menu);
+    } catch (err: any) {
+            const code = err.message?.startsWith('FORBIDDEN') ? 403 : 400;
+      return reply.code(code).send({ error: err.message });
+    }
+  });
+
+  app.put('/api/mess/menus/:id/status', async (req: any, reply) => {
+    try {
+      const actor = await extractActor(req);
+      const { status } = req.body as any;
+      const updated = await messMenuService.updateMenuStatus(req.params.id, status, actor);
+      return reply.send(updated);
+    } catch (err: any) {
+      const code = err.message?.startsWith('FORBIDDEN') ? 403 : err.message?.startsWith('NOT_FOUND') ? 404 : 400;
+      return reply.code(code).send({ error: err.message });
+    }
+  });
+
+  app.get('/api/mess/menu/active', async (req: any, reply) => {
+    try {
+      const actor = await extractActor(req);
+      const scope = (req.query?.scope as string) || 'CAMPUS_CENTRAL';
+      const menu = await messMenuService.getActiveMenu(scope, actor);
+      return reply.send(menu);
+    } catch (err: any) {
+      return reply.code(400).send({ error: err.message });
+    }
+  });
+
+  app.get('/api/mess/menus', async (req: any, reply) => {
+    try {
+      const actor = await extractActor(req);
+      const scope = (req.query?.scope as string) || 'CAMPUS_CENTRAL';
+      const menus = await messMenuService.listMenus(actor, scope);
+      return reply.send(menus);
+    } catch (err: any) {
+      return reply.code(400).send({ error: err.message });
     }
   });
 

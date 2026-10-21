@@ -11,7 +11,9 @@ import {
   Bell,
   Menu,
   X,
-  UserCheck
+  UserCheck,
+  UserPlus,
+  Utensils
 } from 'lucide-react';
 import { DormexLogo } from './DormexLogo.js';
 import { NotificationCenter } from './NotificationCenter.js';
@@ -136,6 +138,24 @@ export const AppLayout: React.FC<LayoutProps> = ({ currentTab, setCurrentTab, ch
                   </div>
                   <ChevronRight className="w-3.5 h-3.5 opacity-50" />
                 </button>
+
+                <button
+                  onClick={() => {
+                    setCurrentTab('student_mess_menu');
+                    setMobileMenuOpen(false);
+                  }}
+                  className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-lg text-xs font-semibold transition-all ${
+                    currentTab === 'student_mess_menu'
+                      ? 'bg-[#2C8279] text-white shadow-sm'
+                      : 'text-slate-200 hover:bg-[#112947] hover:text-white'
+                  }`}
+                >
+                  <div className="flex items-center space-x-3">
+                    <Utensils className={`w-4 h-4 ${currentTab === 'student_mess_menu' ? 'text-white' : 'text-emerald-400'}`} />
+                    <span className="tracking-normal">Weekly Mess Menu</span>
+                  </div>
+                  <ChevronRight className="w-3.5 h-3.5 opacity-50" />
+                </button>
               </>
             )}
 
@@ -172,6 +192,40 @@ export const AppLayout: React.FC<LayoutProps> = ({ currentTab, setCurrentTab, ch
                   <div className="flex items-center space-x-3">
                     <Users className={`w-4 h-4 ${currentTab === 'admin_students' ? 'text-white' : 'text-[#84d5ca]'}`} />
                     <span className="tracking-normal">Hostel Office Registry</span>
+                  </div>
+                  <ChevronRight className="w-3.5 h-3.5 opacity-50" />
+                </button>
+                <button
+                  onClick={() => {
+                    setCurrentTab('office_admissions');
+                    setMobileMenuOpen(false);
+                  }}
+                  className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-lg text-xs font-semibold transition-all ${
+                    currentTab === 'office_admissions'
+                      ? 'bg-[#2C8279] text-white shadow-sm'
+                      : 'text-slate-200 hover:bg-[#112947] hover:text-white'
+                  }`}
+                >
+                  <div className="flex items-center space-x-3">
+                    <UserPlus className={`w-4 h-4 ${currentTab === 'office_admissions' ? 'text-white' : 'text-[#84d5ca]'}`} />
+                    <span className="tracking-normal">Student Admissions</span>
+                  </div>
+                  <ChevronRight className="w-3.5 h-3.5 opacity-50" />
+                </button>
+                <button
+                  onClick={() => {
+                    setCurrentTab('office_mess_menu');
+                    setMobileMenuOpen(false);
+                  }}
+                  className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-lg text-xs font-semibold transition-all ${
+                    currentTab === 'office_mess_menu'
+                      ? 'bg-[#2C8279] text-white shadow-sm'
+                      : 'text-slate-200 hover:bg-[#112947] hover:text-white'
+                  }`}
+                >
+                  <div className="flex items-center space-x-3">
+                    <Utensils className={`w-4 h-4 ${currentTab === 'office_mess_menu' ? 'text-white' : 'text-emerald-400'}`} />
+                    <span className="tracking-normal">Weekly Mess Menu</span>
                   </div>
                   <ChevronRight className="w-3.5 h-3.5 opacity-50" />
                 </button>

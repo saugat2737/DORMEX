@@ -7,6 +7,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.5.0] - 2026-10-22
+
+- **Phase 1: Notification Isolation & Targeting**:
+  - Eliminated global notification broadcasting for individual student workflows (room allocation, roommate group invites, and roommate acceptance/rejection responses).
+  - Enforced strict recipient targeting in `src/allocation/engine.ts` (`studentUserId` with `target_audience = 'STUDENT'`).
+  - Enforced private peer targeting in `src/preferences/service.ts`:
+    - Roommate invitations target only the invited student (`peer.userId`).
+    - Acceptance and decline responses target strictly the group leader (`leader_user_id`).
+  - Hardened `src/notifications/service.ts`:
+    - `listNotifications`: strictly filters `n.user_id = $1 OR (n.user_id IS NULL AND n.target_audience = ANY($2))` to prevent notice leakage.
+    - `markAsRead` and `markAllAsRead`: enforce authorization check ensuring users cannot acknowledge notifications belonging to other accounts.
+- **Phase 2: Database-Backed Hostel Office Student Admissions Management**:
+  - Added `student_admissions` table with partial unique index on `official_priority` and unique `usn`.
+  - Implemented `src/student/admissionService.ts` for full admission lifecycle:
+    - Academic, Contact, Proctor, and Guardian profiling.
+    - Automatic creation of linked `users` and `student_profiles` entries with unallocated status (`fee_status = 'UNPAID'`, `eligibility_status = 'PENDING'`).
+    - Enforced institutional USN pattern matching (`1si...`) and prevention of duplicate official priorities.
+  - Added RESTful endpoints in `src/app.ts`: `POST /api/admissions`, `GET /api/admissions`, `GET /api/admissions/proctors`, `PATCH /api/admissions/:id`.
+  - Built `StudentAdmissionManagementView.tsx` with multi-step registration modal, active search, cohort filter, and status update management.
+- **Phase 3: Weekly Mess Menu Publishing & Student Viewer**:
+  - Added `mess_menus` table supporting weekly date ranges, meal categories, and high-resolution menu notices (JPEG, PNG, WebP up to 10MB).
+  - Implemented `src/operations/messMenuService.ts` with draft/publish state workflows, scope targeting (All Hostels vs Specific Blocks), and automated notification alerts to students on publication.
+  - Added Fastify payload limit (15MB) in `src/app.ts` to accommodate photo uploads.
+  - Built `MessMenuView.tsx` providing students with active menu schedule views, full-screen image lightbox, and Hostel Office staff with publishing/upload controls.
+- **Verification & Test Coverage**:
+  - Added 12 new automated test cases in `tests/admissions_and_mess_menu.test.ts`.
+  - Expanded notification tests in `tests/notifications.test.ts` to 8 tests.
+  - 74/74 tests passing across 10 test suites (100% pass rate).
+  - 0 TypeScript compiler errors (`npm run typecheck`).
+  - Clean production client build (`npm run build:client`).
+
 ## [2.4.0] - 2026-10-21
 
 - **Stitch Design System Harmonization: 2D Floor Plan Maker & CAD Editor (`FloorPlanEditor.tsx`)**:

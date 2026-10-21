@@ -254,6 +254,13 @@ export class StudentRegistryService {
     }
 
     return this.db.transaction(async (client) => {
+      // Clear priorities temporarily in transaction to allow conflict-free renumbering
+      await client.query(
+        `UPDATE student_profiles SET assigned_priority = NULL
+         WHERE academic_year = $1 AND quota_category = $2 AND fee_status = 'VERIFIED'`,
+        [academicYear, quotaCategory]
+      );
+
       const res = await client.query(
         `SELECT id, college_id, fee_payment_timestamp, assigned_priority
          FROM student_profiles
@@ -265,22 +272,20 @@ export class StudentRegistryService {
       let rank = 1;
       let count = 0;
       for (const row of res.rows) {
-        if (row.assigned_priority !== rank) {
-          await client.query(
-            `UPDATE student_profiles SET 
-              assigned_priority = $1, 
-              priority_assignment_source = 'AUTOMATIC_FEE',
-              updated_at = CURRENT_TIMESTAMP 
-             WHERE id = $2`,
-            [rank, row.id]
-          );
+        await client.query(
+          `UPDATE student_profiles SET 
+            assigned_priority = $1, 
+            priority_assignment_source = 'AUTOMATIC_FEE',
+            updated_at = CURRENT_TIMESTAMP 
+           WHERE id = $2`,
+          [rank, row.id]
+        );
 
-          await client.query(
-            `UPDATE waiting_room_entries SET priority_number = $1 WHERE student_id = $2 AND status = 'WAITING'`,
-            [rank, row.id]
-          );
-          count++;
-        }
+        await client.query(
+          `UPDATE waiting_room_entries SET priority_number = $1 WHERE student_id = $2 AND status = 'WAITING'`,
+          [rank, row.id]
+        );
+        count++;
         rank++;
       }
       return { updatedCount: count };

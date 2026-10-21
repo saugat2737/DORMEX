@@ -161,4 +161,110 @@ describe('DORMEX Notification & Announcement System Suite', () => {
     expect(pubNotif).toBeDefined();
     expect(pubNotif.title).toContain('Official Allocation Results Certified');
   });
+
+  it('7. Enforces strict privacy: roommate invitation notifies only the target student', async () => {
+    // Student DEMO-001 (prof_demo_001) invites DEMO-002 (priority #2)
+    const invRes = await request(app)
+      .post('/api/roommate-groups')
+      .set('x-user-id', 'usr_demo_001')
+      .set('x-role', 'STUDENT')
+      .send({
+        cycleId: 'cyc_bvb_pilot_2026',
+        leaderStudentId: 'prof_demo_001',
+        roomId: 'rm_bvb_202',
+        peerPriorityNumbers: [2],
+      });
+
+    expect(invRes.status).toBe(201);
+    const groupId = invRes.body.groupId;
+
+    // 7a. Target student DEMO-002 (usr_demo_002) sees the invitation notification
+    const targetNotifs = await request(app)
+      .get('/api/notifications')
+      .set('x-user-id', 'usr_demo_002')
+      .set('x-role', 'STUDENT');
+
+    expect(targetNotifs.status).toBe(200);
+    const targetInv = targetNotifs.body.notifications.find(
+      (n: any) => n.reference_id === groupId && n.reference_type === 'ROOMMATE_INVITE'
+    );
+    expect(targetInv).toBeDefined();
+    expect(targetInv.title).toBe('New roommate invitation');
+    expect(targetInv.message).toContain('wants you to be their roommate');
+
+    // 7b. Unrelated student DEMO-003 (usr_demo_003) MUST NOT see this invitation
+    const unrelatedNotifs = await request(app)
+      .get('/api/notifications')
+      .set('x-user-id', 'usr_demo_003')
+      .set('x-role', 'STUDENT');
+
+    const leakedToUnrelated = unrelatedNotifs.body.notifications.find(
+      (n: any) => n.reference_id === groupId
+    );
+    expect(leakedToUnrelated).toBeUndefined();
+
+    // 7c. Inviter DEMO-001 MUST NOT see an incoming invitation notification addressed to the peer
+    const inviterNotifs = await request(app)
+      .get('/api/notifications')
+      .set('x-user-id', 'usr_demo_001')
+      .set('x-role', 'STUDENT');
+
+    const inviterIncoming = inviterNotifs.body.notifications.find(
+      (n: any) => n.reference_id === groupId && n.reference_type === 'ROOMMATE_INVITE'
+    );
+    expect(inviterIncoming).toBeUndefined();
+
+    // 7d. Target student DEMO-002 responds ACCEPT
+    const respRes = await request(app)
+      .post(`/api/roommate-groups/${groupId}/respond`)
+      .set('x-user-id', 'usr_demo_002')
+      .set('x-role', 'STUDENT')
+      .send({
+        studentProfileId: 'prof_demo_002',
+        accept: true,
+      });
+
+    expect(respRes.status).toBe(200);
+
+    // 7e. Inviter DEMO-001 receives the response notification
+    const inviterAfterResp = await request(app)
+      .get('/api/notifications')
+      .set('x-user-id', 'usr_demo_001')
+      .set('x-role', 'STUDENT');
+
+    const respNotif = inviterAfterResp.body.notifications.find(
+      (n: any) => n.reference_id === groupId && n.reference_type === 'ROOMMATE_RESPONSE'
+    );
+    expect(respNotif).toBeDefined();
+    expect(respNotif.title).toBe('Roommate invitation accepted');
+
+    // 7f. Unrelated student DEMO-003 still sees nothing
+    const unrelatedAfterResp = await request(app)
+      .get('/api/notifications')
+      .set('x-user-id', 'usr_demo_003')
+      .set('x-role', 'STUDENT');
+
+    expect(unrelatedAfterResp.body.notifications.find((n: any) => n.reference_id === groupId)).toBeUndefined();
+  });
+
+  it('8. Enforces notification mark-as-read security: cannot mark another user notification as read', async () => {
+    // Fetch a notification belonging to usr_demo_002
+    const targetNotifs = await request(app)
+      .get('/api/notifications')
+      .set('x-user-id', 'usr_demo_002')
+      .set('x-role', 'STUDENT');
+
+    const privateNotif = targetNotifs.body.notifications.find((n: any) => n.user_id === 'usr_demo_002');
+    expect(privateNotif).toBeDefined();
+
+    // Student DEMO-003 tries to mark DEMO-002's private notification as read
+    const hijackAttempt = await request(app)
+      .post('/api/notifications/mark-read')
+      .set('x-user-id', 'usr_demo_003')
+      .set('x-role', 'STUDENT')
+      .send({ id: privateNotif.id });
+
+    expect(hijackAttempt.status).toBe(400);
+    expect(hijackAttempt.body.error).toContain('FORBIDDEN');
+  });
 });

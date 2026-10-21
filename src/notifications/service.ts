@@ -114,13 +114,15 @@ export class NotificationService {
   }
 
   /**
-   * List notifications for a given user with unread status calculation
+   * List notifications for a given user with unread status calculation.
+   * Strict privacy: personal notifications (user_id IS NOT NULL) are ONLY visible to that specific user.
+   * Broadcast announcements (user_id IS NULL) are filtered by actor's authorized role/audience.
    */
   async listNotifications(actor: AuthActor): Promise<{
     notifications: NotificationRecord[];
     unreadCount: number;
   }> {
-    // Determine audience filter
+    // Determine broadcast audience filter for notices without specific user_id
     const audienceList = ['ALL'];
     if (actor.role === 'STUDENT') {
       audienceList.push('STUDENTS');
@@ -128,7 +130,7 @@ export class NotificationService {
       audienceList.push('ADMIN');
     }
 
-    // Query notifications matching user or broad audience, left join read status
+    // Query notifications: strictly (n.user_id = $1) OR (n.user_id IS NULL AND n.target_audience = ANY($2))
     const res = await this.db.query(
       `SELECT 
          n.id,
@@ -148,8 +150,7 @@ export class NotificationService {
        FROM notifications n
        LEFT JOIN user_notification_reads r 
          ON n.id = r.notification_id AND r.user_id = $1
-       WHERE (n.user_id IS NULL OR n.user_id = $1)
-         AND (n.target_audience = ANY($2))
+       WHERE (n.user_id = $1 OR (n.user_id IS NULL AND n.target_audience = ANY($2)))
        ORDER BY n.created_at DESC
        LIMIT 50`,
       [actor.id, audienceList]
@@ -166,9 +167,24 @@ export class NotificationService {
   }
 
   /**
-   * Mark a single notification as read
+   * Mark a single notification as read with ownership verification.
+   * Prevents students from mutating or probing another student's private notification.
    */
   async markAsRead(notificationId: string, actor: AuthActor): Promise<void> {
+    const notifRes = await this.db.query(
+      `SELECT id, user_id, target_audience FROM notifications WHERE id = $1`,
+      [notificationId]
+    );
+
+    if (notifRes.rows.length === 0) {
+      throw new Error('NOT_FOUND: Notification does not exist');
+    }
+
+    const notif = notifRes.rows[0];
+    if (notif.user_id && notif.user_id !== actor.id) {
+      throw new Error('FORBIDDEN: Cannot mark another user\'s private notification as read');
+    }
+
     const id = `read_${notificationId}_${actor.id}`;
     await this.db.query(
       `INSERT INTO user_notification_reads (id, notification_id, user_id, read_at)
@@ -194,8 +210,7 @@ export class NotificationService {
        FROM notifications n
        LEFT JOIN user_notification_reads r 
          ON n.id = r.notification_id AND r.user_id = $1
-       WHERE (n.user_id IS NULL OR n.user_id = $1)
-         AND (n.target_audience = ANY($2))
+       WHERE (n.user_id = $1 OR (n.user_id IS NULL AND n.target_audience = ANY($2)))
          AND r.read_at IS NULL`,
       [actor.id, audienceList]
     );
