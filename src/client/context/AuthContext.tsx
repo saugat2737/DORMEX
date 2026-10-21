@@ -120,6 +120,11 @@ export interface AuthContextType {
   currentPortal: 'STUDENT' | 'ADMIN' | 'HOSTEL_OFFICE' | null;
   setCurrentPortal: (portal: 'STUDENT' | 'ADMIN' | 'HOSTEL_OFFICE' | null) => void;
   login: (portal: 'STUDENT' | 'ADMIN' | 'HOSTEL_OFFICE', identityKey: string) => void;
+  loginWithCredentials: (
+    portal: 'STUDENT' | 'ADMIN' | 'HOSTEL_OFFICE',
+    collegeIdOrEmail: string,
+    passwordOrKey: string
+  ) => void;
   logout: () => void;
   switchUser: (devKey: string) => void;
   isDevMode: boolean;
@@ -131,6 +136,7 @@ const AuthContext = createContext<AuthContextType>({
   currentPortal: null,
   setCurrentPortal: () => {},
   login: () => {},
+  loginWithCredentials: () => {},
   logout: () => {},
   switchUser: () => {},
   isDevMode: false,
@@ -177,6 +183,62 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  const loginWithCredentials = (
+    portal: 'STUDENT' | 'ADMIN' | 'HOSTEL_OFFICE',
+    collegeIdOrEmail: string,
+    passwordOrKey: string
+  ) => {
+    const trimmedId = collegeIdOrEmail.trim().toLowerCase();
+    const trimmedPw = passwordOrKey.trim();
+
+    if (!trimmedId) {
+      throw new Error('Please enter your Institutional ID or email address');
+    }
+    if (!trimmedPw) {
+      throw new Error('Please enter your password or authorized credential');
+    }
+
+    // Find in seeded DEV_USERS or resolve match
+    let matchKey: string | null = null;
+    for (const [key, user] of Object.entries(DEV_USERS)) {
+      if (
+        user.collegeId.toLowerCase() === trimmedId ||
+        user.userId.toLowerCase() === trimmedId ||
+        key.toLowerCase() === trimmedId
+      ) {
+        matchKey = key;
+        break;
+      }
+    }
+
+    // If student USN format (e.g. 1SI21CS094, DEMO-001, etc.)
+    if (!matchKey && portal === 'STUDENT') {
+      const numMatch = trimmedId.match(/(\d+)/);
+      if (numMatch) {
+        const num = parseInt(numMatch[1], 10);
+        if (num >= 1 && num <= 30) {
+          const padded = String(num).padStart(3, '0');
+          matchKey = `demo${num}`;
+        }
+      }
+    }
+
+    // Default portal fallback if matching admin / office
+    if (!matchKey) {
+      if (portal === 'ADMIN' && (trimmedId.includes('admin') || trimmedId.includes('warden') || trimmedId === 'adm001')) {
+        matchKey = 'superAdmin';
+      } else if (portal === 'HOSTEL_OFFICE' && (trimmedId.includes('office') || trimmedId.includes('hostel') || trimmedId === 'off001')) {
+        matchKey = 'hostelOffice';
+      }
+    }
+
+    if (!matchKey || !DEV_USERS[matchKey]) {
+      throw new Error(`Authentication Failed: Institutional ID '${collegeIdOrEmail}' not recognized`);
+    }
+
+    login(portal, matchKey);
+  };
+
   const logout = () => {
     setSession(null);
     setCurrentPortal(null);
@@ -207,6 +269,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         currentPortal,
         setCurrentPortal,
         login,
+        loginWithCredentials,
         logout,
         switchUser,
         isDevMode,

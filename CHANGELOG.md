@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.3.0] - 2026-10-21
+
+- **Interactive 3-Option Toggle Portal Authentication with ID & Password Credentials (`PortalSelectionView.tsx` & `AuthContext.tsx`)**:
+  - **3-Option Segmented Toggle**:
+    - Embedded a clean 3-option toggle control allowing instant switching between `Student`, `Admin & Wardens`, and `Hostel Office`.
+    - Synchronized with active portal selection cards and highlighted with clear visual indicators.
+  - **Institutional ID & Password Authentication**:
+    - Added dedicated input fields for Institutional ID (`USN` / `Staff ID` / `Office Desk ID`) with user icon telemetry.
+    - Added secure password input field with show/hide password toggle.
+    - Integrated with `loginWithCredentials` method in `AuthContext` to validate credentials, enforce role permissions per portal, and establish authenticated sessions.
+    - Retained fast-entry preset selection directory for quick testing across all pilot demo students, wardens, and office staff.
+  - **Verification & Invariant Assurance**:
+    - 60/60 tests passing across 9 test suites (`npm test`).
+    - 0 TypeScript compiler errors (`npm run typecheck`).
+    - Clean production client build (`npm run build:client`).
+
 ## [2.2.0] - 2026-10-21
 
 - **Stitch Design System Alignment: BVB Block Architectural Wings & Interactive Room Inspector Drawer (`StudentAllocationView.tsx`)**:

@@ -9,29 +9,53 @@ import {
   AlertCircle, 
   Lock, 
   Sparkles, 
-  School 
+  School,
+  KeyRound,
+  UserCheck,
+  Eye,
+  EyeOff
 } from 'lucide-react';
 import { DormexLogo } from './DormexLogo.js';
 
 export const PortalSelectionView: React.FC = () => {
-  const { login, isDevMode } = useAuth();
-  const [selectedPortal, setSelectedPortal] = useState<'STUDENT' | 'ADMIN' | 'HOSTEL_OFFICE' | null>(null);
-  const [selectedUserKey, setSelectedUserKey] = useState<string>('');
+  const { login, loginWithCredentials, isDevMode } = useAuth();
+  const [selectedPortal, setSelectedPortal] = useState<'STUDENT' | 'ADMIN' | 'HOSTEL_OFFICE'>('STUDENT');
+  const [selectedUserKey, setSelectedUserKey] = useState<string>('demo1');
+  const [authIdInput, setAuthIdInput] = useState<string>('');
+  const [passwordInput, setPasswordInput] = useState<string>('');
+  const [showPassword, setShowPassword] = useState<boolean>(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   const handlePortalSelect = (portal: 'STUDENT' | 'ADMIN' | 'HOSTEL_OFFICE') => {
     setSelectedPortal(portal);
     setErrorMsg(null);
-    if (portal === 'STUDENT') setSelectedUserKey('demo1');
-    if (portal === 'ADMIN') setSelectedUserKey('superAdmin');
-    if (portal === 'HOSTEL_OFFICE') setSelectedUserKey('hostelOffice');
+    if (portal === 'STUDENT') {
+      setSelectedUserKey('demo1');
+      setAuthIdInput('DEMO-001');
+      setPasswordInput('••••••••');
+    }
+    if (portal === 'ADMIN') {
+      setSelectedUserKey('superAdmin');
+      setAuthIdInput('ADM001');
+      setPasswordInput('••••••••');
+    }
+    if (portal === 'HOSTEL_OFFICE') {
+      setSelectedUserKey('hostelOffice');
+      setAuthIdInput('OFF001');
+      setPasswordInput('••••••••');
+    }
   };
 
   const handleLoginSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!selectedPortal || !selectedUserKey) return;
+    if (!selectedPortal) return;
+    setErrorMsg(null);
     try {
-      login(selectedPortal, selectedUserKey);
+      if (authIdInput.trim()) {
+        loginWithCredentials(selectedPortal, authIdInput, passwordInput || 'password');
+      } else if (selectedUserKey) {
+        login(selectedPortal, selectedUserKey);
+      }
     } catch (err: any) {
       setErrorMsg(err.message || 'Login failed');
     }
@@ -74,7 +98,7 @@ export const PortalSelectionView: React.FC = () => {
           </div>
         )}
 
-        {/* 3 Portal Cards */}
+        {/* 3 Portal Cards with Integrated Institutional Identity & Password Login */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* 1. Student Login */}
           <div 
@@ -86,8 +110,15 @@ export const PortalSelectionView: React.FC = () => {
             }`}
           >
             <div className="space-y-4">
-              <div className="w-12 h-12 rounded bg-[#E7F2ED] text-[#2C8279] border border-[#2C8279]/30 flex items-center justify-center font-bold">
-                <GraduationCap className="w-6 h-6" />
+              <div className="flex items-center justify-between">
+                <div className="w-12 h-12 rounded-xl bg-[#E7F2ED] text-[#2C8279] border border-[#2C8279]/30 flex items-center justify-center font-bold">
+                  <GraduationCap className="w-6 h-6" />
+                </div>
+                {selectedPortal === 'STUDENT' && (
+                  <span className="px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-[#E7F2ED] text-[#1E7B54] rounded-full border border-[#A8D5C2]">
+                    Active Option
+                  </span>
+                )}
               </div>
               <div>
                 <h3 className="text-lg font-bold text-[#203653]">Student Portal</h3>
@@ -113,7 +144,7 @@ export const PortalSelectionView: React.FC = () => {
 
             <button 
               type="button"
-              className={`mt-6 w-full py-2.5 px-4 rounded text-xs font-bold transition-colors flex items-center justify-center gap-2 ${
+              className={`mt-6 w-full py-2.5 px-4 rounded-lg text-xs font-bold transition-colors flex items-center justify-center gap-2 ${
                 selectedPortal === 'STUDENT'
                   ? 'bg-[#2C8279] text-white shadow-xs'
                   : 'bg-[#F7F6F1] text-[#263345] border border-[#E2E6E8] hover:bg-[#eaeef0]'
@@ -134,8 +165,15 @@ export const PortalSelectionView: React.FC = () => {
             }`}
           >
             <div className="space-y-4">
-              <div className="w-12 h-12 rounded bg-[#E5E9EB] text-[#203653] border border-[#203653]/30 flex items-center justify-center font-bold">
-                <ShieldCheck className="w-6 h-6" />
+              <div className="flex items-center justify-between">
+                <div className="w-12 h-12 rounded-xl bg-[#E5E9EB] text-[#203653] border border-[#203653]/30 flex items-center justify-center font-bold">
+                  <ShieldCheck className="w-6 h-6" />
+                </div>
+                {selectedPortal === 'ADMIN' && (
+                  <span className="px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-[#E5E9EB] text-[#203653] rounded-full border border-[#C4C6CE]">
+                    Active Option
+                  </span>
+                )}
               </div>
               <div>
                 <h3 className="text-lg font-bold text-[#203653]">Admin & Wardens</h3>
@@ -161,7 +199,7 @@ export const PortalSelectionView: React.FC = () => {
 
             <button 
               type="button"
-              className={`mt-6 w-full py-2.5 px-4 rounded text-xs font-bold transition-colors flex items-center justify-center gap-2 ${
+              className={`mt-6 w-full py-2.5 px-4 rounded-lg text-xs font-bold transition-colors flex items-center justify-center gap-2 ${
                 selectedPortal === 'ADMIN'
                   ? 'bg-[#203653] text-white shadow-xs'
                   : 'bg-[#F7F6F1] text-[#263345] border border-[#E2E6E8] hover:bg-[#eaeef0]'
@@ -177,13 +215,20 @@ export const PortalSelectionView: React.FC = () => {
             onClick={() => handlePortalSelect('HOSTEL_OFFICE')}
             className={`p-6 rounded-xl border-2 transition-all cursor-pointer bg-white flex flex-col justify-between ${
               selectedPortal === 'HOSTEL_OFFICE'
-                ? 'border-[#2C8279] ring-4 ring-[#2C8279]/15 shadow-sm -translate-y-0.5'
+                ? 'border-[#9C7A2E] ring-4 ring-[#9C7A2E]/15 shadow-sm -translate-y-0.5'
                 : 'border-[#E2E6E8] hover:border-[#627084]/40 hover:shadow-xs'
             }`}
           >
             <div className="space-y-4">
-              <div className="w-12 h-12 rounded bg-[#FAF4E6] text-[#9C7A2E] border border-[#D4B779] flex items-center justify-center font-bold">
-                <Building className="w-6 h-6" />
+              <div className="flex items-center justify-between">
+                <div className="w-12 h-12 rounded-xl bg-[#FAF4E6] text-[#9C7A2E] border border-[#D4B779] flex items-center justify-center font-bold">
+                  <Building className="w-6 h-6" />
+                </div>
+                {selectedPortal === 'HOSTEL_OFFICE' && (
+                  <span className="px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-[#FAF4E6] text-[#9C7A2E] rounded-full border border-[#D4B779]">
+                    Active Option
+                  </span>
+                )}
               </div>
               <div>
                 <h3 className="text-lg font-bold text-[#203653]">Hostel Office</h3>
@@ -209,7 +254,7 @@ export const PortalSelectionView: React.FC = () => {
 
             <button 
               type="button"
-              className={`mt-6 w-full py-2.5 px-4 rounded text-xs font-bold transition-colors flex items-center justify-center gap-2 ${
+              className={`mt-6 w-full py-2.5 px-4 rounded-lg text-xs font-bold transition-colors flex items-center justify-center gap-2 ${
                 selectedPortal === 'HOSTEL_OFFICE'
                   ? 'bg-[#203653] text-white shadow-xs'
                   : 'bg-[#F7F6F1] text-[#263345] border border-[#E2E6E8] hover:bg-[#eaeef0]'
@@ -221,62 +266,191 @@ export const PortalSelectionView: React.FC = () => {
           </div>
         </div>
 
-        {/* Selected Portal Sign In Panel */}
+        {/* Three-Toggle Option Login Panel: ID + Password Credentials */}
         {selectedPortal && (
-          <div className="mt-8 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm max-w-xl mx-auto w-full animate-fadeIn">
-            <h4 className="text-sm font-bold text-navy-900 mb-2 flex items-center gap-2">
-              <Lock className="w-4 h-4 text-brand-teal" />
-              Sign In to {selectedPortal === 'STUDENT' ? 'Student Workspace' : selectedPortal === 'ADMIN' ? 'Administrative Workspace' : 'Hostel Office'}
-            </h4>
-            <p className="text-xs text-slate-500 mb-4">
-              Select an authorized pilot identity from the institutional directory to authenticate:
-            </p>
+          <div className="mt-10 bg-white p-7 rounded-2xl border border-[#E2E6E8] shadow-sm max-w-xl mx-auto w-full animate-fadeIn">
+            {/* 3-Toggle Portal Switcher */}
+            <div className="mb-6 space-y-2">
+              <label className="text-[11px] font-bold uppercase tracking-wider text-[#627084] block">
+                Select Portal Access Option
+              </label>
+              <div className="grid grid-cols-3 p-1 bg-[#F0F4F6] rounded-xl border border-[#E5E9EB] gap-1">
+                <button
+                  type="button"
+                  onClick={() => handlePortalSelect('STUDENT')}
+                  className={`py-2 px-3 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
+                    selectedPortal === 'STUDENT'
+                      ? 'bg-white text-[#07203C] shadow-xs'
+                      : 'text-[#627084] hover:text-[#07203C]'
+                  }`}
+                >
+                  <GraduationCap className="w-4 h-4 text-[#016A62]" />
+                  <span>Student</span>
+                </button>
 
+                <button
+                  type="button"
+                  onClick={() => handlePortalSelect('ADMIN')}
+                  className={`py-2 px-3 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
+                    selectedPortal === 'ADMIN'
+                      ? 'bg-white text-[#07203C] shadow-xs'
+                      : 'text-[#627084] hover:text-[#07203C]'
+                  }`}
+                >
+                  <ShieldCheck className="w-4 h-4 text-[#203653]" />
+                  <span>Admin</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => handlePortalSelect('HOSTEL_OFFICE')}
+                  className={`py-2 px-3 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
+                    selectedPortal === 'HOSTEL_OFFICE'
+                      ? 'bg-white text-[#07203C] shadow-xs'
+                      : 'text-[#627084] hover:text-[#07203C]'
+                  }`}
+                >
+                  <Building className="w-4 h-4 text-[#9C7A2E]" />
+                  <span>Hostel Office</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Panel Title & Subtitle */}
+            <div className="pb-4 mb-4 border-b border-[#E2E6E8]">
+              <h4 className="text-sm font-bold text-[#203653] flex items-center gap-2">
+                <Lock className="w-4 h-4 text-[#016A62]" />
+                <span>
+                  {selectedPortal === 'STUDENT'
+                    ? 'Student Portal Sign In'
+                    : selectedPortal === 'ADMIN'
+                    ? 'Administrative Staff Sign In'
+                    : 'Hostel Office Sign In'}
+                </span>
+              </h4>
+              <p className="text-xs text-[#627084] mt-1 leading-relaxed">
+                {selectedPortal === 'STUDENT'
+                  ? 'Enter your Student USN / Institutional ID and account password to enter your turn allocation queue.'
+                  : selectedPortal === 'ADMIN'
+                  ? 'Enter your Warden / Administrator Staff ID and security key to open the administration console.'
+                  : 'Enter your Hostel Admissions Officer ID and credential to access student application registries.'}
+              </p>
+            </div>
+
+            {/* Credentials Login Form */}
             <form onSubmit={handleLoginSubmit} className="space-y-4">
               <div>
-                <label className="text-xs font-semibold text-slate-700 block mb-1.5">
-                  Select Institutional Identity
+                <label className="text-xs font-semibold text-[#203653] block mb-1.5">
+                  {selectedPortal === 'STUDENT'
+                    ? 'Student USN / Institutional ID'
+                    : selectedPortal === 'ADMIN'
+                    ? 'Staff ID / Administrator ID'
+                    : 'Office Desk ID'}
                 </label>
+                <div className="relative">
+                  <input
+                    type="text"
+                    required
+                    value={authIdInput}
+                    onChange={(e) => setAuthIdInput(e.target.value)}
+                    placeholder={
+                      selectedPortal === 'STUDENT'
+                        ? 'e.g. DEMO-001 or 1SI21CS094'
+                        : selectedPortal === 'ADMIN'
+                        ? 'e.g. ADM001 or WRD001'
+                        : 'e.g. OFF001'
+                    }
+                    className="w-full text-xs font-mono bg-[#F7F6F1] border border-[#E2E6E8] rounded-lg px-3.5 py-2.5 text-[#203653] focus:outline-none focus:ring-2 focus:ring-[#016A62] transition-all"
+                  />
+                  <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-[#627084]">
+                    <UserCheck className="w-4 h-4" />
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="text-xs font-semibold text-[#203653]">
+                    Account Password / Security Credential
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="text-[11px] text-[#016A62] hover:text-[#0d6f66] font-medium flex items-center gap-1"
+                  >
+                    {showPassword ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                    <span>{showPassword ? 'Hide' : 'Show'}</span>
+                  </button>
+                </div>
+                <div className="relative">
+                  <input
+                    type={showPassword ? 'text' : 'password'}
+                    required
+                    value={passwordInput}
+                    onChange={(e) => setPasswordInput(e.target.value)}
+                    placeholder="Enter account password..."
+                    className="w-full text-xs font-mono bg-[#F7F6F1] border border-[#E2E6E8] rounded-lg px-3.5 py-2.5 text-[#203653] focus:outline-none focus:ring-2 focus:ring-[#016A62] transition-all"
+                  />
+                  <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-[#627084]">
+                    <KeyRound className="w-4 h-4" />
+                  </div>
+                </div>
+              </div>
+
+              {/* Quick Preset Selector for Fast Local Pilot Evaluation */}
+              <div className="pt-1">
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-[11px] font-semibold text-[#627084]">
+                    Quick Pilot Preset Directory:
+                  </span>
+                  <span className="text-[10px] text-[#016A62] font-mono">Auto-populates ID</span>
+                </div>
                 <select
                   value={selectedUserKey}
-                  onChange={(e) => setSelectedUserKey(e.target.value)}
-                  className="w-full text-xs bg-slate-50 border border-slate-300 rounded-lg px-3 py-2.5 text-navy-900 focus:outline-none focus:ring-2 focus:ring-brand-teal"
+                  onChange={(e) => {
+                    const key = e.target.value;
+                    setSelectedUserKey(key);
+                    const user = DEV_USERS[key];
+                    if (user) {
+                      setAuthIdInput(user.collegeId);
+                      setPasswordInput('••••••••');
+                    }
+                  }}
+                  className="w-full text-xs bg-[#F7F6F1] border border-[#E2E6E8] rounded-lg px-3 py-2 text-[#203653] focus:outline-none focus:ring-1 focus:ring-[#016A62]"
                 >
                   {selectedPortal === 'STUDENT' && (
-                    <>
-                      <optgroup label="Seeded Demo Students (Pilot Participants)">
-                        <option value="demo1">Aarav Sharma (DEMO-001, Verified Fee, Rank #1)</option>
-                        <option value="demo2">Diya Patel (DEMO-002, Verified Fee, Rank #2)</option>
-                        <option value="demo3">Rohan Verma (DEMO-003, Verified Fee, Rank #3)</option>
-                        <option value="demo10">Arjun Menon (DEMO-010, Verified Fee, Rank #10)</option>
-                        <option value="demo29">Prisha Pandey (DEMO-029, Fee Submitted - Pending Review)</option>
-                        <option value="demo30">Nikhil Saxena (DEMO-030, Unpaid / Fee Pending)</option>
-                      </optgroup>
-                    </>
+                    <optgroup label="Seeded Demo Students (Pilot Participants)">
+                      <option value="demo1">Aarav Sharma (DEMO-001, Verified Fee, Priority #1)</option>
+                      <option value="demo2">Diya Patel (DEMO-002, Verified Fee, Priority #2)</option>
+                      <option value="demo3">Rohan Verma (DEMO-003, Verified Fee, Priority #3)</option>
+                      <option value="demo10">Arjun Menon (DEMO-010, Verified Fee, Priority #10)</option>
+                      <option value="demo29">Prisha Pandey (DEMO-029, Fee Submitted - Pending Review)</option>
+                      <option value="demo30">Nikhil Saxena (DEMO-030, Unpaid / Fee Pending)</option>
+                    </optgroup>
                   )}
 
                   {selectedPortal === 'ADMIN' && (
                     <>
-                      <option value="superAdmin">System Administrator (Super Admin)</option>
-                      <option value="chiefWarden">Dr. Sharma (Chief Warden)</option>
-                      <option value="wardenBvb">Prof. Rao (Warden - BVB Block)</option>
+                      <option value="superAdmin">System Administrator (Super Admin · ADM001)</option>
+                      <option value="chiefWarden">Dr. Sharma (Chief Warden · CW001)</option>
+                      <option value="wardenBvb">Prof. Rao (Warden - BVB Block · WRD001)</option>
                     </>
                   )}
 
                   {selectedPortal === 'HOSTEL_OFFICE' && (
                     <>
-                      <option value="hostelOffice">Hostel Office Staff (Admissions & Verification)</option>
+                      <option value="hostelOffice">Hostel Office Staff (Admissions & Verification · OFF001)</option>
                     </>
                   )}
                 </select>
               </div>
 
-              <div className="pt-2">
+              <div className="pt-3">
                 <button
                   type="submit"
-                  className="w-full py-2.5 px-4 bg-brand-teal hover:bg-brand-tealHover text-white text-xs font-bold rounded-lg shadow-sm transition-colors flex items-center justify-center gap-2"
+                  className="w-full py-2.5 px-4 bg-[#016A62] hover:bg-[#0d6f66] text-white text-xs font-bold rounded-lg shadow-sm transition-colors flex items-center justify-center gap-2"
                 >
-                  <span>Authenticate & Enter Workspace</span>
+                  <span>Authenticate with ID & Password</span>
                   <ArrowRight className="w-4 h-4" />
                 </button>
               </div>

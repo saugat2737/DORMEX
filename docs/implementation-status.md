@@ -22,6 +22,19 @@ Repository Status: Active Development (Modular Monolith)
 10. **Cycle configuration**: Frozen and immutable once state transitions to `READY`. Rule modifications necessitate a new cycle configuration version.
 
 ## 3. Implementation Phases
+- [x] **Phase 17: Interactive 3-Option Toggle Portal Authentication with ID & Password Credentials (`PortalSelectionView.tsx`)**:
+  - **3-Option Segmented Portal Switcher**:
+    - Embedded a responsive 3-option toggle control allowing instant switching between Student, Admin & Wardens, and Hostel Office portals.
+    - Fully synchronized with portal cards and active option badges.
+  - **ID & Password Credential Authentication**:
+    - Direct input fields for Student USN / Institutional Staff ID / Office Desk ID and security password.
+    - Show/hide password reveal control.
+    - Integrated with `AuthContext.loginWithCredentials` to authenticate users and enforce portal role invariants.
+    - Quick preset selector for streamlined pilot testing across seeded demo users.
+  - **Verification**:
+    - 60/60 automated tests passing (`npm test`).
+    - 0 TypeScript compiler errors (`npm run typecheck`).
+    - Clean production client build (`npm run build:client`).
 - [x] **Phase 16: Stitch UI BVB Floor Map Architectural Wings & Room Inspector Drawer (`StudentAllocationView.tsx`)**:
   - **Authentic Multi-Wing Floor Layout**:
     - Replaced generic SVG map canvas with Stitch multi-wing geometric layout:
