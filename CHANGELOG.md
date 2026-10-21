@@ -9,6 +9,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2.0.0] - 2026-10-21
 
+- **Stitch Design System Alignment: Hostel Office Registry & Verification Workbench (`StudentRegistryView.tsx`)**:
+  - **Top Institutional Ambient Banner & Header Ribbon**: Added `Hostel Admin Desk` branding, Live Registry Sync indicator, and action triggers for `Export Registry CSV` and `Batch Re-verify SBI Gateway`.
+  - **Quick Operational Metrics Ticker**: 4 executive metric cards summarizing `Total Applications (30 Records)`, `Fee Verified (24 Students)`, `Receipts Pending Audit (4 Records)`, and `Corrections Required (2 Flagged)`.
+  - **Statutory Allocation Rule Callout**: Highlights SIT Hostel Bylaw §4.2(b) declaring chronological payment timestamp ordering down to the second.
+  - **Split-Screen Registry Console**:
+    - **Filter Toolbar**: Multi-dimensional search across USN, name, challan reference, academic year, branch, and fee audit status.
+    - **Registered Applications Table**: Queue rank counter badges (`#01`, `#02`...), student avatar cards, department tags, SBI Collect references with timestamps, challan amount, and eligibility status.
+  - **Multi-Tab Applicant Dossier**:
+    - Embedded structured dossier sidebar supporting `Fee Evidence`, `Profile`, `Guardian`, `Proctor`, and `Audit Log` tabs.
+    - **SBI Collect E-Receipt Duplicate Mockup**: Visual representation of bank reference `#DUK8932401`, fee head, paid amount (₹38,500.00), digital PDF inspection trigger, and gateway confirmation badge.
+    - **3-Point Verification Controls**: Interactive checklist toggles for Bank Ref Reconciliation, Disciplinary & Proctor Clearance, and Floor 2 Residency Terms Acceptance.
+    - **Direct Warden Review Actions**: Single-click `Confirm Queue #X`, `Request Correction`, and `Reject Evidence & Disqualify Priority` buttons.
+
 - **Stitch Design System Alignment: Admin Allocation Control Console (`AdminDashboard.tsx`)**:
   - **Top Context & Telemetry Bar**: Integrated institutional session indicator (`Session ID: SIT-BVB-24F2-PH1`), gateway timestamp, and certified Warden hash (`#BVB-9804-KSH`).
   - **7-Card Executive Bento Metric Strip**: Displays real-time counts across `Total Cohort (30)`, `Fee Verified (24)`, `Pending Rev. (06)`, `Configured Beds (72)`, `Occupied (12)`, `Available (56)`, and `Blocked (04)`.
