@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"/><style>@layer base { html, body { margin: 0; padding: 0; } body { overscroll-behavior: none; } main > :first-child { margin-top: 0 !important; } main > :last-child { margin-bottom: 0 !important; } } ::-webkit-scrollbar { display: none; }</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "on-primary": "#ffffff", "error": "#ba1a1a", "outline-variant": "#c4c6ce", "inverse-surface": "#2c3133", "on-surface": "#181c1e", "on-tertiary-container": "#b69a5f", "secondary-fixed-dim": "#84d5ca", "secondary-container": "#9defe3", "on-tertiary-fixed": "#251a00", "on-secondary-fixed-variant": "#005049", "tertiary-fixed": "#fedf9d", "on-primary-container": "#8a9fc1", "primary": "#07203c", "on-error-container": "#93000a", "on-surface-variant": "#44474d", "outline": "#74777e", "surface-container": "#eaeef0", "surface-container-lowest": "#ffffff", "secondary-fixed": "#a0f1e6", "tertiary-fixed-dim": "#e1c384", "on-secondary": "#ffffff", "tertiary-container": "#453201", "on-primary-fixed": "#021c38", "inverse-on-surface": "#edf1f3", "on-secondary-fixed": "#00201d", "surface-dim": "#d6dbdd", "on-secondary-container": "#0d6f66", "primary-fixed": "#d4e3ff", "surface-tint": "#4a5f7f", "inverse-primary": "#b2c8ec", "on-error": "#ffffff", "on-tertiary-fixed-variant": "#584411", "on-background": "#181c1e", "secondary": "#016a62", "primary-fixed-dim": "#b2c8ec", "surface-container-high": "#e5e9eb", "surface-bright": "#f6fafc", "surface-container-highest": "#dfe3e5", "background": "#f6fafc", "primary-container": "#203653", "surface-variant": "#dfe3e5", "error-container": "#ffdad6", "surface-container-low": "#f0f4f6", "on-primary-fixed-variant": "#324866", "on-tertiary": "#ffffff", "surface": "#f6fafc", "tertiary": "#2b1e00" }, "borderRadius": { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem" }, "spacing": { "margin-mobile": "1rem", "margin": "1.5rem", "space-sm": "0.5rem", "gutter": "1rem", "gutter-mobile": "0.75rem", "space-lg": "1.5rem", "space-2xl": "3rem", "space-md": "1rem", "space-xs": "0.25rem", "space-xl": "2rem" }, "fontFamily": { "label-md": ["Inter"], "body-lg": ["Inter"], "label-lg": ["Inter"], "headline-sm": ["Inter"], "body-md": ["Inter"], "headline-lg": ["Inter"], "headline-xl-mobile": ["Inter"], "body-sm": ["Inter"], "headline-xl": ["Inter"], "label-sm": ["Inter"], "headline-md": ["Inter"] }, "fontSize": { "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "500" }], "body-lg": ["16px", { "lineHeight": "24px", "letterSpacing": "0", "fontWeight": "400" }], "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.005em", "fontWeight": "600" }], "headline-sm": ["16px", { "lineHeight": "24px", "letterSpacing": "0", "fontWeight": "600" }], "body-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0", "fontWeight": "400" }], "headline-lg": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.015em", "fontWeight": "600" }], "headline-xl-mobile": ["26px", { "lineHeight": "34px", "letterSpacing": "-0.01em", "fontWeight": "700" }], "body-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "400" }], "headline-xl": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }], "label-sm": ["10px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "600" }], "headline-md": ["20px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600" }] } } } };</script></head><body class="bg-surface font-body-md text-on-surface antialiased"><aside class="fixed left-0 top-0 h-full w-72 bg-primary z-50 flex flex-col justify-between shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="flex flex-col"><div class="h-16 px-space-md flex items-center gap-space-sm bg-primary-container/40"><img alt="DORMEX Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1XjQPmhgKdIoWz1Za1a9slAUa4A7nIWXVrLt6MpohSUL7DUOJmm2vJH0BXWToH8JxRo9-6pt32Xb5DuXGFTP962pF6EZ5prwwX3PLB5cI8VH9cDeHrYywEZnExlZu2Jnupy79QXy2xVaMjeXAHoyPP48qXedVYKqhyEIlq7vshJDV7vzTh73i0tZOO1mpz3Fz2RfY3ckOItEYV6p4Mzd9--Dbm8GCiumkfuj9XxJeD2ifmBvqI6hj1riMA"/><div class="flex flex-col min-w-0"><span class="font-headline-sm text-headline-sm text-on-primary tracking-tight leading-tight truncate">DORMEX</span><span class="font-label-sm text-label-sm text-on-primary-container tracking-wider uppercase truncate">SIT Tumakuru · ResAdmin</span></div></div><div class="px-space-md py-space-sm"><div class="px-space-sm py-space-xs rounded bg-primary-container/80 flex items-center gap-space-xs"><span class="w-2 h-2 rounded-full bg-secondary-fixed"></span><span class="font-label-sm text-label-sm text-primary-fixed uppercase tracking-wider">BVB Block · Floor 2 Portal</span></div></div><nav class="flex flex-col gap-space-xs px-space-sm py-space-xs" data-active-classes="bg-primary-container text-on-primary font-label-lg rounded"><a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded font-body-md text-body-md text-on-primary-container hover:bg-primary-container hover:text-on-primary transition-colors" data-path="dashboard" href="#"><span class="material-symbols-outlined text-lg">dashboard</span><span class="truncate">Dashboard</span></a><a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded font-body-md text-body-md text-on-primary-container hover:bg-primary-container hover:text-on-primary transition-colors" data-path="bvb-floor-map" href="#"><span class="material-symbols-outlined text-lg">domain</span><span class="truncate">BVB Floor Map</span></a><a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded font-body-md text-body-md text-on-primary-container hover:bg-primary-container hover:text-on-primary transition-colors" data-path="student-application-terms" href="#"><span class="material-symbols-outlined text-lg">assignment</span><span class="truncate">Student Application & Terms</span></a><a aria-current="page" class="flex items-center gap-space-sm px-space-sm py-space-xs transition-colors bg-primary-container text-on-primary font-label-lg rounded" data-path="hostel-office-registry" href="#"><span class="material-symbols-outlined text-lg">badge</span><span class="truncate">Hostel Office Registry</span></a><a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded font-body-md text-body-md text-on-primary-container hover:bg-primary-container hover:text-on-primary transition-colors" data-path="admin-allocation-control" href="#"><span class="material-symbols-outlined text-lg">tune</span><span class="truncate">Admin Allocation Control</span></a><a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded font-body-md text-body-md text-on-primary-container hover:bg-primary-container hover:text-on-primary transition-colors" data-path="roommate-coordination" href="#"><span class="material-symbols-outlined text-lg">group_add</span><span class="truncate">Roommate Coordination</span></a><a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded font-body-md text-body-md text-on-primary-container hover:bg-primary-container hover:text-on-primary transition-colors" data-path="central-complaint-inbox" href="#"><span class="material-symbols-outlined text-lg">mark_email_unread</span><span class="truncate">Central Complaint Inbox</span></a><a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded font-body-md text-body-md text-on-primary-container hover:bg-primary-container hover:text-on-primary transition-colors" data-path="room-change-window" href="#"><span class="material-symbols-outlined text-lg">swap_horiz</span><span class="truncate">Room Change Window</span></a></nav></div><div class="p-space-md bg-primary-container/30 m-space-sm rounded flex flex-col gap-space-xs"><div class="flex items-center justify-between text-on-primary-container"><span class="font-label-sm text-label-sm uppercase tracking-wider">Active Session</span><span class="material-symbols-outlined text-sm text-secondary-fixed">verified</span></div><div class="font-label-md text-label-md text-on-primary font-medium truncate">BVB-F2 Turn 14/90</div><div class="w-full bg-primary-container h-1.5 rounded overflow-hidden"><div class="bg-secondary-fixed h-full w-[45%]"></div></div></div></aside><div class="pl-72"><header class="fixed top-0 left-72 right-0 h-16 bg-surface/95 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-40 flex items-center justify-between px-space-lg"><div class="flex items-center gap-space-md"><div class="flex items-center gap-space-xs text-on-surface-variant font-label-md text-label-md"><span class="truncate">Campus Hostels</span><span class="material-symbols-outlined text-sm">chevron_right</span><span class="truncate">BVB Residency</span><span class="material-symbols-outlined text-sm">chevron_right</span><span class="text-on-surface font-semibold truncate">Allocation Console</span></div><span class="hidden lg:inline-flex items-center gap-1.5 px-space-sm py-0.5 rounded bg-surface-container-high font-label-sm text-label-sm text-on-surface"><span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>BVB Block · Floor 2 Pilot · AY 2024–25</span></div><div class="flex items-center gap-space-md"><div class="hidden md:flex items-center gap-space-xs px-space-sm py-1 rounded bg-secondary-container/40 text-on-secondary-container font-label-sm text-label-sm"><span class="material-symbols-outlined text-sm text-secondary">hourglass_top</span><span>Your Turn Window: 18m Left</span></div><button aria-label="Notifications" class="relative p-space-xs text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded transition-colors"><span class="material-symbols-outlined text-xl">notifications</span><span class="absolute top-1 right-1 w-2 h-2 rounded-full bg-error"></span></button><div class="flex items-center gap-space-sm pl-space-sm"><div class="flex flex-col text-right hidden sm:block"><span class="font-label-lg text-label-lg text-on-surface leading-tight">Saugat</span><span class="font-label-sm text-label-sm text-on-surface-variant">1SI21CS094 · 6th Sem</span></div><img alt="Profile" class="w-8 h-8 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDVdz_tEsKn-hWfPsQUo2SFLOj4hZoAe55UP5xl0h-L9PWFgfIgXg0FbUTw-zPrpXWm55TMtUDp76aEaJqEoWQ47t8P8nRJN-ZEj3t3IPLcTDGbpxq_g7eKD8_p_IPJQ8QaGcbdovxAFf3QHECMQVH3WyHnkOKq7lEouyva5dJUoG-nKEu8C2UMRGT8M0bjeGr-W4pZf8hqMcQ4v7YnudsgN02LfBMeofMoRZXR1y5XvhDZQxCt8XdaIA"/><div class="flex items-center px-space-xs py-1 rounded bg-surface-container font-label-sm text-label-sm text-on-surface"><span class="truncate hidden md:inline">Student View</span><span class="material-symbols-outlined text-sm text-on-surface-variant">arrow_drop_down</span></div></div></div></header><main class="w-full pt-16 bg-surface min-h-screen"><div class="flex flex-col w-full">
+<!-- Top Ambient Banner & Header Ribbon -->
+<div class="relative bg-surface-container-low px-space-xl py-space-xl overflow-hidden shadow-sm">
+<div class="absolute -right-24 -top-24 w-96 h-96 rounded-full bg-secondary-fixed-dim/20 blur-3xl pointer-events-none"></div>
+<div class="absolute left-1/3 -bottom-20 w-80 h-80 rounded-full bg-primary-fixed/25 blur-2xl pointer-events-none"></div>
+<div class="relative z-10 flex flex-col gap-space-md">
+<div class="flex flex-wrap items-center justify-between gap-space-md">
+<div class="flex flex-col">
+<div class="flex items-center gap-space-sm mb-space-xs">
+<span class="inline-flex items-center px-space-xs py-0.5 rounded bg-primary text-on-primary font-label-sm text-label-sm tracking-wider uppercase">
+              Hostel Admin Desk
+            </span>
+<span class="text-on-surface-variant font-label-sm text-label-sm uppercase tracking-wider">
+              SIT Tumakuru · ResAdmin Engine
+            </span>
+<span class="inline-flex items-center gap-1 text-secondary font-label-sm text-label-sm font-semibold">
+<span class="w-2 h-2 rounded-full bg-secondary"></span> Live Registry Sync
+            </span>
+</div>
+<h1 class="font-headline-xl text-headline-xl text-on-surface tracking-tight">
+            Hostel Office Student Registry & Verification Desk
+          </h1>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-3xl mt-0.5">
+            BVB Block Floor 2 Pilot · 30 Synthetic Student Applications · Verification & Order of Priority Management
+          </p>
+</div>
+<div class="flex items-center gap-space-sm">
+<button class="px-space-md py-2 bg-surface-container-highest hover:bg-surface-dim text-on-surface font-label-lg text-label-lg rounded transition-colors flex items-center gap-space-xs shadow-sm">
+<span class="material-symbols-outlined text-lg">download</span>
+<span>Export Registry CSV</span>
+</button>
+<button class="px-space-md py-2 bg-primary hover:bg-primary-container text-on-primary font-label-lg text-label-lg rounded transition-colors flex items-center gap-space-xs shadow-md">
+<span class="material-symbols-outlined text-lg">sync</span>
+<span>Batch Re-verify SBI Gateway</span>
+</button>
+</div>
+</div>
+<!-- Quick Operational Metrics Ticker -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-space-md pt-space-xs">
+<div class="p-space-md bg-surface-container-lowest rounded shadow-sm flex items-center justify-between">
+<div>
+<div class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">Total Applications</div>
+<div class="font-headline-lg text-headline-lg text-on-surface font-bold tracking-tight">30 Records</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">BVB Block Floor 2 Cohort</div>
+</div>
+<div class="w-12 h-12 rounded bg-surface-container flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-2xl">badge</span>
+</div>
+</div>
+<div class="p-space-md bg-surface-container-lowest rounded shadow-sm flex items-center justify-between">
+<div>
+<div class="font-label-sm text-label-sm uppercase tracking-wider text-secondary">Fee Verified</div>
+<div class="font-headline-lg text-headline-lg text-secondary font-bold tracking-tight">24 Students</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">Queued for Bed Turn Selection</div>
+</div>
+<div class="w-12 h-12 rounded bg-secondary-container/50 flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-2xl">verified_user</span>
+</div>
+</div>
+<div class="p-space-md bg-surface-container-lowest rounded shadow-sm flex items-center justify-between">
+<div>
+<div class="font-label-sm text-label-sm uppercase tracking-wider text-tertiary-container">Receipts Pending Audit</div>
+<div class="font-headline-lg text-headline-lg text-on-tertiary-fixed-variant font-bold tracking-tight">4 Records</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">Bank reconciliation in progress</div>
+</div>
+<div class="w-12 h-12 rounded bg-tertiary-fixed/60 flex items-center justify-center text-tertiary-container">
+<span class="material-symbols-outlined text-2xl">schedule</span>
+</div>
+</div>
+<div class="p-space-md bg-surface-container-lowest rounded shadow-sm flex items-center justify-between">
+<div>
+<div class="font-label-sm text-label-sm uppercase tracking-wider text-error">Corrections Required</div>
+<div class="font-headline-lg text-headline-lg text-error font-bold tracking-tight">2 Flagged</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">Receipt unclear / mismatch</div>
+</div>
+<div class="w-12 h-12 rounded bg-error-container/70 flex items-center justify-center text-error">
+<span class="material-symbols-outlined text-2xl">error_outline</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Operational Alert & Turn Policy Callout -->
+<div class="px-space-xl py-space-sm bg-surface-container flex items-center justify-between gap-space-md text-on-surface">
+<div class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-secondary text-lg">info</span>
+<span class="font-label-md text-label-md text-on-surface">
+<strong>Statutory Allocation Rule:</strong> Priority Queue sequence is determined strictly by the SBI Collect confirmed bank timestamp down to the second. Frontend interfaces cannot mutate ranking order without Chief Warden approval override.
+      </span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider bg-surface px-space-sm py-0.5 rounded">
+      SIT Hostel Bylaw §4.2(b)
+    </span>
+</div>
+<!-- Main Workstation: Split Screen (Registry Table & Structured Drawer) -->
+<div class="p-space-xl grid grid-cols-1 lg:grid-cols-12 gap-space-lg items-start">
+<!-- LEFT PANEL: Filter Toolbar & Registry Table (7 or 8 Cols depending on viewport) -->
+<div class="lg:col-span-7 flex flex-col gap-space-md">
+<!-- Filter & Search Console -->
+<div class="p-space-md bg-surface-container-lowest rounded shadow-sm flex flex-col gap-space-sm">
+<div class="flex items-center gap-space-sm">
+<div class="relative flex-1">
+<span class="material-symbols-outlined absolute left-3 top-2.5 text-on-surface-variant text-lg">search</span>
+<input class="w-full pl-10 pr-4 py-2 bg-surface-container-low text-on-surface placeholder:text-on-surface-variant/70 font-body-md text-body-md rounded focus:outline-none focus:bg-surface-container-lowest transition-all" placeholder="Search by Student Name, USN, or SBI Collect Ref Number..." type="text" value=""/>
+</div>
+<button class="px-space-md py-2 bg-surface-container hover:bg-surface-container-high text-on-surface font-label-md text-label-md rounded flex items-center gap-1">
+<span class="material-symbols-outlined text-base">filter_list</span>
+<span>Filters (4)</span>
+</button>
+</div>
+<!-- Filter Dropdown Bar -->
+<div class="grid grid-cols-2 md:grid-cols-4 gap-space-xs pt-space-xs">
+<div>
+<label class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider block mb-1">Academic Year</label>
+<select class="w-full px-2 py-1.5 bg-surface-container-low text-on-surface font-label-md text-label-md rounded focus:outline-none">
+<option>3rd Year (6th Sem)</option>
+<option>2nd Year (4th Sem)</option>
+<option>4th Year (8th Sem)</option>
+</select>
+</div>
+<div>
+<label class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider block mb-1">Branch</label>
+<select class="w-full px-2 py-1.5 bg-surface-container-low text-on-surface font-label-md text-label-md rounded focus:outline-none">
+<option>All Branches (CSE, ISE, ECE, MECH)</option>
+<option>Computer Science (CSE)</option>
+<option>Information Science (ISE)</option>
+<option>Electronics (ECE)</option>
+<option>Mechanical (MECH)</option>
+</select>
+</div>
+<div>
+<label class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider block mb-1">Fee Audit Status</label>
+<select class="w-full px-2 py-1.5 bg-surface-container-low text-on-surface font-label-md text-label-md rounded focus:outline-none">
+<option>All Verification States</option>
+<option selected="">Verified (24)</option>
+<option>Pending Audit (4)</option>
+<option>Flagged / Rectification (2)</option>
+</select>
+</div>
+<div>
+<label class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider block mb-1">Sort Hierarchy</label>
+<select class="w-full px-2 py-1.5 bg-surface-container-low text-on-surface font-label-md text-label-md rounded focus:outline-none">
+<option selected="">Priority Order (Payment Timestamp)</option>
+<option>USN Ascending</option>
+<option>Candidate Name</option>
+<option>Audit Urgency</option>
+</select>
+</div>
+</div>
+</div>
+<!-- Table Card -->
+<div class="bg-surface-container-lowest rounded shadow-sm overflow-hidden">
+<div class="px-space-md py-space-sm bg-surface-container flex items-center justify-between">
+<div class="flex items-center gap-space-sm">
+<span class="font-headline-sm text-headline-sm text-on-surface">Registered Student Applications</span>
+<span class="font-label-sm text-label-sm px-2 py-0.5 rounded bg-surface-container-highest text-on-surface">30 Synthetic Pilot Records</span>
+</div>
+<div class="font-label-sm text-label-sm text-on-surface-variant">
+            Viewing 1–4 of 30 Applications
+          </div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead>
+<tr class="bg-surface-container-low text-on-surface-variant font-label-sm text-label-sm uppercase tracking-wider">
+<th class="py-3 px-space-md">Queue #</th>
+<th class="py-3 px-space-md">Candidate Details</th>
+<th class="py-3 px-space-md">Branch</th>
+<th class="py-3 px-space-md">SBI Collect Ref & Timestamp</th>
+<th class="py-3 px-space-md">Challan / Fee</th>
+<th class="py-3 px-space-md">Status</th>
+<th class="py-3 px-space-md text-right">Verification</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-surface-container">
+<!-- Row 1: Selected Student Chetan Kumar -->
+<tr class="bg-secondary-container/10 hover:bg-secondary-container/20 transition-colors cursor-pointer group" onclick="switchStudentDetail('chetan')">
+<td class="py-3.5 px-space-md align-middle">
+<div class="inline-flex items-center justify-center w-8 h-8 rounded bg-primary text-on-primary font-label-lg text-label-lg font-bold shadow-xs">
+                    01
+                  </div>
+</td>
+<td class="py-3.5 px-space-md">
+<div class="flex items-center gap-space-sm">
+<div class="w-9 h-9 rounded-full bg-primary-container text-on-primary flex items-center justify-center font-label-md text-label-md">
+                      CK
+                    </div>
+<div class="flex flex-col min-w-0">
+<span class="font-label-lg text-label-lg text-on-surface font-semibold group-hover:text-primary transition-colors">
+                        Chetan Kumar
+                      </span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">
+                        1SI21CS003 · CGPA: 9.42
+                      </span>
+</div>
+</div>
+</td>
+<td class="py-3.5 px-space-md">
+<span class="px-2 py-0.5 rounded bg-surface-container-high text-on-surface font-label-sm text-label-sm">
+                    CSE · Sem 6
+                  </span>
+</td>
+<td class="py-3.5 px-space-md">
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface font-mono font-medium">DUK8932401</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-xs text-secondary">schedule</span>
+                      12-Jul 08:30:15 IST
+                    </span>
+</div>
+</td>
+<td class="py-3.5 px-space-md">
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface font-semibold">₹38,500</span>
+<span class="inline-flex items-center gap-1 font-label-sm text-label-sm text-secondary font-medium">
+<span class="material-symbols-outlined text-xs">check_circle</span> Verified
+                    </span>
+</div>
+</td>
+<td class="py-3.5 px-space-md">
+<span class="px-2 py-1 rounded bg-secondary-container text-on-secondary-container font-label-sm text-label-sm whitespace-nowrap">
+                    Eligible for Turn 1
+                  </span>
+</td>
+<td class="py-3.5 px-space-md text-right">
+<button class="px-space-sm py-1.5 bg-primary text-on-primary hover:bg-primary-container rounded font-label-sm text-label-sm transition-colors shadow-xs">
+                    View Dossier
+                  </button>
+</td>
+</tr>
+<!-- Row 2: Divya M. -->
+<tr class="bg-surface-container-lowest hover:bg-surface-container-low transition-colors cursor-pointer group" onclick="switchStudentDetail('divya')">
+<td class="py-3.5 px-space-md align-middle">
+<div class="inline-flex items-center justify-center w-8 h-8 rounded bg-surface-container-high text-on-surface font-label-lg text-label-lg font-bold">
+                    02
+                  </div>
+</td>
+<td class="py-3.5 px-space-md">
+<div class="flex items-center gap-space-sm">
+<div class="w-9 h-9 rounded-full bg-secondary text-on-secondary flex items-center justify-center font-label-md text-label-md">
+                      DM
+                    </div>
+<div class="flex flex-col min-w-0">
+<span class="font-label-lg text-label-lg text-on-surface font-semibold group-hover:text-primary transition-colors">
+                        Divya M.
+                      </span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">
+                        1SI21IS019 · CGPA: 9.18
+                      </span>
+</div>
+</div>
+</td>
+<td class="py-3.5 px-space-md">
+<span class="px-2 py-0.5 rounded bg-surface-container-high text-on-surface font-label-sm text-label-sm">
+                    ISE · Sem 6
+                  </span>
+</td>
+<td class="py-3.5 px-space-md">
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface font-mono font-medium">DUK8932488</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-xs text-secondary">schedule</span>
+                      12-Jul 08:31:40 IST
+                    </span>
+</div>
+</td>
+<td class="py-3.5 px-space-md">
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface font-semibold">₹38,500</span>
+<span class="inline-flex items-center gap-1 font-label-sm text-label-sm text-secondary font-medium">
+<span class="material-symbols-outlined text-xs">check_circle</span> Verified
+                    </span>
+</div>
+</td>
+<td class="py-3.5 px-space-md">
+<span class="px-2 py-1 rounded bg-secondary-container text-on-secondary-container font-label-sm text-label-sm whitespace-nowrap">
+                    Eligible for Turn 2
+                  </span>
+</td>
+<td class="py-3.5 px-space-md text-right">
+<button class="px-space-sm py-1.5 bg-surface-container hover:bg-surface-container-high text-on-surface rounded font-label-sm text-label-sm transition-colors">
+                    View Dossier
+                  </button>
+</td>
+</tr>
+<!-- Row 3: Harish Gowda -->
+<tr class="bg-surface-container-lowest hover:bg-surface-container-low transition-colors cursor-pointer group" onclick="switchStudentDetail('harish')">
+<td class="py-3.5 px-space-md align-middle">
+<div class="inline-flex items-center justify-center w-8 h-8 rounded bg-surface-container-high text-on-surface font-label-lg text-label-lg font-bold">
+                    03
+                  </div>
+</td>
+<td class="py-3.5 px-space-md">
+<div class="flex items-center gap-space-sm">
+<div class="w-9 h-9 rounded-full bg-primary-container/70 text-on-primary flex items-center justify-center font-label-md text-label-md">
+                      HG
+                    </div>
+<div class="flex flex-col min-w-0">
+<span class="font-label-lg text-label-lg text-on-surface font-semibold group-hover:text-primary transition-colors">
+                        Harish Gowda
+                      </span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">
+                        1SI21EC045 · CGPA: 8.94
+                      </span>
+</div>
+</div>
+</td>
+<td class="py-3.5 px-space-md">
+<span class="px-2 py-0.5 rounded bg-surface-container-high text-on-surface font-label-sm text-label-sm">
+                    ECE · Sem 6
+                  </span>
+</td>
+<td class="py-3.5 px-space-md">
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface font-mono font-medium">DUK8932512</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-xs text-secondary">schedule</span>
+                      12-Jul 08:35:02 IST
+                    </span>
+</div>
+</td>
+<td class="py-3.5 px-space-md">
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface font-semibold">₹38,500</span>
+<span class="inline-flex items-center gap-1 font-label-sm text-label-sm text-secondary font-medium">
+<span class="material-symbols-outlined text-xs">check_circle</span> Verified
+                    </span>
+</div>
+</td>
+<td class="py-3.5 px-space-md">
+<span class="px-2 py-1 rounded bg-secondary-container text-on-secondary-container font-label-sm text-label-sm whitespace-nowrap">
+                    Eligible for Turn 3
+                  </span>
+</td>
+<td class="py-3.5 px-space-md text-right">
+<button class="px-space-sm py-1.5 bg-surface-container hover:bg-surface-container-high text-on-surface rounded font-label-sm text-label-sm transition-colors">
+                    View Dossier
+                  </button>
+</td>
+</tr>
+<!-- Row 4: Under Review - Karthik S. -->
+<tr class="bg-error-container/20 hover:bg-error-container/30 transition-colors cursor-pointer group" onclick="switchStudentDetail('karthik')">
+<td class="py-3.5 px-space-md align-middle">
+<div class="inline-flex items-center justify-center w-8 h-8 rounded bg-error text-on-error font-label-md text-label-md font-bold">
+                    !
+                  </div>
+</td>
+<td class="py-3.5 px-space-md">
+<div class="flex items-center gap-space-sm">
+<div class="w-9 h-9 rounded-full bg-error-container text-on-error-container flex items-center justify-center font-label-md text-label-md font-bold">
+                      KS
+                    </div>
+<div class="flex flex-col min-w-0">
+<span class="font-label-lg text-label-lg text-on-surface font-semibold group-hover:text-error transition-colors">
+                        Karthik S.
+                      </span>
+<span class="font-label-sm text-label-sm text-error font-medium">
+                        1SI21CS110 · Under Review
+                      </span>
+</div>
+</div>
+</td>
+<td class="py-3.5 px-space-md">
+<span class="px-2 py-0.5 rounded bg-surface-container-high text-on-surface font-label-sm text-label-sm">
+                    CSE · Sem 6
+                  </span>
+</td>
+<td class="py-3.5 px-space-md">
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface font-mono font-medium">DUK8933104</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-xs text-on-surface-variant">schedule</span>
+                      12-Jul 11:20:10 IST
+                    </span>
+</div>
+</td>
+<td class="py-3.5 px-space-md">
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface font-semibold">₹38,500</span>
+<span class="inline-flex items-center gap-1 font-label-sm text-label-sm text-error font-semibold">
+<span class="material-symbols-outlined text-xs">warning</span> Receipt Unclear ⚠
+                    </span>
+</div>
+</td>
+<td class="py-3.5 px-space-md">
+<span class="px-2 py-1 rounded bg-error-container text-on-error-container font-label-sm text-label-sm whitespace-nowrap">
+                    Documentation Pending
+                  </span>
+</td>
+<td class="py-3.5 px-space-md text-right">
+<button class="px-space-sm py-1.5 bg-error text-on-error hover:opacity-90 rounded font-label-sm text-label-sm transition-opacity shadow-xs">
+                    Verify / Flag
+                  </button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Table Pagination & Bulk Actions -->
+<div class="px-space-md py-space-sm bg-surface-container flex flex-wrap items-center justify-between gap-space-sm">
+<div class="flex items-center gap-space-xs text-on-surface-variant font-label-sm text-label-sm">
+<span>Showing rows 1-4 of 30</span>
+<span class="mx-1">·</span>
+<span>26 Additional Records in Queue 05–30</span>
+</div>
+<div class="flex items-center gap-space-xs">
+<button class="px-2.5 py-1 bg-surface-container-high text-on-surface rounded font-label-sm text-label-sm disabled:opacity-50" disabled="">Previous</button>
+<button class="px-2.5 py-1 bg-primary text-on-primary rounded font-label-sm text-label-sm font-bold">1</button>
+<button class="px-2.5 py-1 bg-surface-container-high text-on-surface rounded font-label-sm text-label-sm">2</button>
+<button class="px-2.5 py-1 bg-surface-container-high text-on-surface rounded font-label-sm text-label-sm">3</button>
+<button class="px-2.5 py-1 bg-surface-container-high text-on-surface rounded font-label-sm text-label-sm">Next</button>
+</div>
+</div>
+</div>
+<!-- Campus Residence Context Note -->
+<div class="p-space-md bg-surface-container-low rounded flex items-start gap-space-sm">
+<span class="material-symbols-outlined text-on-surface-variant text-xl">gavel</span>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface font-semibold">Priority Tie-Breaker Protocol</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5 leading-relaxed">
+            In the event of simultaneous registration submissions, priority is strictly derived from the State Bank of India Collect payment gateway confirmation timestamp. Academic CGPA is applied exclusively when payment timestamps are identical down to milliseconds.
+          </p>
+</div>
+</div>
+</div>
+<!-- RIGHT PANEL: Structured Student Dossier & Payment Verification Workbench (5 Cols) -->
+<div class="lg:col-span-5 flex flex-col gap-space-md sticky top-20">
+<!-- Student Dossier Card -->
+<div class="bg-surface-container-lowest rounded shadow-md overflow-hidden transition-all duration-200" id="studentDetailPanel">
+<!-- Header Ribbon of Selected Record -->
+<div class="p-space-md bg-primary text-on-primary flex items-start justify-between">
+<div class="flex items-center gap-space-sm">
+<div class="w-12 h-12 rounded bg-primary-container text-on-primary flex items-center justify-center font-headline-md text-headline-md font-bold" id="dossierAvatar">
+              CK
+            </div>
+<div class="flex flex-col">
+<div class="flex items-center gap-space-xs">
+<h2 class="font-headline-md text-headline-md font-bold text-on-primary" id="dossierName">Chetan Kumar</h2>
+<span class="px-1.5 py-0.5 rounded bg-secondary-fixed text-on-secondary-fixed font-label-sm text-label-sm uppercase font-bold" id="dossierBadge">
+                  Priority #01
+                </span>
+</div>
+<span class="font-label-sm text-label-sm text-on-primary-container" id="dossierSub">
+                USN: 1SI21CS003 · SIT CSE 6th Sem · Merit Quota
+              </span>
+</div>
+</div>
+<span class="material-symbols-outlined text-secondary-fixed text-xl" title="Hostel Verification Certified">verified</span>
+</div>
+<!-- Dossier Navigation Tabs -->
+<div class="flex items-center bg-surface-container-high px-space-sm pt-space-xs gap-1 overflow-x-auto text-on-surface">
+<button class="px-3 py-2 bg-surface-container-lowest text-primary font-label-md text-label-md font-semibold rounded-t flex items-center gap-1 shadow-xs">
+<span class="material-symbols-outlined text-sm">receipt_long</span>
+<span>Fee Evidence</span>
+</button>
+<button class="px-3 py-2 text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">person</span>
+<span>Profile</span>
+</button>
+<button class="px-3 py-2 text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">supervisor_account</span>
+<span>Guardian</span>
+</button>
+<button class="px-3 py-2 text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">approval</span>
+<span>Proctor</span>
+</button>
+<button class="px-3 py-2 text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">history</span>
+<span>Audit Log</span>
+</button>
+</div>
+<!-- Dossier Tab Content: Fee Payment Evidence & Gateway Reconciliation -->
+<div class="p-space-md flex flex-col gap-space-md">
+<!-- SBI Gateway Match Badge -->
+<div class="p-space-sm rounded bg-secondary-container/40 text-on-secondary-container flex items-center justify-between" id="statusBanner">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-secondary text-lg">cloud_done</span>
+<span class="font-label-md text-label-md font-semibold">SBI Gateway Match Confirmed</span>
+</div>
+<span class="font-label-sm text-label-sm font-mono uppercase bg-secondary-container px-2 py-0.5 rounded text-on-secondary-container">
+              Bank Ref: 33902914
+            </span>
+</div>
+<!-- SBI E-Receipt Preview Mockup -->
+<div class="p-space-md bg-surface-container-low rounded flex flex-col gap-space-sm relative">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-primary text-xl">account_balance</span>
+<span class="font-label-lg text-label-lg font-bold text-on-surface">State Bank of India Collect</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase">E-Receipt Duplicate</span>
+</div>
+<div class="grid grid-cols-2 gap-space-xs text-on-surface pt-1">
+<div>
+<span class="font-label-sm text-label-sm text-on-surface-variant block uppercase tracking-wider">SBCollect Reference</span>
+<span class="font-label-md text-label-md font-mono font-bold text-on-surface" id="fieldRef">DUK8932401</span>
+</div>
+<div>
+<span class="font-label-sm text-label-sm text-on-surface-variant block uppercase tracking-wider">Transaction Date & Time</span>
+<span class="font-label-md text-label-md font-mono text-on-surface font-medium" id="fieldTime">12-JUL-2024 08:30:15 IST</span>
+</div>
+<div>
+<span class="font-label-sm text-label-sm text-on-surface-variant block uppercase tracking-wider">Fee Head</span>
+<span class="font-label-md text-label-md text-on-surface">BVB Hostel Maintenance & Mess</span>
+</div>
+<div>
+<span class="font-label-sm text-label-sm text-on-surface-variant block uppercase tracking-wider">Amount Paid</span>
+<span class="font-headline-sm text-headline-sm font-bold text-secondary" id="fieldAmount">₹38,500.00</span>
+</div>
+</div>
+<!-- Receipt Document Snapshot Anchor -->
+<div class="mt-space-xs pt-space-xs bg-surface-container-lowest p-space-sm rounded flex items-center justify-between">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-primary text-xl">picture_as_pdf</span>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md font-semibold text-on-surface truncate">SBI_DUK8932401_Receipt.pdf</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">248 KB · Digitally Signed by Bank</span>
+</div>
+</div>
+<a class="px-space-sm py-1 bg-surface-container hover:bg-surface-container-high text-on-surface font-label-sm text-label-sm rounded flex items-center gap-1 transition-colors" href="#">
+<span class="material-symbols-outlined text-sm">open_in_new</span>
+<span>Inspect PDF</span>
+</a>
+</div>
+</div>
+<!-- Payment Verification Workflow Parameters -->
+<div class="flex flex-col gap-space-xs bg-surface-container-low p-space-md rounded">
+<span class="font-label-md text-label-md font-bold text-on-surface uppercase tracking-wider">Verification Controls</span>
+<label class="flex items-start gap-space-sm p-space-xs rounded hover:bg-surface-container transition-colors cursor-pointer">
+<input checked="" class="mt-1 w-4 h-4 rounded text-secondary focus:ring-0" type="checkbox"/>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md font-semibold text-on-surface">Bank Transaction Reference Reconciled</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Verified against SBI merchant settlement statement file #SIT-H-0712.</span>
+</div>
+</label>
+<label class="flex items-start gap-space-sm p-space-xs rounded hover:bg-surface-container transition-colors cursor-pointer">
+<input checked="" class="mt-1 w-4 h-4 rounded text-secondary focus:ring-0" type="checkbox"/>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md font-semibold text-on-surface">Disciplinary & Proctor Clearance Intact</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">No pending hostel fines, demerits, or laboratory inventory dues.</span>
+</div>
+</label>
+<label class="flex items-start gap-space-sm p-space-xs rounded hover:bg-surface-container transition-colors cursor-pointer">
+<input checked="" class="mt-1 w-4 h-4 rounded text-secondary focus:ring-0" type="checkbox"/>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md font-semibold text-on-surface">Floor 2 Residency Terms Accepted</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Signed mandatory anti-ragging affidavit and room compliance pledge.</span>
+</div>
+</label>
+</div>
+<!-- Warden Override Actions -->
+<div class="flex flex-col gap-space-xs pt-space-xs">
+<div class="grid grid-cols-2 gap-space-sm">
+<button class="w-full py-2.5 bg-secondary hover:bg-on-secondary-container text-on-secondary font-label-md text-label-md rounded flex items-center justify-center gap-1 shadow-sm transition-colors">
+<span class="material-symbols-outlined text-base">how_to_reg</span>
+<span>Confirm Queue #01</span>
+</button>
+<button class="w-full py-2.5 bg-surface-container hover:bg-surface-container-high text-on-surface font-label-md text-label-md rounded flex items-center justify-center gap-1 transition-colors">
+<span class="material-symbols-outlined text-base">forward_to_inbox</span>
+<span>Request Correction</span>
+</button>
+</div>
+<button class="w-full py-2 bg-transparent hover:bg-error-container/40 text-error font-label-sm text-label-sm rounded flex items-center justify-center gap-1 transition-colors">
+<span class="material-symbols-outlined text-sm">block</span>
+<span>Reject Evidence & Disqualify Priority</span>
+</button>
+</div>
+<!-- Tie-breaker Institutional Memo -->
+<div class="p-space-sm bg-surface-container rounded text-on-surface-variant">
+<p class="font-body-sm text-body-sm leading-snug">
+<strong class="text-on-surface">Priority Notice:</strong> Chetan Kumar holds Slot 01 due to earliest valid deposit (08:30:15 IST). His turn window will open automatically at 09:00 AM on selection day.
+            </p>
+</div>
+</div>
+</div>
+<!-- Quick Proctor / Office Notes Memo -->
+<div class="p-space-md bg-surface-container-lowest rounded shadow-sm flex items-center justify-between">
+<div class="flex items-center gap-space-sm">
+<div class="w-8 h-8 rounded bg-surface-container flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-lg">edit_note</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md font-semibold text-on-surface">Administrative Internal Audit Note</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">BVB Block Floor 2 allocation roster will freeze 24 hours prior to Turn 1.</span>
+</div>
+</div>
+<span class="font-label-sm text-label-sm text-secondary font-bold">ROSTER ACTIVE</span>
+</div>
+</div>
+</div>
+<!-- Client-side Interactive Switcher between Synthetic Records -->
+<script>
+    function switchStudentDetail(studentKey) {
+      const panel = document.getElementById('studentDetailPanel');
+      const avatar = document.getElementById('dossierAvatar');
+      const name = document.getElementById('dossierName');
+      const badge = document.getElementById('dossierBadge');
+      const sub = document.getElementById('dossierSub');
+      const banner = document.getElementById('statusBanner');
+      const fieldRef = document.getElementById('fieldRef');
+      const fieldTime = document.getElementById('fieldTime');
+
+      if (studentKey === 'karthik') {
+        avatar.innerText = 'KS';
+        avatar.className = 'w-12 h-12 rounded bg-error text-on-error flex items-center justify-center font-headline-md text-headline-md font-bold';
+        name.innerText = 'Karthik S.';
+        badge.innerText = 'Under Review';
+        badge.className = 'px-1.5 py-0.5 rounded bg-error-container text-on-error font-label-sm text-label-sm uppercase font-bold';
+        sub.innerText = 'USN: 1SI21CS110 · SIT CSE 6th Sem · Flagged Document';
+        banner.className = 'p-space-sm rounded bg-error-container/60 text-on-error-container flex items-center justify-between';
+        banner.innerHTML = `
+          <div class="flex items-center gap-space-xs">
+            <span class="material-symbols-outlined text-error text-lg">warning</span>
+            <span class="font-label-md text-label-md font-semibold">Challan Blurry / Ref Ambiguous</span>
+          </div>
+          <span class="font-label-sm text-label-sm font-mono uppercase bg-error-container px-2 py-0.5 rounded text-on-error-container">
+            Mismatch Alert
+          </span>
+        `;
+        fieldRef.innerText = 'DUK8933104';
+        fieldTime.innerText = '12-JUL-2024 11:20:10 IST';
+      } else if (studentKey === 'divya') {
+        avatar.innerText = 'DM';
+        avatar.className = 'w-12 h-12 rounded bg-secondary text-on-secondary flex items-center justify-center font-headline-md text-headline-md font-bold';
+        name.innerText = 'Divya M.';
+        badge.innerText = 'Priority #02';
+        badge.className = 'px-1.5 py-0.5 rounded bg-secondary-fixed text-on-secondary-fixed font-label-sm text-label-sm uppercase font-bold';
+        sub.innerText = 'USN: 1SI21IS019 · SIT ISE 6th Sem · General Merit';
+        banner.className = 'p-space-sm rounded bg-secondary-container/40 text-on-secondary-container flex items-center justify-between';
+        banner.innerHTML = `
+          <div class="flex items-center gap-space-xs">
+            <span class="material-symbols-outlined text-secondary text-lg">cloud_done</span>
+            <span class="font-label-md text-label-md font-semibold">SBI Gateway Match Confirmed</span>
+          </div>
+          <span class="font-label-sm text-label-sm font-mono uppercase bg-secondary-container px-2 py-0.5 rounded text-on-secondary-container">
+            Bank Ref: 33903112
+          </span>
+        `;
+        fieldRef.innerText = 'DUK8932488';
+        fieldTime.innerText = '12-JUL-2024 08:31:40 IST';
+      } else if (studentKey === 'harish') {
+        avatar.innerText = 'HG';
+        avatar.className = 'w-12 h-12 rounded bg-primary-container text-on-primary flex items-center justify-center font-headline-md text-headline-md font-bold';
+        name.innerText = 'Harish Gowda';
+        badge.innerText = 'Priority #03';
+        badge.className = 'px-1.5 py-0.5 rounded bg-secondary-fixed text-on-secondary-fixed font-label-sm text-label-sm uppercase font-bold';
+        sub.innerText = 'USN: 1SI21EC045 · SIT ECE 6th Sem · General Merit';
+        banner.className = 'p-space-sm rounded bg-secondary-container/40 text-on-secondary-container flex items-center justify-between';
+        banner.innerHTML = `
+          <div class="flex items-center gap-space-xs">
+            <span class="material-symbols-outlined text-secondary text-lg">cloud_done</span>
+            <span class="font-label-md text-label-md font-semibold">SBI Gateway Match Confirmed</span>
+          </div>
+          <span class="font-label-sm text-label-sm font-mono uppercase bg-secondary-container px-2 py-0.5 rounded text-on-secondary-container">
+            Bank Ref: 33903490
+          </span>
+        `;
+        fieldRef.innerText = 'DUK8932512';
+        fieldTime.innerText = '12-JUL-2024 08:35:02 IST';
+      } else {
+        avatar.innerText = 'CK';
+        avatar.className = 'w-12 h-12 rounded bg-primary text-on-primary flex items-center justify-center font-headline-md text-headline-md font-bold';
+        name.innerText = 'Chetan Kumar';
+        badge.innerText = 'Priority #01';
+        badge.className = 'px-1.5 py-0.5 rounded bg-secondary-fixed text-on-secondary-fixed font-label-sm text-label-sm uppercase font-bold';
+        sub.innerText = 'USN: 1SI21CS003 · SIT CSE 6th Sem · Merit Quota';
+        banner.className = 'p-space-sm rounded bg-secondary-container/40 text-on-secondary-container flex items-center justify-between';
+        banner.innerHTML = `
+          <div class="flex items-center gap-space-xs">
+            <span class="material-symbols-outlined text-secondary text-lg">cloud_done</span>
+            <span class="font-label-md text-label-md font-semibold">SBI Gateway Match Confirmed</span>
+          </div>
+          <span class="font-label-sm text-label-sm font-mono uppercase bg-secondary-container px-2 py-0.5 rounded text-on-secondary-container">
+            Bank Ref: 33902914
+          </span>
+        `;
+        fieldRef.innerText = 'DUK8932401';
+        fieldTime.innerText = '12-JUL-2024 08:30:15 IST';
+      }
+    }
+  </script>
+</div></main></div></body></html>
