@@ -22,6 +22,24 @@ Repository Status: Active Development (Modular Monolith)
 10. **Cycle configuration**: Frozen and immutable once state transitions to `READY`. Rule modifications necessitate a new cycle configuration version.
 
 ## 3. Implementation Phases
+- [x] **Phase 20: Notification Isolation & Targeting, Student Admissions Management & Weekly Mess Menu**:
+  - **Notification Privacy Hardening**:
+    - Eliminated broadcast leakage of private room allocations and roommate group interactions.
+    - Implemented private recipient-targeted notifications for seat confirmations (`studentUserId`) and roommate invitations/responses.
+    - Hardened `listNotifications` with audience-aware and user-isolated SQL filter: `(n.user_id = $1 OR (n.user_id IS NULL AND n.target_audience = ANY($2)))`.
+    - Protected `markAsRead` with user authorization checks to prevent ID guessing exploits.
+  - **Hostel Office Student Admission Management**:
+    - Schema addition: `student_admissions` with partial unique index on `official_priority` and unique `usn`.
+    - Admission service handling candidate registration across academic years, proctor lookup, parent contact info, and linked unallocated user & profile generation.
+    - UI component `StudentAdmissionManagementView.tsx` integrated with multi-tab registration form and searchable table.
+  - **Weekly Mess Menu Management & Student Viewer**:
+    - Schema addition: `mess_menus` storing weekly dates, active meal status, and photo notice board uploads (JPEG/PNG/WebP, max 10MB).
+    - Operations service with draft/publish workflows and automatic student notification trigger on publish.
+    - UI component `MessMenuView.tsx` with student active menu preview, full-screen lightbox modal, and admin upload form.
+  - **Verification**:
+    - 74/74 automated tests passing across 10 test suites (`npm test`).
+    - 0 TypeScript compiler errors (`npm run typecheck`).
+    - Clean production client build (`npm run build:client`).
 - [x] **Phase 19: Stitch Design System Harmonization for 2D Floor Plan Maker & CAD Editor (`FloorPlanEditor.tsx`)**:
   - Re-architected floor map builder using the Stitch Institutional Utility Baseline styling (`#07203c`, `#016a62`, `#f6fafc`).
   - Added dual projection switcher: **Architectural Blueprint** (multi-wing corridor matrix) and **Precision CAD Canvas** (900 × 650 SVG vector geometry with zoom/pan).

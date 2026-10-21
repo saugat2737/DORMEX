@@ -7,6 +7,8 @@ import { AdminDashboard } from './components/AdminDashboard.js';
 import { StudentRegistryView } from './components/StudentRegistryView.js';
 import { ComplaintsView } from './components/ComplaintsView.js';
 import { PortalSelectionView } from './components/PortalSelectionView.js';
+import { StudentAdmissionManagementView } from './components/StudentAdmissionManagementView.js';
+import { MessMenuView } from './components/MessMenuView.js';
 
 const AppContent: React.FC = () => {
   const { session, isAuthenticated } = useAuth();
@@ -24,10 +26,13 @@ const AppContent: React.FC = () => {
     <AppLayout currentTab={currentTab} setCurrentTab={setCurrentTab}>
       {currentTab === 'student_allocation' && <StudentAllocationView />}
       {currentTab === 'student_complaints' && <ComplaintsView />}
+      {currentTab === 'student_mess_menu' && <MessMenuView />}
       {currentTab === 'admin_overview' && <AdminDashboard />}
       {currentTab === 'admin_students' && <StudentRegistryView />}
       {currentTab === 'admin_floor_editor' && <FloorPlanEditor />}
       {currentTab === 'admin_complaints' && <ComplaintsView />}
+      {currentTab === 'office_admissions' && <StudentAdmissionManagementView />}
+      {currentTab === 'office_mess_menu' && <MessMenuView />}
     </AppLayout>
   );
 };

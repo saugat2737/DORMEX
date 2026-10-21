@@ -103,7 +103,7 @@ export function generateVirtualStudents(options: VirtualStudentOptions = {}): Ge
     const paymentDate = new Date(Date.UTC(2026, 7, 10, 8, Math.floor(i / 2), (i % 60)));
     const feePaymentTimestamp = paymentDate.toISOString();
     const feeReceiptRef = `REC-2026-${branch.toUpperCase()}-${String(codeNum).padStart(3, '0')}`;
-    const assignedPriority = i + 1;
+    const assignedPriority = startCode + i;
 
     students.push({
       userId: `usr_${usn.toLowerCase()}`,

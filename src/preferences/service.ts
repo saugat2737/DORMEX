@@ -140,21 +140,27 @@ export class PreferencesService {
         throw new Error(`EXCEEDS_CAPACITY: Room capacity is ${capacity}, cannot invite ${peerPriorityNumbers.length} roommates`);
       }
 
-      // 2. Fetch leader's priority
+      // 2. Fetch leader's priority and details
       const leaderRes = await client.query(
-        `SELECT id, assigned_priority FROM student_profiles WHERE id = $1`,
-        [leaderStudentId]
+        `SELECT sp.id, sp.user_id, sp.full_name, sp.assigned_priority, r.room_number
+         FROM student_profiles sp
+         JOIN rooms r ON r.id = $2
+         WHERE sp.id = $1`,
+        [leaderStudentId, roomId]
       );
-      if (leaderRes.rows.length === 0) throw new Error('NOT_FOUND: Leader student profile not found');
-      const leaderPriority = leaderRes.rows[0].assigned_priority || 999;
+      if (leaderRes.rows.length === 0) throw new Error('NOT_FOUND: Leader student profile or room not found');
+      const leader = leaderRes.rows[0];
+      const leaderPriority = leader.assigned_priority || 999;
+      const leaderName = leader.full_name || 'A student';
+      const roomNumber = leader.room_number || '';
 
       // 3. Resolve target students by priority number securely
-      const invitedStudentIds: { id: string; priority: number }[] = [];
+      const invitedStudentIds: { id: string; userId: string; priority: number }[] = [];
       for (const pNum of peerPriorityNumbers) {
         if (pNum === leaderPriority) continue; // cannot invite self
 
         const targetRes = await client.query(
-          `SELECT id, assigned_priority FROM student_profiles 
+          `SELECT id, user_id, assigned_priority FROM student_profiles 
            WHERE assigned_priority = $1 AND eligibility_status = 'ELIGIBLE'`,
           [pNum]
         );
@@ -162,7 +168,7 @@ export class PreferencesService {
         if (targetRes.rows.length === 0) {
           throw new Error(`INVALID_PRIORITY: Priority #${pNum} is not an eligible registered participant`);
         }
-        invitedStudentIds.push({ id: targetRes.rows[0].id, priority: pNum });
+        invitedStudentIds.push({ id: targetRes.rows[0].id, userId: targetRes.rows[0].user_id, priority: pNum });
       }
 
       // 4. Create Roommate Group record
@@ -181,7 +187,7 @@ export class PreferencesService {
         [leaderMemberId, groupId, leaderStudentId, leaderPriority]
       );
 
-      // 6. Add peer members with PENDING status
+      // 6. Add peer members with PENDING status and emit isolated private notification to each invitee
       for (const peer of invitedStudentIds) {
         const memId = `rmm_${groupId}_${peer.id}`;
         await client.query(
@@ -190,6 +196,27 @@ export class PreferencesService {
            ON CONFLICT (group_id, student_id) DO UPDATE SET status = 'PENDING'`,
           [memId, groupId, peer.id, peer.priority]
         );
+
+        if (peer.userId) {
+          const notifId = `notif_rm_inv_${groupId}_${peer.id}`;
+          const msg = roomNumber 
+            ? `${leaderName} from Room ${roomNumber} wants you to be their roommate.`
+            : `${leaderName} has invited you to become their roommate.`;
+
+          await client.query(
+            `INSERT INTO notifications (id, user_id, category, priority, title, message, target_audience, reference_id, reference_type, author_name)
+             VALUES ($1, $2, 'NOTICE', 'NORMAL', $3, $4, 'STUDENT', $5, 'ROOMMATE_INVITE', $6)
+             ON CONFLICT (id) DO NOTHING`,
+            [
+              notifId,
+              peer.userId,
+              `New roommate invitation`,
+              msg,
+              groupId,
+              leaderName,
+            ]
+          );
+        }
       }
 
       return { groupId, invitedCount: invitedStudentIds.length };
@@ -235,9 +262,9 @@ export class PreferencesService {
 
     // Retrieve canonical invitation and room context for seamless allocation acknowledgement
     const groupContextRes = await this.db.query(
-      `SELECT rg.id as group_id, rg.cycle_id, rg.preferred_room_id, r.room_number,
+      `SELECT rg.id as group_id, rg.cycle_id, rg.leader_student_id, rg.preferred_room_id, r.room_number,
               r.floor_id, f.floor_number, b.id as building_id, b.name as building_name,
-              sp.full_name as leader_name
+              sp.full_name as leader_name, sp.user_id as leader_user_id
        FROM roommate_groups rg
        JOIN rooms r ON rg.preferred_room_id = r.id
        JOIN floors f ON r.floor_id = f.id
@@ -266,6 +293,31 @@ export class PreferencesService {
     }
 
     const groupInfo = groupContextRes.rows[0];
+
+    // Emit private response notification strictly back to the leader
+    if (groupInfo && groupInfo.leader_user_id) {
+      const responderRes = await this.db.query(
+        `SELECT full_name FROM student_profiles WHERE id = $1`,
+        [studentProfileId]
+      );
+      const responderName = responderRes.rows[0]?.full_name || 'A student';
+      const notifId = `notif_rm_resp_${groupId}_${studentProfileId}`;
+      const actionWord = accept ? 'accepted' : 'declined';
+
+      await this.db.query(
+        `INSERT INTO notifications (id, user_id, category, priority, title, message, target_audience, reference_id, reference_type, author_name)
+         VALUES ($1, $2, 'NOTICE', 'NORMAL', $3, $4, 'STUDENT', $5, 'ROOMMATE_RESPONSE', $6)
+         ON CONFLICT (id) DO NOTHING`,
+        [
+          notifId,
+          groupInfo.leader_user_id,
+          `Roommate invitation ${actionWord}`,
+          `${responderName} has ${actionWord} your roommate invitation.`,
+          groupId,
+          responderName,
+        ]
+      );
+    }
 
     return {
       status: newStatus,

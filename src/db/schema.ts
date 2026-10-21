@@ -356,6 +356,59 @@ CREATE TABLE IF NOT EXISTS user_notification_reads (
     read_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     UNIQUE(notification_id, user_id)
 );
+
+-- Phase 16: Student Admissions & Weekly Mess Menu Schema
+CREATE TABLE IF NOT EXISTS student_admissions (
+    id TEXT PRIMARY KEY,
+    academic_year_code TEXT NOT NULL, -- e.g. '2026-2027'
+    college_id TEXT UNIQUE NOT NULL, -- USN e.g. '1SI26CS001'
+    full_name TEXT NOT NULL,
+    department TEXT NOT NULL,
+    semester INT NOT NULL DEFAULT 1,
+    official_priority INT, -- Office-assigned priority rank
+    admission_status TEXT NOT NULL DEFAULT 'REGISTERED', -- 'REGISTERED', 'DOCS_PENDING', 'PROCTOR_ASSIGNED', 'COMPLETED'
+    email TEXT NOT NULL,
+    phone TEXT NOT NULL,
+    parent_name TEXT,
+    parent_relationship TEXT,
+    parent_phone TEXT,
+    parent_email TEXT,
+    parent_address TEXT,
+    proctor_user_id TEXT REFERENCES users(id),
+    proctor_name TEXT,
+    proctor_department TEXT,
+    hostel_building_id TEXT REFERENCES buildings(id),
+    registered_by TEXT REFERENCES users(id),
+    notes TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE UNIQUE INDEX IF NOT EXISTS uq_admissions_official_priority 
+ON student_admissions (official_priority) 
+WHERE official_priority IS NOT NULL;
+
+CREATE UNIQUE INDEX IF NOT EXISTS uq_student_profiles_cohort_priority
+ON student_profiles (academic_year, quota_category, assigned_priority)
+WHERE assigned_priority IS NOT NULL;
+
+CREATE TABLE IF NOT EXISTS mess_menus (
+    id TEXT PRIMARY KEY,
+    week_start_date DATE NOT NULL,
+    week_end_date DATE NOT NULL,
+    mess_scope TEXT NOT NULL DEFAULT 'CAMPUS_CENTRAL',
+    image_url TEXT NOT NULL, -- Static relative path /uploads/mess/... or data-uri
+    original_filename TEXT NOT NULL,
+    content_type TEXT NOT NULL,
+    file_size_bytes INT NOT NULL,
+    description TEXT,
+    status TEXT NOT NULL DEFAULT 'DRAFT', -- 'DRAFT', 'PUBLISHED', 'ARCHIVED'
+    published_at TIMESTAMP WITH TIME ZONE,
+    uploaded_by TEXT REFERENCES users(id),
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
 `;
 
 export async function runMigrations(db: DatabaseService): Promise<void> {

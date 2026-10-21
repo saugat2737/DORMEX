@@ -331,9 +331,11 @@ export class AllocationEngineService {
 
       // 2. Verify seat operational status & availability
       const seatRes = await client.query(
-        `SELECT s.id, s.status, s.room_id, r.is_blocked, r.floor_id
+        `SELECT s.id, s.status, s.room_id, r.room_number, r.is_blocked, r.floor_id, f.floor_number, b.name as building_name
          FROM seats s
          JOIN rooms r ON s.room_id = r.id
+         JOIN floors f ON r.floor_id = f.id
+         JOIN buildings b ON f.building_id = b.id
          WHERE s.id = $1`,
         [seatId]
       );
@@ -424,18 +426,29 @@ export class AllocationEngineService {
         ]
       );
 
-      // 6b. Emit allotment notification for confirmed seat
-      const notifId = `notif_alloc_${Date.now()}_${Math.random().toString(36).substring(7)}`;
-      await client.query(
-        `INSERT INTO notifications (id, category, priority, title, message, target_audience, reference_id, reference_type, author_name)
-         VALUES ($1, 'ALLOTMENT', 'NORMAL', $2, $3, 'ALL', $4, 'ALLOCATION', 'Allocation Engine')`,
-        [
-          notifId,
-          `Room Seat Allocation Confirmed`,
-          `Seat ${seatId} was claimed and confirmed in cycle ${session.cycle_id}.`,
-          allocationId,
-        ]
+      // 6b. Emit private allotment notification strictly targeted to the allocated student's user account
+      const stuProfileRes = await client.query(
+        `SELECT user_id, full_name FROM student_profiles WHERE id = $1`,
+        [session.student_id]
       );
+      const studentUserId = stuProfileRes.rows[0]?.user_id || null;
+      const roomNum = seat.room_number || 'your selected room';
+      const bldName = seat.building_name || 'Hostel';
+
+      if (studentUserId) {
+        const notifId = `notif_alloc_${Date.now()}_${Math.random().toString(36).substring(7)}`;
+        await client.query(
+          `INSERT INTO notifications (id, user_id, category, priority, title, message, target_audience, reference_id, reference_type, author_name)
+           VALUES ($1, $2, 'ALLOTMENT', 'NORMAL', $3, $4, 'STUDENT', $5, 'ALLOCATION', 'Hostel Allocation Office')`,
+          [
+            notifId,
+            studentUserId,
+            `Room allocation confirmed`,
+            `Your room allocation for Room ${roomNum} (${bldName}, Seat ${seatId}) has been confirmed.`,
+            allocationId,
+          ]
+        );
+      }
 
       return {
         allocationId,
