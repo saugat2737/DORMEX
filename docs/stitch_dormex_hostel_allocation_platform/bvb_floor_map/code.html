@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"/><style>@layer base { html, body { margin: 0; padding: 0; } body { overscroll-behavior: none; } main > :first-child { margin-top: 0 !important; } main > :last-child { margin-bottom: 0 !important; } } ::-webkit-scrollbar { display: none; }</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "on-primary": "#ffffff", "error": "#ba1a1a", "outline-variant": "#c4c6ce", "inverse-surface": "#2c3133", "on-surface": "#181c1e", "on-tertiary-container": "#b69a5f", "secondary-fixed-dim": "#84d5ca", "secondary-container": "#9defe3", "on-tertiary-fixed": "#251a00", "on-secondary-fixed-variant": "#005049", "tertiary-fixed": "#fedf9d", "on-primary-container": "#8a9fc1", "primary": "#07203c", "on-error-container": "#93000a", "on-surface-variant": "#44474d", "outline": "#74777e", "surface-container": "#eaeef0", "surface-container-lowest": "#ffffff", "secondary-fixed": "#a0f1e6", "tertiary-fixed-dim": "#e1c384", "on-secondary": "#ffffff", "tertiary-container": "#453201", "on-primary-fixed": "#021c38", "inverse-on-surface": "#edf1f3", "on-secondary-fixed": "#00201d", "surface-dim": "#d6dbdd", "on-secondary-container": "#0d6f66", "primary-fixed": "#d4e3ff", "surface-tint": "#4a5f7f", "inverse-primary": "#b2c8ec", "on-error": "#ffffff", "on-tertiary-fixed-variant": "#584411", "on-background": "#181c1e", "secondary": "#016a62", "primary-fixed-dim": "#b2c8ec", "surface-container-high": "#e5e9eb", "surface-bright": "#f6fafc", "surface-container-highest": "#dfe3e5", "background": "#f6fafc", "primary-container": "#203653", "surface-variant": "#dfe3e5", "error-container": "#ffdad6", "surface-container-low": "#f0f4f6", "on-primary-fixed-variant": "#324866", "on-tertiary": "#ffffff", "surface": "#f6fafc", "tertiary": "#2b1e00" }, "borderRadius": { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem" }, "spacing": { "margin-mobile": "1rem", "margin": "1.5rem", "space-sm": "0.5rem", "gutter": "1rem", "gutter-mobile": "0.75rem", "space-lg": "1.5rem", "space-2xl": "3rem", "space-md": "1rem", "space-xs": "0.25rem", "space-xl": "2rem" }, "fontFamily": { "label-md": ["Inter"], "body-lg": ["Inter"], "label-lg": ["Inter"], "headline-sm": ["Inter"], "body-md": ["Inter"], "headline-lg": ["Inter"], "headline-xl-mobile": ["Inter"], "body-sm": ["Inter"], "headline-xl": ["Inter"], "label-sm": ["Inter"], "headline-md": ["Inter"] }, "fontSize": { "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "500" }], "body-lg": ["16px", { "lineHeight": "24px", "letterSpacing": "0", "fontWeight": "400" }], "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.005em", "fontWeight": "600" }], "headline-sm": ["16px", { "lineHeight": "24px", "letterSpacing": "0", "fontWeight": "600" }], "body-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0", "fontWeight": "400" }], "headline-lg": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.015em", "fontWeight": "600" }], "headline-xl-mobile": ["26px", { "lineHeight": "34px", "letterSpacing": "-0.01em", "fontWeight": "700" }], "body-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "400" }], "headline-xl": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }], "label-sm": ["10px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "600" }], "headline-md": ["20px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600" }] } } } };</script></head><body class="bg-surface font-body-md text-on-surface antialiased"><aside class="fixed left-0 top-0 h-full w-72 bg-primary z-50 flex flex-col justify-between shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="flex flex-col"><div class="h-16 px-space-md flex items-center gap-space-sm bg-primary-container/40"><img alt="DORMEX Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1XjQPmhgKdIoWz1Za1a9slAUa4A7nIWXVrLt6MpohSUL7DUOJmm2vJH0BXWToH8JxRo9-6pt32Xb5DuXGFTP962pF6EZ5prwwX3PLB5cI8VH9cDeHrYywEZnExlZu2Jnupy79QXy2xVaMjeXAHoyPP48qXedVYKqhyEIlq7vshJDV7vzTh73i0tZOO1mpz3Fz2RfY3ckOItEYV6p4Mzd9--Dbm8GCiumkfuj9XxJeD2ifmBvqI6hj1riMA"/><div class="flex flex-col min-w-0"><span class="font-headline-sm text-headline-sm text-on-primary tracking-tight leading-tight truncate">DORMEX</span><span class="font-label-sm text-label-sm text-on-primary-container tracking-wider uppercase truncate">SIT Tumakuru · ResAdmin</span></div></div><div class="px-space-md py-space-sm"><div class="px-space-sm py-space-xs rounded bg-primary-container/80 flex items-center gap-space-xs"><span class="w-2 h-2 rounded-full bg-secondary-fixed"></span><span class="font-label-sm text-label-sm text-primary-fixed uppercase tracking-wider">BVB Block · Floor 2 Portal</span></div></div><nav class="flex flex-col gap-space-xs px-space-sm py-space-xs" data-active-classes="bg-primary-container text-on-primary font-label-lg rounded"><a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded font-body-md text-body-md text-on-primary-container hover:bg-primary-container hover:text-on-primary transition-colors" data-path="dashboard" href="#"><span class="material-symbols-outlined text-lg">dashboard</span><span class="truncate">Dashboard</span></a><a aria-current="page" class="flex items-center gap-space-sm px-space-sm py-space-xs transition-colors bg-primary-container text-on-primary font-label-lg rounded" data-path="bvb-floor-map" href="#"><span class="material-symbols-outlined text-lg">domain</span><span class="truncate">BVB Floor Map</span></a><a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded font-body-md text-body-md text-on-primary-container hover:bg-primary-container hover:text-on-primary transition-colors" data-path="student-application-terms" href="#"><span class="material-symbols-outlined text-lg">assignment</span><span class="truncate">Student Application & Terms</span></a><a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded font-body-md text-body-md text-on-primary-container hover:bg-primary-container hover:text-on-primary transition-colors" data-path="hostel-office-registry" href="#"><span class="material-symbols-outlined text-lg">badge</span><span class="truncate">Hostel Office Registry</span></a><a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded font-body-md text-body-md text-on-primary-container hover:bg-primary-container hover:text-on-primary transition-colors" data-path="admin-allocation-control" href="#"><span class="material-symbols-outlined text-lg">tune</span><span class="truncate">Admin Allocation Control</span></a><a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded font-body-md text-body-md text-on-primary-container hover:bg-primary-container hover:text-on-primary transition-colors" data-path="roommate-coordination" href="#"><span class="material-symbols-outlined text-lg">group_add</span><span class="truncate">Roommate Coordination</span></a><a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded font-body-md text-body-md text-on-primary-container hover:bg-primary-container hover:text-on-primary transition-colors" data-path="central-complaint-inbox" href="#"><span class="material-symbols-outlined text-lg">mark_email_unread</span><span class="truncate">Central Complaint Inbox</span></a><a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded font-body-md text-body-md text-on-primary-container hover:bg-primary-container hover:text-on-primary transition-colors" data-path="room-change-window" href="#"><span class="material-symbols-outlined text-lg">swap_horiz</span><span class="truncate">Room Change Window</span></a></nav></div><div class="p-space-md bg-primary-container/30 m-space-sm rounded flex flex-col gap-space-xs"><div class="flex items-center justify-between text-on-primary-container"><span class="font-label-sm text-label-sm uppercase tracking-wider">Active Session</span><span class="material-symbols-outlined text-sm text-secondary-fixed">verified</span></div><div class="font-label-md text-label-md text-on-primary font-medium truncate">BVB-F2 Turn 14/90</div><div class="w-full bg-primary-container h-1.5 rounded overflow-hidden"><div class="bg-secondary-fixed h-full w-[45%]"></div></div></div></aside><div class="pl-72"><header class="fixed top-0 left-72 right-0 h-16 bg-surface/95 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-40 flex items-center justify-between px-space-lg"><div class="flex items-center gap-space-md"><div class="flex items-center gap-space-xs text-on-surface-variant font-label-md text-label-md"><span class="truncate">Campus Hostels</span><span class="material-symbols-outlined text-sm">chevron_right</span><span class="truncate">BVB Residency</span><span class="material-symbols-outlined text-sm">chevron_right</span><span class="text-on-surface font-semibold truncate">Allocation Console</span></div><span class="hidden lg:inline-flex items-center gap-1.5 px-space-sm py-0.5 rounded bg-surface-container-high font-label-sm text-label-sm text-on-surface"><span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>BVB Block · Floor 2 Pilot · AY 2024–25</span></div><div class="flex items-center gap-space-md"><div class="hidden md:flex items-center gap-space-xs px-space-sm py-1 rounded bg-secondary-container/40 text-on-secondary-container font-label-sm text-label-sm"><span class="material-symbols-outlined text-sm text-secondary">hourglass_top</span><span>Your Turn Window: 18m Left</span></div><button aria-label="Notifications" class="relative p-space-xs text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded transition-colors"><span class="material-symbols-outlined text-xl">notifications</span><span class="absolute top-1 right-1 w-2 h-2 rounded-full bg-error"></span></button><div class="flex items-center gap-space-sm pl-space-sm"><div class="flex flex-col text-right hidden sm:block"><span class="font-label-lg text-label-lg text-on-surface leading-tight">Saugat</span><span class="font-label-sm text-label-sm text-on-surface-variant">1SI21CS094 · 6th Sem</span></div><img alt="Profile" class="w-8 h-8 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDVdz_tEsKn-hWfPsQUo2SFLOj4hZoAe55UP5xl0h-L9PWFgfIgXg0FbUTw-zPrpXWm55TMtUDp76aEaJqEoWQ47t8P8nRJN-ZEj3t3IPLcTDGbpxq_g7eKD8_p_IPJQ8QaGcbdovxAFf3QHECMQVH3WyHnkOKq7lEouyva5dJUoG-nKEu8C2UMRGT8M0bjeGr-W4pZf8hqMcQ4v7YnudsgN02LfBMeofMoRZXR1y5XvhDZQxCt8XdaIA"/><div class="flex items-center px-space-xs py-1 rounded bg-surface-container font-label-sm text-label-sm text-on-surface"><span class="truncate hidden md:inline">Student View</span><span class="material-symbols-outlined text-sm text-on-surface-variant">arrow_drop_down</span></div></div></div></header><main class="w-full pt-16 bg-surface min-h-screen"><div class="flex flex-col w-full">
+<!-- Top Priority Status Ribbon -->
+<div class="px-space-lg py-space-sm bg-primary text-on-primary shadow-sm flex flex-wrap items-center justify-between gap-space-sm">
+<div class="flex items-center gap-space-sm min-w-0">
+<span class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-secondary text-on-secondary text-sm">
+<span class="material-symbols-outlined text-base" style="font-variation-settings: 'FILL' 1;">how_to_reg</span>
+</span>
+<div class="flex flex-col">
+<div class="flex items-center gap-space-xs flex-wrap">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-secondary-fixed font-bold">Live Allocation Active</span>
+<span class="text-on-primary-container text-xs">/</span>
+<span class="font-label-md text-label-md text-on-primary font-semibold">Turn 14 of 90 in Progress</span>
+</div>
+<p class="font-body-sm text-body-sm text-surface-container-high truncate">
+          Eligible Candidate: <span class="font-semibold text-white">Saugat</span> (USN: 1SI21CS094 · Priority Index #12) · Reservation Window open
+        </p>
+</div>
+</div>
+<div class="flex items-center gap-space-md">
+<div class="flex items-center gap-space-xs bg-primary-container px-space-sm py-1 rounded">
+<span class="material-symbols-outlined text-sm text-secondary-fixed animate-pulse">timer</span>
+<span class="font-label-sm text-label-sm text-on-primary">Selection Closes: <strong id="countdown-timer">17:42</strong></span>
+</div>
+<span class="hidden sm:inline-block px-space-xs py-0.5 rounded bg-surface-container-highest/20 font-label-sm text-label-sm text-surface-dim">
+        Floor 2 Node ID: SIT-BVB-F2-P30
+      </span>
+</div>
+</div>
+<!-- Workspace Sub-Header & Controls Bar -->
+<div class="px-space-lg py-space-md bg-surface-container-low flex flex-col xl:flex-row xl:items-center justify-between gap-space-md shadow-sm">
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-space-xs">
+<h1 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">
+          BVB Block — Floor 2 Interactive Allocation Map
+        </h1>
+<span class="inline-flex items-center px-space-xs py-0.5 rounded bg-secondary-container text-on-secondary-container font-label-sm text-label-sm font-semibold">
+          Pilot Cycle
+        </span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+        Official pilot allocation cycle · 30 synthetic pilot students · Provisional geometric inventory 201–272 · SIT Tumakuru
+      </p>
+</div>
+<!-- Search, Filters, and Navigation Controls -->
+<div class="flex flex-wrap items-center gap-space-sm">
+<!-- Search Input -->
+<div class="relative flex items-center min-w-[200px] sm:w-56">
+<span class="material-symbols-outlined text-outline text-lg absolute left-space-sm pointer-events-none">search</span>
+<input class="w-full h-9 pl-9 pr-space-sm bg-surface-container-lowest text-on-surface font-body-sm text-body-sm rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-primary placeholder:text-outline" id="room-search" placeholder="Search room (e.g. 202)..." type="text"/>
+</div>
+<!-- Wing Filter Selector -->
+<div class="flex items-center bg-surface-container-lowest p-1 rounded shadow-sm">
+<button class="px-space-sm py-1 rounded font-label-sm text-label-sm bg-primary text-on-primary transition-colors" id="filter-all" onclick="filterWing('all')">
+          All Wings (72)
+        </button>
+<button class="px-space-sm py-1 rounded font-label-sm text-label-sm text-on-surface-variant hover:text-on-surface transition-colors" id="filter-north" onclick="filterWing('north')">
+          North (201-224)
+        </button>
+<button class="px-space-sm py-1 rounded font-label-sm text-label-sm text-on-surface-variant hover:text-on-surface transition-colors" id="filter-south" onclick="filterWing('south')">
+          South (225-248)
+        </button>
+<button class="px-space-sm py-1 rounded font-label-sm text-label-sm text-on-surface-variant hover:text-on-surface transition-colors" id="filter-east" onclick="filterWing('east')">
+          East (249-272)
+        </button>
+</div>
+<!-- Canvas View Actions -->
+<div class="flex items-center gap-1 bg-surface-container-lowest p-1 rounded shadow-sm">
+<button class="p-1 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high rounded transition-colors" onclick="handleZoom(0.1)" title="Zoom in">
+<span class="material-symbols-outlined text-lg">zoom_in</span>
+</button>
+<button class="p-1 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high rounded transition-colors" onclick="handleZoom(-0.1)" title="Zoom out">
+<span class="material-symbols-outlined text-lg">zoom_out</span>
+</button>
+<button class="p-1 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high rounded transition-colors" onclick="resetZoom()" title="Reset view perspective">
+<span class="material-symbols-outlined text-lg">center_focus_strong</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Legend & Architectural Notice Strip -->
+<div class="px-space-lg py-2 bg-surface-container-highest/60 flex flex-wrap items-center justify-between gap-space-md text-on-surface">
+<!-- Accessible Color Legend Chips -->
+<div class="flex flex-wrap items-center gap-space-md font-label-sm text-label-sm">
+<span class="font-semibold text-on-surface-variant uppercase tracking-wider text-[11px]">Occupancy State:</span>
+<div class="flex items-center gap-1.5">
+<span class="w-3.5 h-3.5 rounded-sm bg-[#1E7B54] flex items-center justify-center shadow-xs">
+<span class="w-1.5 h-1.5 rounded-full bg-white"></span>
+</span>
+<span class="text-on-surface">Available Seat</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="w-3.5 h-3.5 rounded-sm bg-[#E06A26] flex items-center justify-center shadow-xs">
+<span class="w-1.5 h-1.5 rounded-full bg-white"></span>
+</span>
+<span class="text-on-surface">Roommate Intent</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="w-3.5 h-3.5 rounded-sm bg-[#C93B3B] flex items-center justify-center shadow-xs">
+<span class="w-1.5 h-1.5 rounded-full bg-white"></span>
+</span>
+<span class="text-on-surface">Occupied / Blocked</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="w-3.5 h-3.5 rounded-sm bg-white ring-2 ring-[#1D63B8] flex items-center justify-center">
+<span class="w-1.5 h-1.5 rounded-full bg-[#1D63B8]"></span>
+</span>
+<span class="text-on-surface font-semibold">Active Selection</span>
+</div>
+</div>
+<div class="flex items-center gap-1.5 text-on-surface-variant font-body-sm text-body-sm">
+<span class="material-symbols-outlined text-sm text-outline">info</span>
+<span>Room markers represent physical coordinates from official <code class="font-mono text-xs bg-surface-container px-1 rounded">bvb-floor-2.cad</code> schema.</span>
+</div>
+</div>
+<!-- Primary Workspace: Interactive Map Canvas + Inspector Right Drawer -->
+<div class="relative w-full flex-1 flex flex-col lg:flex-row overflow-hidden bg-surface-container-high/40">
+<!-- Vector Floor Plan Interactive Map -->
+<div class="relative flex-1 min-h-[580px] lg:min-h-[740px] overflow-hidden p-space-md flex flex-col justify-between">
+<!-- Quick Metric Mini-HUD -->
+<div class="absolute top-space-md left-space-md z-10 flex flex-wrap gap-space-xs pointer-events-none">
+<div class="bg-surface-container-lowest/95 backdrop-blur shadow-sm px-space-sm py-1.5 rounded flex items-center gap-space-xs pointer-events-auto">
+<span class="w-2 h-2 rounded-full bg-[#1E7B54]"></span>
+<span class="font-label-sm text-label-sm text-on-surface"><strong>34</strong> Vacant Beds</span>
+</div>
+<div class="bg-surface-container-lowest/95 backdrop-blur shadow-sm px-space-sm py-1.5 rounded flex items-center gap-space-xs pointer-events-auto">
+<span class="w-2 h-2 rounded-full bg-[#E06A26]"></span>
+<span class="font-label-sm text-label-sm text-on-surface"><strong>11</strong> Intent Reservations</span>
+</div>
+<div class="bg-surface-container-lowest/95 backdrop-blur shadow-sm px-space-sm py-1.5 rounded flex items-center gap-space-xs pointer-events-auto">
+<span class="w-2 h-2 rounded-full bg-[#C93B3B]"></span>
+<span class="font-label-sm text-label-sm text-on-surface"><strong>45</strong> Confirmed</span>
+</div>
+</div>
+<!-- Architectural Canvas Wrapper (Pan/Zoom capable) -->
+<div class="w-full h-full flex items-center justify-center overflow-auto transition-transform duration-200 cursor-grab active:cursor-grabbing select-none py-6" id="canvas-container">
+<!-- Floor Plan Graphic Render -->
+<div class="relative bg-surface-container-lowest rounded-xl shadow-md p-space-lg w-full max-w-[1020px] transition-transform" id="floorplan-svg-wrap">
+<!-- Floor Plan Header Overlay -->
+<div class="flex items-center justify-between pb-space-sm border-b-0 mb-space-md bg-surface-container-low px-space-sm py-1.5 rounded">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-base">apartment</span>
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface font-bold">BVB RESIDENTIAL BLOCK · LEVEL 02 GEOMETRIC LAYOUT</span>
+</div>
+<div class="flex items-center gap-3 font-label-sm text-label-sm text-on-surface-variant">
+<span>Grid Pitch: 4.8m × 3.6m Standard Unit</span>
+<span class="w-1 h-1 rounded-full bg-outline"></span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-xs">navigation</span> North Facing</span>
+</div>
+</div>
+<!-- Floor Layout Grid System (North Wing, Central Spine, South Wing, East Courtyard) -->
+<div class="flex flex-col gap-space-md">
+<!-- NORTH WING (Rooms 201 - 224) -->
+<div class="p-space-sm bg-surface-container rounded transition-all" id="wing-north">
+<div class="flex items-center justify-between mb-2">
+<span class="font-label-sm text-label-sm uppercase tracking-wider font-bold text-primary">North Wing Corridor · Rooms 201–224</span>
+<span class="text-xs text-on-surface-variant font-label-sm">Courtyard Exposure · Optimal Natural Airflow</span>
+</div>
+<!-- North Wing Grid Row 1 (201-212) -->
+<div class="grid grid-cols-6 sm:grid-cols-12 gap-1.5 mb-2">
+<!-- Room 201 -->
+<button class="room-btn group flex flex-col items-center justify-center p-1.5 rounded bg-surface-container-highest hover:bg-surface-dim transition-all text-left relative overflow-hidden" data-room="201" onclick="selectRoom('201', 'North Wing', 3, 'occupied', 0, 0, 3)">
+<span class="font-label-sm text-label-sm font-bold text-on-surface">201</span>
+<div class="flex gap-0.5 mt-1">
+<span class="w-1.5 h-1.5 rounded-full bg-[#C93B3B]"></span>
+<span class="w-1.5 h-1.5 rounded-full bg-[#C93B3B]"></span>
+<span class="w-1.5 h-1.5 rounded-full bg-[#C93B3B]"></span>
+</div>
+<span class="text-[9px] text-error font-medium">Full</span>
+</button>
+<!-- Room 202 (ACTIVE TARGET HIGHLIGHTED) -->
+<button class="room-btn group flex flex-col items-center justify-center p-1.5 rounded bg-white ring-2 ring-[#1D63B8] shadow-md transition-all text-left relative" data-room="202" id="room-marker-202" onclick="selectRoom('202', 'North Wing', 3, 'partial', 1, 1, 1)">
+<span class="absolute -top-1 -right-1 flex h-2.5 w-2.5">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-secondary opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-secondary"></span>
+</span>
+<span class="font-label-sm text-label-sm font-bold text-primary">202</span>
+<div class="flex gap-0.5 mt-1">
+<span class="w-1.5 h-1.5 rounded-full bg-[#C93B3B]" title="202-A: Rahul M."></span>
+<span class="w-1.5 h-1.5 rounded-full bg-[#E06A26]" title="202-B: Prajwal K. Intent"></span>
+<span class="w-1.5 h-1.5 rounded-full bg-[#1E7B54]" title="202-C: Available Seat"></span>
+</div>
+<span class="text-[9px] text-[#1E7B54] font-semibold">1 Vacant</span>
+</button>
+<!-- Room 203 -->
+<button class="room-btn group flex flex-col items-center justify-center p-1.5 rounded bg-surface-container-lowest hover:bg-surface-container-high transition-all text-left relative shadow-xs" data-room="203" onclick="selectRoom('203', 'North Wing', 3, 'available', 3, 0, 0)">
+<span class="font-label-sm text-label-sm font-semibold text-on-surface">203</span>
+<div class="flex gap-0.5 mt-1">
+<span class="w-1.5 h-1.5 rounded-full bg-[#1E7B54]"></span>
+<span class="w-1.5 h-1.5 rounded-full bg-[#1E7B54]"></span>
+<span class="w-1.5 h-1.5 rounded-full bg-[#1E7B54]"></span>
+</div>
+<span class="text-[9px] text-[#1E7B54] font-medium">3 Vacant</span>
+</button>
+<!-- Room 204 -->
+<button class="room-btn group flex flex-col items-center justify-center p-1.5 rounded bg-surface-container-lowest hover:bg-surface-container-high transition-all text-left shadow-xs" data-room="204" onclick="selectRoom('204', 'North Wing', 2, 'partial', 1, 0, 1)">
+<span class="font-label-sm text-label-sm font-semibold text-on-surface">204</span>
+<div class="flex gap-0.5 mt-1">
+<span class="w-1.5 h-1.5 rounded-full bg-[#C93B3B]"></span>
+<span class="w-1.5 h-1.5 rounded-full bg-[#1E7B54]"></span>
+</div>
+<span class="text-[9px] text-on-surface-variant">1 Vacant</span>
+</button>
+<!-- Rooms 205 to 212 -->
+<button class="room-btn flex flex-col items-center justify-center p-1.5 rounded bg-surface-container-lowest hover:bg-surface-container-high shadow-xs" data-room="205" onclick="selectRoom('205', 'North Wing', 3, 'occupied', 0, 1, 2)">
+<span class="font-label-sm text-label-sm text-on-surface font-semibold">205</span>
+<div class="flex gap-0.5 mt-1"><span class="w-1.5 h-1.5 rounded-full bg-[#C93B3B]"></span><span class="w-1.5 h-1.5 rounded-full bg-[#C93B3B]"></span><span class="w-1.5 h-1.5 rounded-full bg-[#E06A26]"></span></div>
+<span class="text-[9px] text-on-surface-variant">0 Open</span>
+</button>
+<button class="room-btn flex flex-col items-center justify-center p-1.5 rounded bg-surface-container-lowest hover:bg-surface-container-high shadow-xs" data-room="206" onclick="selectRoom('206', 'North Wing', 2, 'available', 2, 0, 0)">
+<span class="font-label-sm text-label-sm text-on-surface font-semibold">206</span>
+<div class="flex gap-0.5 mt-1"><span class="w-1.5 h-1.5 rounded-full bg-[#1E7B54]"></span><span class="w-1.5 h-1.5 rounded-full bg-[#1E7B54]"></span></div>
+<span class="text-[9px] text-[#1E7B54] font-medium">2 Vacant</span>
+</button>
+<button class="room-btn flex flex-col items-center justify-center p-1.5 rounded bg-surface-container-lowest hover:bg-surface-container-high shadow-xs" data-room="207" onclick="selectRoom('207', 'North Wing', 3, 'partial', 1, 1, 1)">
+<span class="font-label-sm text-label-sm text-on-surface font-semibold">207</span>
+<div class="flex gap-0.5 mt-1"><span class="w-1.5 h-1.5 rounded-full bg-[#1E7B54]"></span><span class="w-1.5 h-1.5 rounded-full bg-[#E06A26]"></span><span class="w-1.5 h-1.5 rounded-full bg-[#C93B3B]"></span></div>
+<span class="text-[9px] text-[#1E7B54]">1 Vacant</span>
+</button>
+<button class="room-btn flex flex-col items-center justify-center p-1.5 rounded bg-surface-container-highest shadow-xs" data-room="208" onclick="selectRoom('208', 'North Wing', 2, 'occupied', 0, 0, 2)">
+<span class="font-label-sm text-label-sm text-on-surface-variant font-semibold">208</span>
+<div class="flex gap-0.5 mt-1"><span class="w-1.5 h-1.5 rounded-full bg-[#C93B3B]"></span><span class="w-1.5 h-1.5 rounded-full bg-[#C93B3B]"></span></div>
+<span class="text-[9px] text-error">Full</span>
+</button>
+<button class="room-btn flex flex-col items-center justify-center p-1.5 rounded bg-surface-container-lowest hover:bg-surface-container-high shadow-xs" data-room="209" onclick="selectRoom('209', 'North Wing', 3, 'available', 2, 1, 0)">
+<span class="font-label-sm text-label-sm text-on-surface font-semibold">209</span>
+<div class="flex gap-0.5 mt-1"><span class="w-1.5 h-1.5 rounded-full bg-[#1E7B54]"></span><span class="w-1.5 h-1.5 rounded-full bg-[#1E7B54]"></span><span class="w-1.5 h-1.5 rounded-full bg-[#E06A26]"></span></div>
+<span class="text-[9px] text-[#1E7B54]">2 Vacant</span>
+</button>
+<button class="room-btn flex flex-col items-center justify-center p-1.5 rounded bg-surface-container-lowest hover:bg-surface-container-high shadow-xs" data-room="210" onclick="selectRoom('210', 'North Wing', 2, 'available', 2, 0, 0)">
+<span class="font-label-sm text-label-sm text-on-surface font-semibold">210</span>
+<div class="flex gap-0.5 mt-1"><span class="w-1.5 h-1.5 rounded-full bg-[#1E7B54]"></span><span class="w-1.5 h-1.5 rounded-full bg-[#1E7B54]"></span></div>
+<span class="text-[9px] text-[#1E7B54]">2 Vacant</span>
+</button>
+<button class="room-btn flex flex-col items-center justify-center p-1.5 rounded bg-surface-container-highest shadow-xs" data-room="211" onclick="selectRoom('211', 'North Wing', 3, 'occupied', 0, 0, 3)">
+<span class="font-label-sm text-label-sm text-on-surface font-semibold">211</span>
+<div class="flex gap-0.5 mt-1"><span class="w-1.5 h-1.5 rounded-full bg-[#C93B3B]"></span><span class="w-1.5 h-1.5 rounded-full bg-[#C93B3B]"></span><span class="w-1.5 h-1.5 rounded-full bg-[#C93B3B]"></span></div>
+<span class="text-[9px] text-error">Full</span>
+</button>
+<button class="room-btn flex flex-col items-center justify-center p-1.5 rounded bg-surface-container-lowest hover:bg-surface-container-high shadow-xs" data-room="212" onclick="selectRoom('212', 'North Wing', 2, 'partial', 1, 1, 0)">
+<span class="font-label-sm text-label-sm text-on-surface font-semibold">212</span>
+<div class="flex gap-0.5 mt-1"><span class="w-1.5 h-1.5 rounded-full bg-[#1E7B54]"></span><span class="w-1.5 h-1.5 rounded-full bg-[#E06A26]"></span></div>
+<span class="text-[9px] text-[#1E7B54]">1 Vacant</span>
+</button>
+</div>
+<!-- Corridor Central Hallway Pathway Indicator -->
+<div class="py-1 px-space-sm bg-surface-container-highest/80 rounded flex items-center justify-between text-on-surface-variant font-label-sm text-label-sm my-1 tracking-wider text-[10px]">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-xs">stairs</span> Staircase NW-2A</span>
+<span class="uppercase tracking-widest text-outline">◀ NORTH CORRIDOR RUNWAY (WIDTH 2.4M) ▶</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-xs">wash</span> North Sanitization Block</span>
+</div>
+<!-- North Wing Grid Row 2 (213-224) -->
+<div class="grid grid-cols-6 sm:grid-cols-12 gap-1.5">
+<button class="room-btn flex flex-col items-center justify-center p-1.5 rounded bg-surface-container-lowest hover:bg-surface-container-high shadow-xs" data-room="213" onclick="selectRoom('213', 'North Wing', 2, 'available', 2, 0, 0)">
+<span class="font-label-sm text-label-sm text-on-surface font-semibold">213</span>
+<div class="flex gap-0.5 mt-1"><span class="w-1.5 h-1.5 rounded-full bg-[#1E7B54]"></span><span class="w-1.5 h-1.5 rounded-full bg-[#1E7B54]"></span></div>
+<span class="text-[9px] text-[#1E7B54]">2 Vacant</span>
+</button>
+<button class="room-btn flex flex-col items-center justify-center p-1.5 rounded bg-surface-container-lowest hover:bg-surface-container-high shadow-xs" data-room="214" onclick="selectRoom('214', 'North Wing', 3, 'available', 3, 0, 0)">
+<span class="font-label-sm text-label-sm text-on-surface font-semibold">214</span>
+<div class="flex gap-0.5 mt-1"><span class="w-1.5 h-1.5 rounded-full bg-[#1E7B54]"></span><span class="w-1.5 h-1.5 rounded-full bg-[#1E7B54]"></span><span class="w-1.5 h-1.5 rounded-full bg-[#1E7B54]"></span></div>
+<span class="text-[9px] text-[#1E7B54]">3 Vacant</span>
+</button>
+<button class="room-btn flex flex-col items-center justify-center p-1.5 rounded bg-surface-container-lowest hover:bg-surface-container-high shadow-xs" data-room="215" onclick="selectRoom('215', 'North Wing', 2, 'partial', 1, 0, 1)">
+<span class="font-label-sm text-label-sm text-on-surface font-semibold">215</span>
+<div class="flex gap-0.5 mt-1"><span class="w-1.5 h-1.5 rounded-full bg-[#1E7B54]"></span><span class="w-1.5 h-1.5 rounded-full bg-[#C93B3B]"></span></div>
+<span class="text-[9px] text-[#1E7B54]">1 Vacant</span>
+</button>
+<button class="room-btn flex flex-col items-center justify-center p-1.5 rounded bg-surface-container-highest shadow-xs" data-room="216" onclick="selectRoom('216', 'North Wing', 3, 'occupied', 0, 0, 3)">
+<span class="font-label-sm text-label-sm text-on-surface font-semibold">216</span>
+<div class="flex gap-0.5 mt-1"><span class="w-1.5 h-1.5 rounded-full bg-[#C93B3B]"></span><span class="w-1.5 h-1.5 rounded-full bg-[#C93B3B]"></span><span class="w-1.5 h-1.5 rounded-full bg-[#C93B3B]"></span></div>
+<span class="text-[9px] text-error">Full</span>
+</button>
+<button class="room-btn flex flex-col items-center justify-center p-1.5 rounded bg-surface-container-lowest hover:bg-surface-container-high shadow-xs" data-room="217" onclick="selectRoom('217', 'North Wing', 2, 'available', 1, 1, 0)">
+<span class="font-label-sm text-label-sm text-on-surface font-semibold">217</span>
+<div class="flex gap-0.5 mt-1"><span class="w-1.5 h-1.5 rounded-full bg-[#1E7B54]"></span><span class="w-1.5 h-1.5 rounded-full bg-[#E06A26]"></span></div>
+<span class="text-[9px] text-[#1E7B54]">1 Vacant</span>
+</button>
+<button class="room-btn flex flex-col items-center justify-center p-1.5 rounded bg-surface-container-lowest hover:bg-surface-container-high shadow-xs" data-room="218" onclick="selectRoom('218', 'North Wing', 3, 'available', 2, 0, 1)">
+<span class="font-label-sm text-label-sm text-on-surface font-semibold">218</span>
+<div class="flex gap-0.5 mt-1"><span class="w-1.5 h-1.5 rounded-full bg-[#1E7B54]"></span><span class="w-1.5 h-1.5 rounded-full bg-[#1E7B54]"></span><span class="w-1.5 h-1.5 rounded-full bg-[#C93B3B]"></span></div>
+<span class="text-[9px] text-[#1E7B54]">2 Vacant</span>
+</button>
+<button class="room-btn flex flex-col items-center justify-center p-1.5 rounded bg-surface-container-highest shadow-xs" data-room="219" onclick="selectRoom('219', 'North Wing', 2, 'occupied', 0, 0, 2)">
+<span class="font-label-sm text-label-sm text-on-surface font-semibold">219</span>
+<div class="flex gap-0.5 mt-1"><span class="w-1.5 h-1.5 rounded-full bg-[#C93B3B]"></span><span class="w-1.5 h-1.5 rounded-full bg-[#C93B3B]"></span></div>
+<span class="text-[9px] text-error">Full</span>
+</button>
+<button class="room-btn flex flex-col items-center justify-center p-1.5 rounded bg-surface-container-highest shadow-xs" data-room="220" onclick="selectRoom('220', 'North Wing', 3, 'occupied', 0, 0, 3)">
+<span class="font-label-sm text-label-sm text-on-surface font-semibold">220</span>
+<div class="flex gap-0.5 mt-1"><span class="w-1.5 h-1.5 rounded-full bg-[#C93B3B]"></span><span class="w-1.5 h-1.5 rounded-full bg-[#C93B3B]"></span><span class="w-1.5 h-1.5 rounded-full bg-[#C93B3B]"></span></div>
+<span class="text-[9px] text-error">Full</span>
+</button>
+<button class="room-btn flex flex-col items-center justify-center p-1.5 rounded bg-surface-container-lowest hover:bg-surface-container-high shadow-xs" data-room="221" onclick="selectRoom('221', 'North Wing', 2, 'available', 1, 1, 0)">
+<span class="font-label-sm text-label-sm text-on-surface font-semibold">221</span>
+<div class="flex gap-0.5 mt-1"><span class="w-1.5 h-1.5 rounded-full bg-[#1E7B54]"></span><span class="w-1.5 h-1.5 rounded-full bg-[#E06A26]"></span></div>
+<span class="text-[9px] text-[#1E7B54]">1 Vacant</span>
+</button>
+<button class="room-btn flex flex-col items-center justify-center p-1.5 rounded bg-surface-container-highest shadow-xs" data-room="222" onclick="selectRoom('222', 'North Wing', 3, 'occupied', 0, 0, 3)">
+<span class="font-label-sm text-label-sm text-on-surface font-semibold">222</span>
+<div class="flex gap-0.5 mt-1"><span class="w-1.5 h-1.5 rounded-full bg-[#C93B3B]"></span><span class="w-1.5 h-1.5 rounded-full bg-[#C93B3B]"></span><span class="w-1.5 h-1.5 rounded-full bg-[#C93B3B]"></span></div>
+<span class="text-[9px] text-error">Full</span>
+</button>
+<button class="room-btn flex flex-col items-center justify-center p-1.5 rounded bg-surface-container-lowest hover:bg-surface-container-high shadow-xs" data-room="223" onclick="selectRoom('223', 'North Wing', 2, 'available', 2, 0, 0)">
+<span class="font-label-sm text-label-sm text-on-surface font-semibold">223</span>
+<div class="flex gap-0.5 mt-1"><span class="w-1.5 h-1.5 rounded-full bg-[#1E7B54]"></span><span class="w-1.5 h-1.5 rounded-full bg-[#1E7B54]"></span></div>
+<span class="text-[9px] text-[#1E7B54]">2 Vacant</span>
+</button>
+<button class="room-btn flex flex-col items-center justify-center p-1.5 rounded bg-surface-container-lowest hover:bg-surface-container-high shadow-xs" data-room="224" onclick="selectRoom('224', 'North Wing', 3, 'partial', 1, 0, 2)">
+<span class="font-label-sm text-label-sm text-on-surface font-semibold">224</span>
+<div class="flex gap-0.5 mt-1"><span class="w-1.5 h-1.5 rounded-full bg-[#1E7B54]"></span><span class="w-1.5 h-1.5 rounded-full bg-[#C93B3B]"></span><span class="w-1.5 h-1.5 rounded-full bg-[#C93B3B]"></span></div>
+<span class="text-[9px] text-[#1E7B54]">1 Vacant</span>
+</button>
+</div>
+</div>
+<!-- CENTRAL QUADRANGLE & TRANSITION ATRIUM -->
+<div class="flex flex-col md:flex-row gap-space-sm items-stretch">
+<!-- Central Courtyard Graphic -->
+<div class="flex-1 bg-surface-container-low rounded-lg p-space-md flex flex-col items-center justify-center text-center relative overflow-hidden min-h-[120px]">
+<div class="absolute inset-0 bg-gradient-to-r from-secondary/5 via-primary/5 to-secondary/5 pointer-events-none"></div>
+<span class="material-symbols-outlined text-secondary-container text-4xl mb-1">yard</span>
+<span class="font-label-sm text-label-sm uppercase tracking-widest text-on-surface-variant font-bold">Open Green Central Courtyard & Lightwell</span>
+<span class="text-xs text-outline mt-0.5">Vertical ventilation shaft · Levels G through 4</span>
+</div>
+<!-- EAST WING CONNECTOR (Rooms 249 - 256 sample view) -->
+<div class="w-full md:w-72 bg-surface-container rounded-lg p-space-sm transition-all flex flex-col justify-between" id="wing-east">
+<div class="flex items-center justify-between mb-1.5">
+<span class="font-label-sm text-label-sm uppercase tracking-wider font-bold text-primary">East Wing Hub (249-272)</span>
+<span class="text-[10px] text-on-surface-variant">Elevator Block E1</span>
+</div>
+<div class="grid grid-cols-4 gap-1.5">
+<button class="room-btn flex flex-col items-center justify-center p-1 rounded bg-surface-container-lowest hover:bg-surface-container-high" data-room="249" onclick="selectRoom('249', 'East Wing', 2, 'partial', 1, 1, 0)">
+<span class="font-label-sm text-label-sm font-semibold">249</span>
+<div class="flex gap-0.5 mt-0.5"><span class="w-1.5 h-1.5 rounded-full bg-[#1E7B54]"></span><span class="w-1.5 h-1.5 rounded-full bg-[#E06A26]"></span></div>
+</button>
+<button class="room-btn flex flex-col items-center justify-center p-1 rounded bg-surface-container-highest" data-room="250" onclick="selectRoom('250', 'East Wing', 2, 'occupied', 0, 0, 2)">
+<span class="font-label-sm text-label-sm font-semibold">250</span>
+<div class="flex gap-0.5 mt-0.5"><span class="w-1.5 h-1.5 rounded-full bg-[#C93B3B]"></span><span class="w-1.5 h-1.5 rounded-full bg-[#C93B3B]"></span></div>
+</button>
+<button class="room-btn flex flex-col items-center justify-center p-1 rounded bg-surface-container-lowest hover:bg-surface-container-high" data-room="251" onclick="selectRoom('251', 'East Wing', 3, 'available', 3, 0, 0)">
+<span class="font-label-sm text-label-sm font-semibold">251</span>
+<div class="flex gap-0.5 mt-0.5"><span class="w-1.5 h-1.5 rounded-full bg-[#1E7B54]"></span><span class="w-1.5 h-1.5 rounded-full bg-[#1E7B54]"></span><span class="w-1.5 h-1.5 rounded-full bg-[#1E7B54]"></span></div>
+</button>
+<button class="room-btn flex flex-col items-center justify-center p-1 rounded bg-surface-container-highest" data-room="252" onclick="selectRoom('252', 'East Wing', 2, 'occupied', 0, 0, 2)">
+<span class="font-label-sm text-label-sm font-semibold">252</span>
+<div class="flex gap-0.5 mt-0.5"><span class="w-1.5 h-1.5 rounded-full bg-[#C93B3B]"></span><span class="w-1.5 h-1.5 rounded-full bg-[#C93B3B]"></span></div>
+</button>
+</div>
+<div class="text-[10px] text-on-surface-variant flex items-center justify-between mt-2 pt-1.5 bg-surface-container-low px-1.5 rounded">
+<span>East Wing Extension →</span>
+<span class="font-semibold text-secondary">Rooms 253-272 In Corridor</span>
+</div>
+</div>
+</div>
+<!-- SOUTH WING (Rooms 225 - 248) -->
+<div class="p-space-sm bg-surface-container rounded transition-all" id="wing-south">
+<div class="flex items-center justify-between mb-2">
+<span class="font-label-sm text-label-sm uppercase tracking-wider font-bold text-primary">South Wing Corridor · Rooms 225–248</span>
+<span class="text-xs text-on-surface-variant font-label-sm">Facing SIT Campus Sports Oval · High Solar Profile</span>
+</div>
+<!-- South Wing Grid Row 1 (225-236) -->
+<div class="grid grid-cols-6 sm:grid-cols-12 gap-1.5 mb-2">
+<button class="room-btn flex flex-col items-center justify-center p-1.5 rounded bg-surface-container-highest shadow-xs" data-room="225" onclick="selectRoom('225', 'South Wing', 3, 'occupied', 0, 0, 3)">
+<span class="font-label-sm text-label-sm font-semibold">225</span>
+<div class="flex gap-0.5 mt-1"><span class="w-1.5 h-1.5 rounded-full bg-[#C93B3B]"></span><span class="w-1.5 h-1.5 rounded-full bg-[#C93B3B]"></span><span class="w-1.5 h-1.5 rounded-full bg-[#C93B3B]"></span></div>
+<span class="text-[9px] text-error">Full</span>
+</button>
+<button class="room-btn flex flex-col items-center justify-center p-1.5 rounded bg-surface-container-lowest hover:bg-surface-container-high shadow-xs" data-room="226" onclick="selectRoom('226', 'South Wing', 2, 'available', 1, 1, 0)">
+<span class="font-label-sm text-label-sm font-semibold">226</span>
+<div class="flex gap-0.5 mt-1"><span class="w-1.5 h-1.5 rounded-full bg-[#1E7B54]"></span><span class="w-1.5 h-1.5 rounded-full bg-[#E06A26]"></span></div>
+<span class="text-[9px] text-[#1E7B54]">1 Vacant</span>
+</button>
+<button class="room-btn flex flex-col items-center justify-center p-1.5 rounded bg-surface-container-lowest hover:bg-surface-container-high shadow-xs" data-room="227" onclick="selectRoom('227', 'South Wing', 3, 'available', 2, 0, 1)">
+<span class="font-label-sm text-label-sm font-semibold">227</span>
+<div class="flex gap-0.5 mt-1"><span class="w-1.5 h-1.5 rounded-full bg-[#1E7B54]"></span><span class="w-1.5 h-1.5 rounded-full bg-[#1E7B54]"></span><span class="w-1.5 h-1.5 rounded-full bg-[#C93B3B]"></span></div>
+<span class="text-[9px] text-[#1E7B54]">2 Vacant</span>
+</button>
+<button class="room-btn flex flex-col items-center justify-center p-1.5 rounded bg-surface-container-highest shadow-xs" data-room="228" onclick="selectRoom('228', 'South Wing', 2, 'occupied', 0, 0, 2)">
+<span class="font-label-sm text-label-sm font-semibold">228</span>
+<div class="flex gap-0.5 mt-1"><span class="w-1.5 h-1.5 rounded-full bg-[#C93B3B]"></span><span class="w-1.5 h-1.5 rounded-full bg-[#C93B3B]"></span></div>
+<span class="text-[9px] text-error">Full</span>
+</button>
+<button class="room-btn flex flex-col items-center justify-center p-1.5 rounded bg-surface-container-lowest hover:bg-surface-container-high shadow-xs" data-room="229" onclick="selectRoom('229', 'South Wing', 3, 'partial', 1, 1, 1)">
+<span class="font-label-sm text-label-sm font-semibold">229</span>
+<div class="flex gap-0.5 mt-1"><span class="w-1.5 h-1.5 rounded-full bg-[#1E7B54]"></span><span class="w-1.5 h-1.5 rounded-full bg-[#E06A26]"></span><span class="w-1.5 h-1.5 rounded-full bg-[#C93B3B]"></span></div>
+<span class="text-[9px] text-[#1E7B54]">1 Vacant</span>
+</button>
+<button class="room-btn flex flex-col items-center justify-center p-1.5 rounded bg-surface-container-lowest hover:bg-surface-container-high shadow-xs" data-room="230" onclick="selectRoom('230', 'South Wing', 3, 'available', 3, 0, 0)">
+<span class="font-label-sm text-label-sm font-semibold">230</span>
+<div class="flex gap-0.5 mt-1"><span class="w-1.5 h-1.5 rounded-full bg-[#1E7B54]"></span><span class="w-1.5 h-1.5 rounded-full bg-[#1E7B54]"></span><span class="w-1.5 h-1.5 rounded-full bg-[#1E7B54]"></span></div>
+<span class="text-[9px] text-[#1E7B54]">3 Vacant</span>
+</button>
+<button class="room-btn flex flex-col items-center justify-center p-1.5 rounded bg-surface-container-highest shadow-xs" data-room="231" onclick="selectRoom('231', 'South Wing', 2, 'occupied', 0, 0, 2)">
+<span class="font-label-sm text-label-sm font-semibold">231</span>
+<div class="flex gap-0.5 mt-1"><span class="w-1.5 h-1.5 rounded-full bg-[#C93B3B]"></span><span class="w-1.5 h-1.5 rounded-full bg-[#C93B3B]"></span></div>
+<span class="text-[9px] text-error">Full</span>
+</button>
+<button class="room-btn flex flex-col items-center justify-center p-1.5 rounded bg-surface-container-lowest hover:bg-surface-container-high shadow-xs" data-room="232" onclick="selectRoom('232', 'South Wing', 2, 'available', 2, 0, 0)">
+<span class="font-label-sm text-label-sm font-semibold">232</span>
+<div class="flex gap-0.5 mt-1"><span class="w-1.5 h-1.5 rounded-full bg-[#1E7B54]"></span><span class="w-1.5 h-1.5 rounded-full bg-[#1E7B54]"></span></div>
+<span class="text-[9px] text-[#1E7B54]">2 Vacant</span>
+</button>
+<button class="room-btn flex flex-col items-center justify-center p-1.5 rounded bg-surface-container-highest shadow-xs" data-room="233" onclick="selectRoom('233', 'South Wing', 3, 'occupied', 0, 0, 3)">
+<span class="font-label-sm text-label-sm font-semibold">233</span>
+<div class="flex gap-0.5 mt-1"><span class="w-1.5 h-1.5 rounded-full bg-[#C93B3B]"></span><span class="w-1.5 h-1.5 rounded-full bg-[#C93B3B]"></span><span class="w-1.5 h-1.5 rounded-full bg-[#C93B3B]"></span></div>
+<span class="text-[9px] text-error">Full</span>
+</button>
+<button class="room-btn flex flex-col items-center justify-center p-1.5 rounded bg-surface-container-lowest hover:bg-surface-container-high shadow-xs" data-room="234" onclick="selectRoom('234', 'South Wing', 2, 'partial', 1, 1, 0)">
+<span class="font-label-sm text-label-sm font-semibold">234</span>
+<div class="flex gap-0.5 mt-1"><span class="w-1.5 h-1.5 rounded-full bg-[#1E7B54]"></span><span class="w-1.5 h-1.5 rounded-full bg-[#E06A26]"></span></div>
+<span class="text-[9px] text-[#1E7B54]">1 Vacant</span>
+</button>
+<button class="room-btn flex flex-col items-center justify-center p-1.5 rounded bg-surface-container-highest shadow-xs" data-room="235" onclick="selectRoom('235', 'South Wing', 3, 'occupied', 0, 0, 3)">
+<span class="font-label-sm text-label-sm font-semibold">235</span>
+<div class="flex gap-0.5 mt-1"><span class="w-1.5 h-1.5 rounded-full bg-[#C93B3B]"></span><span class="w-1.5 h-1.5 rounded-full bg-[#C93B3B]"></span><span class="w-1.5 h-1.5 rounded-full bg-[#C93B3B]"></span></div>
+<span class="text-[9px] text-error">Full</span>
+</button>
+<button class="room-btn flex flex-col items-center justify-center p-1.5 rounded bg-surface-container-lowest hover:bg-surface-container-high shadow-xs" data-room="236" onclick="selectRoom('236', 'South Wing', 2, 'available', 1, 0, 1)">
+<span class="font-label-sm text-label-sm font-semibold">236</span>
+<div class="flex gap-0.5 mt-1"><span class="w-1.5 h-1.5 rounded-full bg-[#1E7B54]"></span><span class="w-1.5 h-1.5 rounded-full bg-[#C93B3B]"></span></div>
+<span class="text-[9px] text-[#1E7B54]">1 Vacant</span>
+</button>
+</div>
+<!-- Corridor Central Hallway Pathway Indicator -->
+<div class="py-1 px-space-sm bg-surface-container-highest/80 rounded flex items-center justify-between text-on-surface-variant font-label-sm text-label-sm my-1 tracking-wider text-[10px]">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-xs">stairs</span> Staircase SW-2B</span>
+<span class="uppercase tracking-widest text-outline">◀ SOUTH CORRIDOR RUNWAY (WIDTH 2.4M) ▶</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-xs">local_fire_department</span> Fire Exit S2</span>
+</div>
+<!-- South Wing Grid Row 2 (237-248) -->
+<div class="grid grid-cols-6 sm:grid-cols-12 gap-1.5">
+<button class="room-btn flex flex-col items-center justify-center p-1.5 rounded bg-surface-container-lowest hover:bg-surface-container-high shadow-xs" data-room="237" onclick="selectRoom('237', 'South Wing', 2, 'available', 2, 0, 0)">
+<span class="font-label-sm text-label-sm font-semibold">237</span>
+<div class="flex gap-0.5 mt-1"><span class="w-1.5 h-1.5 rounded-full bg-[#1E7B54]"></span><span class="w-1.5 h-1.5 rounded-full bg-[#1E7B54]"></span></div>
+<span class="text-[9px] text-[#1E7B54]">2 Vacant</span>
+</button>
+<button class="room-btn flex flex-col items-center justify-center p-1.5 rounded bg-surface-container-lowest hover:bg-surface-container-high shadow-xs" data-room="238" onclick="selectRoom('238', 'South Wing', 3, 'available', 3, 0, 0)">
+<span class="font-label-sm text-label-sm font-semibold">238</span>
+<div class="flex gap-0.5 mt-1"><span class="w-1.5 h-1.5 rounded-full bg-[#1E7B54]"></span><span class="w-1.5 h-1.5 rounded-full bg-[#1E7B54]"></span><span class="w-1.5 h-1.5 rounded-full bg-[#1E7B54]"></span></div>
+<span class="text-[9px] text-[#1E7B54]">3 Vacant</span>
+</button>
+<button class="room-btn flex flex-col items-center justify-center p-1.5 rounded bg-surface-container-highest shadow-xs" data-room="239" onclick="selectRoom('239', 'South Wing', 2, 'occupied', 0, 0, 2)">
+<span class="font-label-sm text-label-sm font-semibold">239</span>
+<div class="flex gap-0.5 mt-1"><span class="w-1.5 h-1.5 rounded-full bg-[#C93B3B]"></span><span class="w-1.5 h-1.5 rounded-full bg-[#C93B3B]"></span></div>
+<span class="text-[9px] text-error">Full</span>
+</button>
+<button class="room-btn flex flex-col items-center justify-center p-1.5 rounded bg-surface-container-highest shadow-xs" data-room="240" onclick="selectRoom('240', 'South Wing', 3, 'occupied', 0, 1, 2)">
+<span class="font-label-sm text-label-sm font-semibold">240</span>
+<div class="flex gap-0.5 mt-1"><span class="w-1.5 h-1.5 rounded-full bg-[#C93B3B]"></span><span class="w-1.5 h-1.5 rounded-full bg-[#E06A26]"></span><span class="w-1.5 h-1.5 rounded-full bg-[#C93B3B]"></span></div>
+<span class="text-[9px] text-error">Full</span>
+</button>
+<button class="room-btn flex flex-col items-center justify-center p-1.5 rounded bg-surface-container-lowest hover:bg-surface-container-high shadow-xs" data-room="241" onclick="selectRoom('241', 'South Wing', 2, 'partial', 1, 0, 1)">
+<span class="font-label-sm text-label-sm font-semibold">241</span>
+<div class="flex gap-0.5 mt-1"><span class="w-1.5 h-1.5 rounded-full bg-[#1E7B54]"></span><span class="w-1.5 h-1.5 rounded-full bg-[#C93B3B]"></span></div>
+<span class="text-[9px] text-[#1E7B54]">1 Vacant</span>
+</button>
+<button class="room-btn flex flex-col items-center justify-center p-1.5 rounded bg-surface-container-lowest hover:bg-surface-container-high shadow-xs" data-room="242" onclick="selectRoom('242', 'South Wing', 3, 'available', 2, 0, 1)">
+<span class="font-label-sm text-label-sm font-semibold">242</span>
+<div class="flex gap-0.5 mt-1"><span class="w-1.5 h-1.5 rounded-full bg-[#1E7B54]"></span><span class="w-1.5 h-1.5 rounded-full bg-[#1E7B54]"></span><span class="w-1.5 h-1.5 rounded-full bg-[#C93B3B]"></span></div>
+<span class="text-[9px] text-[#1E7B54]">2 Vacant</span>
+</button>
+<button class="room-btn flex flex-col items-center justify-center p-1.5 rounded bg-surface-container-highest shadow-xs" data-room="243" onclick="selectRoom('243', 'South Wing', 2, 'occupied', 0, 0, 2)">
+<span class="font-label-sm text-label-sm font-semibold">243</span>
+<div class="flex gap-0.5 mt-1"><span class="w-1.5 h-1.5 rounded-full bg-[#C93B3B]"></span><span class="w-1.5 h-1.5 rounded-full bg-[#C93B3B]"></span></div>
+<span class="text-[9px] text-error">Full</span>
+</button>
+<button class="room-btn flex flex-col items-center justify-center p-1.5 rounded bg-surface-container-lowest hover:bg-surface-container-high shadow-xs" data-room="244" onclick="selectRoom('244', 'South Wing', 3, 'available', 1, 2, 0)">
+<span class="font-label-sm text-label-sm font-semibold">244</span>
+<div class="flex gap-0.5 mt-1"><span class="w-1.5 h-1.5 rounded-full bg-[#1E7B54]"></span><span class="w-1.5 h-1.5 rounded-full bg-[#E06A26]"></span><span class="w-1.5 h-1.5 rounded-full bg-[#E06A26]"></span></div>
+<span class="text-[9px] text-[#1E7B54]">1 Vacant</span>
+</button>
+<button class="room-btn flex flex-col items-center justify-center p-1.5 rounded bg-surface-container-lowest hover:bg-surface-container-high shadow-xs" data-room="245" onclick="selectRoom('245', 'South Wing', 2, 'available', 2, 0, 0)">
+<span class="font-label-sm text-label-sm font-semibold">245</span>
+<div class="flex gap-0.5 mt-1"><span class="w-1.5 h-1.5 rounded-full bg-[#1E7B54]"></span><span class="w-1.5 h-1.5 rounded-full bg-[#1E7B54]"></span></div>
+<span class="text-[9px] text-[#1E7B54]">2 Vacant</span>
+</button>
+<button class="room-btn flex flex-col items-center justify-center p-1.5 rounded bg-surface-container-highest shadow-xs" data-room="246" onclick="selectRoom('246', 'South Wing', 3, 'occupied', 0, 0, 3)">
+<span class="font-label-sm text-label-sm font-semibold">246</span>
+<div class="flex gap-0.5 mt-1"><span class="w-1.5 h-1.5 rounded-full bg-[#C93B3B]"></span><span class="w-1.5 h-1.5 rounded-full bg-[#C93B3B]"></span><span class="w-1.5 h-1.5 rounded-full bg-[#C93B3B]"></span></div>
+<span class="text-[9px] text-error">Full</span>
+</button>
+<button class="room-btn flex flex-col items-center justify-center p-1.5 rounded bg-surface-container-highest shadow-xs" data-room="247" onclick="selectRoom('247', 'South Wing', 2, 'occupied', 0, 0, 2)">
+<span class="font-label-sm text-label-sm font-semibold">247</span>
+<div class="flex gap-0.5 mt-1"><span class="w-1.5 h-1.5 rounded-full bg-[#C93B3B]"></span><span class="w-1.5 h-1.5 rounded-full bg-[#C93B3B]"></span></div>
+<span class="text-[9px] text-error">Full</span>
+</button>
+<button class="room-btn flex flex-col items-center justify-center p-1.5 rounded bg-surface-container-lowest hover:bg-surface-container-high shadow-xs" data-room="248" onclick="selectRoom('248', 'South Wing', 3, 'available', 1, 1, 1)">
+<span class="font-label-sm text-label-sm font-semibold">248</span>
+<div class="flex gap-0.5 mt-1"><span class="w-1.5 h-1.5 rounded-full bg-[#1E7B54]"></span><span class="w-1.5 h-1.5 rounded-full bg-[#E06A26]"></span><span class="w-1.5 h-1.5 rounded-full bg-[#C93B3B]"></span></div>
+<span class="text-[9px] text-[#1E7B54]">1 Vacant</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Floor Plan Architectural Footnote -->
+<div class="mt-space-md pt-space-xs flex flex-wrap items-center justify-between text-[11px] text-outline">
+<span>SIT Department of Civil Works & Campus Planning · Structural Scale 1:100</span>
+<span>All room portals equipped with 1Gbps SIT-WLAN access points</span>
+</div>
+</div>
+</div>
+<!-- Campus Architecture Thumbnail Bar -->
+<div class="w-full mt-space-sm bg-surface-container-lowest p-space-sm rounded-lg shadow-sm flex flex-wrap items-center justify-between gap-space-sm">
+<div class="flex items-center gap-space-sm">
+<img class="w-14 h-12 object-cover rounded shadow-xs" data-alt="Photorealistic crisp exterior photo of BVB Block residential hostel building at Siddaganga Institute of Technology Tumakuru during daylight with manicured tropical campus gardens, brick and modern concrete architecture, students walking" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCRb8sQRBzS2mOkrQEvneAs4Xc2ONT0NLaJKlsApWfo483uxY7Ir4oKEzKwdgBdiZC9tZgdxzKwumsikImvdycT2WL4wCKXA6ZVn7SPA1oWP7XV1Z8f7tdFTdiliZpxN1wk7MbHhRDfh_XCG2YIlXatPoWOPw0EyS2IbTxunPMsoLVkWxl8_pmt3_kemFIyn9GGvDtHAhl0NolQyqW8zYmfN4KQxPOn2PprCGUdHRALrY_ZWxKBFsGdaA"/>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface font-bold">BVB Block Heritage Elevation</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Floor 2 North Quadrangle Facing SIT Temple Hill</span>
+</div>
+</div>
+<div class="flex items-center gap-space-md">
+<div class="flex items-center gap-space-xs text-on-surface-variant font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-base text-secondary">wifi</span>
+<span>SIT-Mesh-202 Active</span>
+</div>
+<div class="flex items-center gap-space-xs text-on-surface-variant font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-base text-secondary">water_drop</span>
+<span>Solar Water Supply Verified</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Inspector Drawer Panel (Right Side: Selected Room & Real-time Seat Grid) -->
+<aside class="w-full lg:w-96 bg-surface-container-lowest shadow-xl flex flex-col justify-between p-space-lg select-none z-20">
+<div class="flex flex-col gap-space-md">
+<!-- Inspector Drawer Header -->
+<div class="flex items-start justify-between pb-space-sm border-b-0">
+<div>
+<div class="flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant font-semibold">Active Room Inspector</span>
+</div>
+<h2 class="font-headline-md text-headline-md text-primary mt-0.5 tracking-tight" id="inspector-room-title">
+              Room 202 (North Wing)
+            </h2>
+</div>
+<span class="px-space-xs py-0.5 rounded bg-[#E7F2ED] text-[#1E7B54] font-label-sm text-label-sm font-semibold" id="inspector-badge">
+            1 Available Seat
+          </span>
+</div>
+<!-- Room Specs Card -->
+<div class="p-space-sm bg-surface-container-low rounded flex flex-col gap-1.5 text-on-surface">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Classification:</span>
+<span class="font-label-sm text-label-sm font-semibold" id="inspector-classification">Provisional 3-Seater</span>
+</div>
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Exposure:</span>
+<span class="font-label-sm text-label-sm">Well-ventilated exterior courtyard</span>
+</div>
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Furnishing:</span>
+<span class="font-label-sm text-label-sm">3× Steel Bedstead, 3× Study Desk</span>
+</div>
+</div>
+<!-- Seat Allocation Inventory Matrix for Selected Room -->
+<div class="flex flex-col gap-space-sm">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm uppercase tracking-wider font-bold text-on-surface-variant">Room 202 Bed Matrix (3)</span>
+<span class="text-xs text-outline">Click bed unit to target</span>
+</div>
+<!-- Bed Units List -->
+<div class="flex flex-col gap-2">
+<!-- Seat 202-A: Occupied -->
+<div class="p-space-sm rounded bg-surface-container-high/70 flex items-start justify-between">
+<div class="flex items-start gap-space-sm">
+<span class="p-1 rounded bg-[#FDE8E8] text-[#C93B3B] mt-0.5">
+<span class="material-symbols-outlined text-base">person_off</span>
+</span>
+<div class="flex flex-col">
+<div class="flex items-center gap-1.5">
+<span class="font-label-md text-label-md font-bold text-on-surface">Seat 202-A</span>
+<span class="px-1.5 py-0.2 rounded bg-[#FDE8E8] text-[#C93B3B] text-[10px] font-bold">Occupied</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface font-medium">Rahul M.</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">USN: 1SI21CS082 · Priority #04</span>
+<span class="text-[10px] text-outline">Verified & Locked at 10:14 AM</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline text-base">lock</span>
+</div>
+<!-- Seat 202-B: Roommate Intent (With Warning Trigger) -->
+<div class="p-space-sm rounded bg-[#FFF0E6]/70 hover:bg-[#FFF0E6] cursor-pointer transition-colors flex items-start justify-between group shadow-xs" onclick="triggerWarningDialog('Prajwal K.', '1SI21CS091', '15')">
+<div class="flex items-start gap-space-sm">
+<span class="p-1 rounded bg-[#FFF0E6] text-[#E06A26] mt-0.5">
+<span class="material-symbols-outlined text-base">group</span>
+</span>
+<div class="flex flex-col">
+<div class="flex items-center gap-1.5">
+<span class="font-label-md text-label-md font-bold text-on-surface">Seat 202-B</span>
+<span class="px-1.5 py-0.2 rounded bg-[#FFF0E6] text-[#E06A26] text-[10px] font-bold">Roommate Intent</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface font-medium">Prajwal K.</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Priority Index #15 · Pending group pair</span>
+<span class="text-[10px] text-[#E06A26] font-medium flex items-center gap-0.5 mt-0.5">
+<span class="material-symbols-outlined text-xs">warning</span> Disruption warning applies
+                  </span>
+</div>
+</div>
+<span class="material-symbols-outlined text-[#E06A26] text-base group-hover:translate-x-0.5 transition-transform">info</span>
+</div>
+<!-- Seat 202-C: Available Seat (CURRENTLY ACTIVE TARGET) -->
+<div class="p-space-sm rounded bg-[#EBF3FC] ring-2 ring-[#1D63B8] shadow-sm cursor-pointer transition-all flex items-start justify-between" id="seat-card-c" onclick="selectSeat('C')">
+<div class="flex items-start gap-space-sm">
+<span class="p-1 rounded bg-[#E7F2ED] text-[#1E7B54] mt-0.5">
+<span class="material-symbols-outlined text-base" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</span>
+<div class="flex flex-col">
+<div class="flex items-center gap-1.5">
+<span class="font-label-md text-label-md font-bold text-primary">Seat 202-C</span>
+<span class="px-1.5 py-0.2 rounded bg-[#E7F2ED] text-[#1E7B54] text-[10px] font-bold">Available Now</span>
+</div>
+<span class="font-body-sm text-body-sm text-secondary font-semibold">Ready for Direct Allocation</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Window Bed · Direct Southern breeze</span>
+<span class="text-[10px] text-primary font-bold mt-0.5 flex items-center gap-0.5">
+<span class="material-symbols-outlined text-xs text-[#1D63B8]">radio_button_checked</span> Active Target for Saugat
+                  </span>
+</div>
+</div>
+<span class="px-2 py-1 rounded bg-[#1D63B8] text-white font-label-sm text-label-sm font-semibold">Selected</span>
+</div>
+</div>
+</div>
+<!-- Roommate Group Intent Warning Modal Overlay (Conditional Alert) -->
+<div class="hidden p-space-md rounded bg-[#FFF0E6] text-on-surface shadow-md" id="warning-dialog">
+<div class="flex items-start gap-space-sm">
+<span class="material-symbols-outlined text-xl text-[#E06A26] shrink-0 mt-0.5">warning</span>
+<div class="flex flex-col gap-1">
+<span class="font-label-md text-label-md font-bold text-[#E06A26]">Roommate Coordination Intent Warning</span>
+<p class="font-body-sm text-body-sm text-on-surface">
+                Selecting <span class="font-semibold text-primary" id="warning-seat-id">Seat 202-B</span> will invalidate <span class="font-semibold text-primary" id="warning-student-name">Prajwal K.</span>'s pending roommate coordination preference for BVB Floor 2.
+              </p>
+<div class="flex items-center gap-space-sm mt-2">
+<button class="px-space-sm py-1 bg-[#203653] text-white font-label-sm text-label-sm rounded hover:bg-[#17283B] transition-colors" onclick="dismissWarning()">
+                  Choose Another Seat
+                </button>
+<button class="px-space-sm py-1 bg-surface-container-lowest text-on-surface-variant hover:text-error font-label-sm text-label-sm rounded transition-colors" onclick="overrideWarning()">
+                  Continue Anyway
+                </button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Action Panel & Confirmation Execution Block -->
+<div class="pt-space-md mt-space-md bg-surface-container-low p-space-md rounded-lg flex flex-col gap-space-sm">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-outline font-semibold">Target Bed Candidate:</span>
+<div class="flex items-center justify-between text-on-surface">
+<span class="font-label-lg text-label-lg font-bold text-primary">BVB > Level 2 > Room 202 > Seat C</span>
+<span class="font-label-sm text-label-sm text-secondary font-semibold">₹34,000 / Sem</span>
+</div>
+</div>
+<button class="w-full h-11 px-space-md bg-[#2C8279] hover:bg-[#236B63] text-white font-label-lg text-label-lg rounded shadow-sm flex items-center justify-center gap-space-xs transition-all active:translate-y-0.5" id="confirm-allocation-btn" onclick="executeConfirmation()">
+<span>Proceed to Seat Confirmation</span>
+<span class="material-symbols-outlined text-lg">arrow_forward</span>
+</button>
+<button class="w-full h-9 px-space-md bg-surface-container-lowest text-on-surface font-label-sm text-label-sm rounded shadow-xs hover:bg-surface-container-high transition-colors flex items-center justify-center gap-space-xs" onclick="savePreference()">
+<span class="material-symbols-outlined text-base">bookmark_add</span>
+<span>Save to Roommate Preference Draft</span>
+</button>
+<!-- Institutional Regulatory Disclaimer -->
+<p class="font-body-sm text-body-sm text-outline text-center text-[11px] leading-tight mt-1">
+          Allocations are provisional until digitally counter-verified by SIT Chief Warden & Hostel Office.
+        </p>
+</div>
+</aside>
+</div>
+<!-- Notification Toast (Feedback on action) -->
+<div class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none" id="toast-notification">
+<div class="bg-primary text-on-primary px-space-md py-space-sm rounded-lg shadow-xl flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-secondary-fixed">verified</span>
+<span class="font-label-sm text-label-sm" id="toast-message">Room selection updated successfully.</span>
+</div>
+</div>
+</div>
+<script>
+  let currentZoom = 1;
+  const canvasWrap = document.getElementById('floorplan-svg-wrap');
+  let selectedRoomNumber = '202';
+  let selectedSeatLetter = 'C';
+
+  function handleZoom(delta) {
+    currentZoom = Math.min(Math.max(0.7, currentZoom + delta), 1.6);
+    if (canvasWrap) {
+      canvasWrap.style.transform = `scale(${currentZoom})`;
+    }
+  }
+
+  function resetZoom() {
+    currentZoom = 1;
+    if (canvasWrap) {
+      canvasWrap.style.transform = `scale(1)`;
+    }
+  }
+
+  function filterWing(wing) {
+    const north = document.getElementById('wing-north');
+    const south = document.getElementById('wing-south');
+    const east = document.getElementById('wing-east');
+    
+    // Reset button states
+    ['all', 'north', 'south', 'east'].forEach(id => {
+      const btn = document.getElementById(`filter-${id}`);
+      if (btn) {
+        btn.className = "px-space-sm py-1 rounded font-label-sm text-label-sm text-on-surface-variant hover:text-on-surface transition-colors";
+      }
+    });
+    
+    const activeBtn = document.getElementById(`filter-${wing}`);
+    if (activeBtn) {
+      activeBtn.className = "px-space-sm py-1 rounded font-label-sm text-label-sm bg-primary text-on-primary transition-colors";
+    }
+
+    if (wing === 'north') {
+      north.style.display = 'block';
+      south.style.display = 'none';
+      east.style.display = 'none';
+    } else if (wing === 'south') {
+      north.style.display = 'none';
+      south.style.display = 'block';
+      east.style.display = 'none';
+    } else if (wing === 'east') {
+      north.style.display = 'none';
+      south.style.display = 'none';
+      east.style.display = 'flex';
+    } else {
+      north.style.display = 'block';
+      south.style.display = 'block';
+      east.style.display = 'flex';
+    }
+  }
+
+  function selectRoom(num, wing, capacity, status, avail, intent, occ) {
+    selectedRoomNumber = num;
+    document.querySelectorAll('.room-btn').forEach(btn => {
+      btn.classList.remove('ring-2', 'ring-[#1D63B8]', 'shadow-md');
+    });
+
+    const targetBtn = document.querySelector(`[data-room="${num}"]`);
+    if (targetBtn) {
+      targetBtn.classList.add('ring-2', 'ring-[#1D63B8]', 'shadow-md');
+    }
+
+    const titleEl = document.getElementById('inspector-room-title');
+    const badgeEl = document.getElementById('inspector-badge');
+    const classEl = document.getElementById('inspector-classification');
+
+    if (titleEl) titleEl.textContent = `Room ${num} (${wing})`;
+    if (classEl) classEl.textContent = `Provisional ${capacity}-Seater`;
+    
+    if (badgeEl) {
+      if (avail > 0) {
+        badgeEl.textContent = `${avail} Available Seat${avail > 1 ? 's' : ''}`;
+        badgeEl.className = "px-space-xs py-0.5 rounded bg-[#E7F2ED] text-[#1E7B54] font-label-sm text-label-sm font-semibold";
+      } else {
+        badgeEl.textContent = "Fully Occupied";
+        badgeEl.className = "px-space-xs py-0.5 rounded bg-[#FDE8E8] text-[#C93B3B] font-label-sm text-label-sm font-semibold";
+      }
+    }
+
+    showToast(`Inspecting Room ${num} · ${wing}`);
+  }
+
+  function selectSeat(letter) {
+    selectedSeatLetter = letter;
+    showToast(`Target Bed Set: Room ${selectedRoomNumber} - Bed ${letter}`);
+  }
+
+  function triggerWarningDialog(studentName, usn, priority) {
+    const dialog = document.getElementById('warning-dialog');
+    const nameEl = document.getElementById('warning-student-name');
+    const seatEl = document.getElementById('warning-seat-id');
+    
+    if (nameEl) nameEl.textContent = studentName;
+    if (seatEl) seatEl.textContent = `Seat 202-B`;
+    if (dialog) dialog.classList.remove('hidden');
+  }
+
+  function dismissWarning() {
+    const dialog = document.getElementById('warning-dialog');
+    if (dialog) dialog.classList.add('hidden');
+    showToast("Disruption canceled. Maintained existing seat C.");
+  }
+
+  function overrideWarning() {
+    const dialog = document.getElementById('warning-dialog');
+    if (dialog) dialog.classList.add('hidden');
+    showToast("Intent acknowledged. Overriding preference queue.");
+  }
+
+  function executeConfirmation() {
+    showToast(`Locking Seat ${selectedRoomNumber}-${selectedSeatLetter} for Saugat...`);
+  }
+
+  function savePreference() {
+    showToast("Preferences saved to roommate coordination wishlist.");
+  }
+
+  function showToast(msg) {
+    const toast = document.getElementById('toast-notification');
+    const toastMsg = document.getElementById('toast-message');
+    if (toast && toastMsg) {
+      toastMsg.innerHTML = msg;
+      toast.classList.remove('translate-y-20', 'opacity-0');
+      setTimeout(() => {
+        toast.classList.add('translate-y-20', 'opacity-0');
+      }, 2800);
+    }
+  }
+
+  // Room search filtering
+  const searchInput = document.getElementById('room-search');
+  if (searchInput) {
+    searchInput.addEventListener('input', function(e) {
+      const term = e.target.value.trim().toLowerCase();
+      document.querySelectorAll('.room-btn').forEach(btn => {
+        const room = btn.getAttribute('data-room') || '';
+        if (term === '' || room.includes(term)) {
+          btn.style.opacity = '1';
+          btn.style.filter = 'none';
+        } else {
+          btn.style.opacity = '0.25';
+          btn.style.filter = 'grayscale(100%)';
+        }
+      });
+    });
+  }
+
+  // Live timer countdown simulation
+  let secondsLeft = 1062; // 17 mins 42 sec
+  const countdownEl = document.getElementById('countdown-timer');
+  if (countdownEl) {
+    setInterval(() => {
+      if (secondsLeft > 0) {
+        secondsLeft--;
+        const mins = Math.floor(secondsLeft / 60);
+        const secs = secondsLeft % 60;
+        countdownEl.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+      }
+    }, 1000);
+  }
+</script></main></div></body></html>

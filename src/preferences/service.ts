@@ -204,7 +204,19 @@ export class PreferencesService {
     studentProfileId: string,
     accept: boolean,
     actor: AuthActor
-  ): Promise<{ status: string }> {
+  ): Promise<{ 
+    status: string;
+    groupId: string;
+    cycleId?: string;
+    preferredRoomId?: string;
+    roomNumber?: string;
+    buildingId?: string;
+    buildingName?: string;
+    floorId?: string;
+    floorNumber?: number;
+    leaderName?: string;
+    groupMembers?: Array<{ studentId: string; fullName: string; priorityNumber: number; status: string }>;
+  }> {
     if (actor.role === 'STUDENT' && actor.student_profile_id !== studentProfileId) {
       throw new Error('FORBIDDEN: Cannot respond on behalf of another student');
     }
@@ -221,7 +233,53 @@ export class PreferencesService {
       throw new Error('NOT_FOUND: Pending invitation for this group was not found');
     }
 
-    return { status: newStatus };
+    // Retrieve canonical invitation and room context for seamless allocation acknowledgement
+    const groupContextRes = await this.db.query(
+      `SELECT rg.id as group_id, rg.cycle_id, rg.preferred_room_id, r.room_number,
+              r.floor_id, f.floor_number, b.id as building_id, b.name as building_name,
+              sp.full_name as leader_name
+       FROM roommate_groups rg
+       JOIN rooms r ON rg.preferred_room_id = r.id
+       JOIN floors f ON r.floor_id = f.id
+       JOIN buildings b ON f.building_id = b.id
+       JOIN student_profiles sp ON rg.leader_student_id = sp.id
+       WHERE rg.id = $1`,
+      [groupId]
+    );
+
+    let groupMembers: Array<{ studentId: string; fullName: string; priorityNumber: number; status: string }> = [];
+    if (groupContextRes.rows.length > 0) {
+      const memRes = await this.db.query(
+        `SELECT rgm.student_id, rgm.priority_number, rgm.status, sp.full_name
+         FROM roommate_group_members rgm
+         JOIN student_profiles sp ON rgm.student_id = sp.id
+         WHERE rgm.group_id = $1
+         ORDER BY rgm.priority_number ASC`,
+        [groupId]
+      );
+      groupMembers = memRes.rows.map(m => ({
+        studentId: m.student_id,
+        fullName: m.full_name,
+        priorityNumber: m.priority_number,
+        status: m.status,
+      }));
+    }
+
+    const groupInfo = groupContextRes.rows[0];
+
+    return {
+      status: newStatus,
+      groupId,
+      cycleId: groupInfo?.cycle_id,
+      preferredRoomId: groupInfo?.preferred_room_id,
+      roomNumber: groupInfo?.room_number,
+      buildingId: groupInfo?.building_id,
+      buildingName: groupInfo?.building_name,
+      floorId: groupInfo?.floor_id,
+      floorNumber: groupInfo?.floor_number,
+      leaderName: groupInfo?.leader_name,
+      groupMembers,
+    };
   }
 
   /**
@@ -257,20 +315,26 @@ export class PreferencesService {
    */
   async getStudentRoommateGroups(studentProfileId: string, cycleId: string) {
     const incomingRes = await this.db.query(
-      `SELECT rg.id as group_id, rg.preferred_room_id, r.room_number, sp.full_name as leader_name,
-              rgm.status as my_status, rgm.priority_number
+      `SELECT rg.id as group_id, rg.cycle_id, rg.preferred_room_id, r.room_number, sp.full_name as leader_name,
+              rgm.status as my_status, rgm.priority_number,
+              r.floor_id, f.floor_number, b.id as building_id, b.name as building_name
        FROM roommate_group_members rgm
        JOIN roommate_groups rg ON rgm.group_id = rg.id
        JOIN student_profiles sp ON rg.leader_student_id = sp.id
        JOIN rooms r ON rg.preferred_room_id = r.id
+       JOIN floors f ON r.floor_id = f.id
+       JOIN buildings b ON f.building_id = b.id
        WHERE rgm.student_id = $1 AND rg.cycle_id = $2`,
       [studentProfileId, cycleId]
     );
 
     const outgoingRes = await this.db.query(
-      `SELECT rg.id as group_id, rg.preferred_room_id, r.room_number, rg.status as group_status
+      `SELECT rg.id as group_id, rg.cycle_id, rg.preferred_room_id, r.room_number, rg.status as group_status,
+              r.floor_id, f.floor_number, b.id as building_id, b.name as building_name
        FROM roommate_groups rg
        JOIN rooms r ON rg.preferred_room_id = r.id
+       JOIN floors f ON r.floor_id = f.id
+       JOIN buildings b ON f.building_id = b.id
        WHERE rg.leader_student_id = $1 AND rg.cycle_id = $2`,
       [studentProfileId, cycleId]
     );
@@ -282,7 +346,8 @@ export class PreferencesService {
         `SELECT rgm.student_id, rgm.priority_number, rgm.status, sp.full_name
          FROM roommate_group_members rgm
          JOIN student_profiles sp ON rgm.student_id = sp.id
-         WHERE rgm.group_id = $1`,
+         WHERE rgm.group_id = $1
+         ORDER BY rgm.priority_number ASC`,
         [gId]
       );
       outgoingMembers = memRes.rows;

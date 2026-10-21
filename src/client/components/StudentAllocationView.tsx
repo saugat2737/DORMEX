@@ -25,6 +25,8 @@ import {
 import { StudentProfileForm } from './StudentProfileForm.js';
 import { TermsAcknowledgementModal } from './TermsAcknowledgementModal.js';
 import { StudentApplicationAccord } from './StudentApplicationAccord.js';
+import { RoomAllocationConfirmModal } from './RoomAllocationConfirmModal.js';
+import { RoommateAllocationDialogContext, THEME_COLORS } from '../config/theme.js';
 
 export const StudentAllocationView: React.FC = () => {
   const { session } = useAuth();
@@ -78,6 +80,10 @@ export const StudentAllocationView: React.FC = () => {
     room: string;
     seat: string;
   } | null>(null);
+
+  // Roommate Acceptance Allocation Confirmation Dialog state
+  const [showRoommateConfirmModal, setShowRoommateConfirmModal] = useState(false);
+  const [roommateConfirmContext, setRoommateConfirmContext] = useState<RoommateAllocationDialogContext | null>(null);
 
   // Load student profile & terms status
   const fetchMyData = async () => {
@@ -388,17 +394,22 @@ export const StudentAllocationView: React.FC = () => {
         throw new Error(data.error || 'Failed to respond to roommate invitation');
       }
 
-      if (accept) {
-        setSuccessMsg('Roommate invitation accepted');
-      } else {
+      if (!accept) {
         setSuccessMsg('Roommate invitation declined');
+        setShowRoommateConfirmModal(false);
+        setRoommateConfirmContext(null);
+        await fetchMyData();
+        await refreshStatus();
+        return;
       }
+
+      setSuccessMsg('Roommate invitation accepted');
 
       // Immediately synchronize authoritative state: student profile, seat states, roommate intent
       await fetchMyData();
       await refreshStatus();
 
-      // Check if student now holds an authoritative allocation (e.g. if allocated)
+      // Check if student now holds an authoritative allocation (e.g. if already allocated)
       const pRes = await apiFetch(`/api/students/${session.profileId}`);
       if (pRes.ok) {
         const updatedProf = await pRes.json();
@@ -407,16 +418,164 @@ export const StudentAllocationView: React.FC = () => {
           const roomNum = updatedProf.allocated_room_number || (seatEl?.meta?.roomId ? seatEl.meta.roomId.replace('rm_bvb_', '') : '202');
           const seatLbl = updatedProf.allocated_seat_label || seatEl?.label || updatedProf.allocated_seat_id.slice(-1);
           setAllocationModalDetails({
-            block: 'BVB Block',
+            block: updatedProf.allocated_building_name || 'BVB Block',
             floor: 'Floor 2',
             room: roomNum,
             seat: seatLbl,
           });
           setShowAllocationSuccessModal(true);
+          return;
         }
       }
+
+      // Step A -> Step B: Immediately open Room Allocation Confirmation Dialog
+      const targetRoomId = data.preferredRoomId;
+      const targetFloorId = data.floorId || floorId;
+      const targetCycleId = data.cycleId || cycleId;
+
+      // Ensure floor map for this room is loaded to obtain seat elements
+      let activeFloorElements = floorMap?.elements || [];
+      if (!floorMap || (data.floorId && data.floorId !== floorId)) {
+        const mapRes = await apiFetch(`/api/floors/${targetFloorId}/map`);
+        if (mapRes.ok) {
+          const loadedMap = await mapRes.json();
+          activeFloorElements = loadedMap.elements || [];
+        }
+      }
+
+      // Determine available seats in this specific room
+      const allRoomSeatEls = activeFloorElements.filter(
+        (el: any) => el.t === 'seat' && el.meta?.roomId === targetRoomId
+      );
+
+      // Latest seat states
+      const stateRes = await apiFetch(`/api/floors/${targetFloorId}/state`);
+      const latestStates = stateRes.ok ? await stateRes.json() : seatStates;
+
+      // Latest intent map
+      const intentRes = await apiFetch(`/api/floors/${targetFloorId}/roommate-intent?cycleId=${targetCycleId}`);
+      const latestIntent = intentRes.ok ? await intentRes.json() : roommateIntentMap;
+
+      const formattedSeats = allRoomSeatEls.map((s: any) => ({
+        id: s.id,
+        label: s.label || s.id.slice(-1),
+        isTaken: latestStates[s.id] === 'taken',
+        isIntent: !!latestIntent[s.id] && latestStates[s.id] !== 'taken',
+      }));
+
+      // Pick the first untaken seat in the room as default target
+      const untakenSeat = formattedSeats.find((s: any) => !s.isTaken) || formattedSeats[0];
+      const chosenSeatId = untakenSeat?.id || '';
+      const chosenSeatLabel = untakenSeat?.label || '';
+
+      // Check whether student has an active booking session or is currently eligible
+      const isTurnActive = !!(activeSession && activeSession.studentId === session.profileId);
+      let blockerReason: string | null = null;
+      if (!isTurnActive) {
+        blockerReason = 'Your selection turn is not currently active. Your roommate consent is saved. Join the waiting room to confirm this allocation during your turn.';
+      }
+
+      // Automatically focus room inspector and set target room/seat
+      if (data.roomNumber) {
+        setSelectedRoomNumber(data.roomNumber);
+      }
+      if (chosenSeatId) {
+        setSelectedSeatId(chosenSeatId);
+      }
+
+      setRoommateConfirmContext({
+        groupId: data.groupId || groupId,
+        cycleId: targetCycleId,
+        roomId: targetRoomId,
+        roomNumber: data.roomNumber || '',
+        buildingId: data.buildingId || selectedBuildingId,
+        buildingName: data.buildingName || 'BVB Block',
+        floorId: targetFloorId,
+        floorNumber: data.floorNumber || 2,
+        leaderName: data.leaderName || 'Roommate',
+        targetSeatId: chosenSeatId,
+        targetSeatLabel: chosenSeatLabel,
+        allRoomSeats: formattedSeats,
+        groupMembers: data.groupMembers || [],
+        isEligibleForTurn: isTurnActive,
+        blockerMessage: blockerReason,
+      });
+
+      setShowRoommateConfirmModal(true);
     } catch (err: any) {
       setErrorMsg(err.message || 'Error processing invitation');
+    }
+  };
+
+  // Student B clicks "Confirm Room Allocation" from dialog or inspector
+  const handleConfirmRoomAllocationFromDialog = async () => {
+    if (!roommateConfirmContext || !session?.profileId) return;
+    setLoading(true);
+    setErrorMsg(null);
+    setSuccessMsg(null);
+
+    const seatToConfirm = roommateConfirmContext.targetSeatId;
+    try {
+      // 1. Authoritative check on active session
+      let currentSession = activeSession;
+      if (!currentSession || currentSession.studentId !== session.profileId) {
+        // Try advance or check active turn
+        if (waitingEntry?.poolId) {
+          const advRes = await apiFetch(`/api/allocation-pools/${waitingEntry.poolId}/advance`, {
+            method: 'POST',
+          });
+          if (advRes.ok) {
+            const advData = await advRes.json();
+            if (advData.session && advData.session.studentId === session.profileId) {
+              currentSession = advData.session;
+              setActiveSession(advData.session);
+            }
+          }
+        }
+      }
+
+      if (!currentSession || currentSession.studentId !== session.profileId) {
+        throw new Error(
+          'NOT_YOUR_TURN: Your active selection turn has not started yet. Consent is registered; please wait for your scheduled priority turn.'
+        );
+      }
+
+      // 2. Submit authoritative seat confirmation
+      const res = await apiFetch(`/api/booking-sessions/${currentSession.sessionId}/confirm-seat`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          seatId: seatToConfirm,
+          idempotencyKey: `idemp_${Date.now()}_${session.profileId}`,
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || 'Room allocation failed');
+      }
+
+      // 3. Update authoritative state
+      setMyAllocation(data);
+      setActiveSession(null);
+      setShowRoommateConfirmModal(false);
+
+      // Synchronize floor map and profile immediately
+      await Promise.all([refreshStatus(), fetchMyData()]);
+
+      // 4. Open success modal
+      setAllocationModalDetails({
+        block: roommateConfirmContext.buildingName,
+        floor: `Floor ${roommateConfirmContext.floorNumber}`,
+        room: roommateConfirmContext.roomNumber,
+        seat: roommateConfirmContext.targetSeatLabel,
+      });
+      setShowAllocationSuccessModal(true);
+    } catch (err: any) {
+      setErrorMsg(err.message);
+      await refreshStatus();
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -508,6 +667,25 @@ export const StudentAllocationView: React.FC = () => {
         </div>
       )}
 
+      {/* Roommate Acceptance -> Final Allocation Confirmation Dialog */}
+      {showRoommateConfirmModal && roommateConfirmContext && (
+        <RoomAllocationConfirmModal
+          context={roommateConfirmContext}
+          isOpen={showRoommateConfirmModal}
+          loading={loading}
+          onConfirm={handleConfirmRoomAllocationFromDialog}
+          onCancel={() => {
+            setShowRoommateConfirmModal(false);
+          }}
+          onSelectSeat={(seatId, seatLabel) => {
+            setRoommateConfirmContext((prev) =>
+              prev ? { ...prev, targetSeatId: seatId, targetSeatLabel: seatLabel } : null
+            );
+            setSelectedSeatId(seatId);
+          }}
+        />
+      )}
+
       {/* Dedicated Allocation Success Confirmation Modal */}
       {showAllocationSuccessModal && allocationModalDetails && (
         <div className="fixed inset-0 z-50 bg-[#203653]/70 backdrop-blur-sm flex items-center justify-center p-4">
@@ -535,7 +713,7 @@ export const StudentAllocationView: React.FC = () => {
               </div>
               <div className="flex items-center justify-between text-xs border-t border-[#E2E6E8] pt-2 mt-1">
                 <span className="text-[#627084] font-medium">Academic Block:</span>
-                <span className="font-bold text-[#203653]">BVB Campus Block</span>
+                <span className="font-bold text-[#203653]">{allocationModalDetails.block || 'BVB Campus Block'}</span>
               </div>
             </div>
 

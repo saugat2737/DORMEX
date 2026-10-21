@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.1.0] - 2026-10-21
+
+- **Fix Roommate Invitation Acceptance to Final Room Allocation Workflow**:
+  - **Single-Confirmation Dialog Architecture (`RoomAllocationConfirmModal.tsx`)**:
+    - Replaced disconnected multi-step navigation with an automatic acknowledgement modal opening immediately upon roommate invitation acceptance (`Accept`).
+    - Eliminates redundant room searches, second map clicks, and manual re-navigation.
+    - Displays canonical building, floor number, room number, target seat ID, bed availability, and roommate group member roster with priority ranks.
+    - Direct "Confirm Room Allocation" action invokes the authoritative backend seat confirmation API with zero intermediate steps.
+  - **Authoritative Allocation & Roommate State Machine**:
+    - Explicitly decouples invitation status (`ACCEPTED` consent) from final seat allocation status (`CURRENT` authoritative assignment).
+    - Preserves server-authoritative turn engine rules: if invitee's turn is active, confirmation finalizes the seat atomically; if out of turn, consent is safely persisted and the student is informed of their turn schedule without false success.
+    - Added enriched roommate invitation response contract in `PreferencesService.respondToRoommateInvite` returning building, floor, room number, and member roster.
+  - **Live Inventory & Floor Map Synchronization**:
+    - Converted target seat from provisional orange intent (`#E06A26`) to authoritative occupied red (`#C93B3B`) or student selection blue (`#1D63B8`) immediately on commit.
+    - Authoritative refresh of student profile, seat states (`/api/floors/:id/state`), and roommate intent (`/api/floors/:id/roommate-intent`).
+    - Displays dedicated success confirmation modal with persisted building, floor, room, and seat label.
+  - **Comprehensive Regression Verification Suite (`tests/roommate_acceptance_allocation.test.ts`)**:
+    - Added 6 automated regression tests covering invite acceptance context derivation, intent-to-occupied seat transition, refresh persistence, turn enforcement, seat conflict rejection (`409 SEAT_UNAVAILABLE`), and IDOR protection.
+    - Maintained 100% pass rate across 60 automated tests in 9 test suites.
+
 ## [2.0.0] - 2026-10-21
 
 - **Stitch Design System Alignment: Hostel Office Registry & Verification Workbench (`StudentRegistryView.tsx`)**:

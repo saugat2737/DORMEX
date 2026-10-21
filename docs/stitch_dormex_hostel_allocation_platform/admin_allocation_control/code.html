@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"/><style>@layer base { html, body { margin: 0; padding: 0; } body { overscroll-behavior: none; } main > :first-child { margin-top: 0 !important; } main > :last-child { margin-bottom: 0 !important; } } ::-webkit-scrollbar { display: none; }</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "on-primary": "#ffffff", "error": "#ba1a1a", "outline-variant": "#c4c6ce", "inverse-surface": "#2c3133", "on-surface": "#181c1e", "on-tertiary-container": "#b69a5f", "secondary-fixed-dim": "#84d5ca", "secondary-container": "#9defe3", "on-tertiary-fixed": "#251a00", "on-secondary-fixed-variant": "#005049", "tertiary-fixed": "#fedf9d", "on-primary-container": "#8a9fc1", "primary": "#07203c", "on-error-container": "#93000a", "on-surface-variant": "#44474d", "outline": "#74777e", "surface-container": "#eaeef0", "surface-container-lowest": "#ffffff", "secondary-fixed": "#a0f1e6", "tertiary-fixed-dim": "#e1c384", "on-secondary": "#ffffff", "tertiary-container": "#453201", "on-primary-fixed": "#021c38", "inverse-on-surface": "#edf1f3", "on-secondary-fixed": "#00201d", "surface-dim": "#d6dbdd", "on-secondary-container": "#0d6f66", "primary-fixed": "#d4e3ff", "surface-tint": "#4a5f7f", "inverse-primary": "#b2c8ec", "on-error": "#ffffff", "on-tertiary-fixed-variant": "#584411", "on-background": "#181c1e", "secondary": "#016a62", "primary-fixed-dim": "#b2c8ec", "surface-container-high": "#e5e9eb", "surface-bright": "#f6fafc", "surface-container-highest": "#dfe3e5", "background": "#f6fafc", "primary-container": "#203653", "surface-variant": "#dfe3e5", "error-container": "#ffdad6", "surface-container-low": "#f0f4f6", "on-primary-fixed-variant": "#324866", "on-tertiary": "#ffffff", "surface": "#f6fafc", "tertiary": "#2b1e00" }, "borderRadius": { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem" }, "spacing": { "margin-mobile": "1rem", "margin": "1.5rem", "space-sm": "0.5rem", "gutter": "1rem", "gutter-mobile": "0.75rem", "space-lg": "1.5rem", "space-2xl": "3rem", "space-md": "1rem", "space-xs": "0.25rem", "space-xl": "2rem" }, "fontFamily": { "label-md": ["Inter"], "body-lg": ["Inter"], "label-lg": ["Inter"], "headline-sm": ["Inter"], "body-md": ["Inter"], "headline-lg": ["Inter"], "headline-xl-mobile": ["Inter"], "body-sm": ["Inter"], "headline-xl": ["Inter"], "label-sm": ["Inter"], "headline-md": ["Inter"] }, "fontSize": { "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "500" }], "body-lg": ["16px", { "lineHeight": "24px", "letterSpacing": "0", "fontWeight": "400" }], "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.005em", "fontWeight": "600" }], "headline-sm": ["16px", { "lineHeight": "24px", "letterSpacing": "0", "fontWeight": "600" }], "body-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0", "fontWeight": "400" }], "headline-lg": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.015em", "fontWeight": "600" }], "headline-xl-mobile": ["26px", { "lineHeight": "34px", "letterSpacing": "-0.01em", "fontWeight": "700" }], "body-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "400" }], "headline-xl": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }], "label-sm": ["10px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "600" }], "headline-md": ["20px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600" }] } } } };</script></head><body class="bg-surface font-body-md text-on-surface antialiased"><aside class="fixed left-0 top-0 h-full w-72 bg-primary z-50 flex flex-col justify-between shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="flex flex-col"><div class="h-16 px-space-md flex items-center gap-space-sm bg-primary-container/40"><img alt="DORMEX Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1XjQPmhgKdIoWz1Za1a9slAUa4A7nIWXVrLt6MpohSUL7DUOJmm2vJH0BXWToH8JxRo9-6pt32Xb5DuXGFTP962pF6EZ5prwwX3PLB5cI8VH9cDeHrYywEZnExlZu2Jnupy79QXy2xVaMjeXAHoyPP48qXedVYKqhyEIlq7vshJDV7vzTh73i0tZOO1mpz3Fz2RfY3ckOItEYV6p4Mzd9--Dbm8GCiumkfuj9XxJeD2ifmBvqI6hj1riMA"/><div class="flex flex-col min-w-0"><span class="font-headline-sm text-headline-sm text-on-primary tracking-tight leading-tight truncate">DORMEX</span><span class="font-label-sm text-label-sm text-on-primary-container tracking-wider uppercase truncate">SIT Tumakuru · ResAdmin</span></div></div><div class="px-space-md py-space-sm"><div class="px-space-sm py-space-xs rounded bg-primary-container/80 flex items-center gap-space-xs"><span class="w-2 h-2 rounded-full bg-secondary-fixed"></span><span class="font-label-sm text-label-sm text-primary-fixed uppercase tracking-wider">BVB Block · Floor 2 Portal</span></div></div><nav class="flex flex-col gap-space-xs px-space-sm py-space-xs" data-active-classes="bg-primary-container text-on-primary font-label-lg rounded"><a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded font-body-md text-body-md text-on-primary-container hover:bg-primary-container hover:text-on-primary transition-colors" data-path="dashboard" href="#"><span class="material-symbols-outlined text-lg">dashboard</span><span class="truncate">Dashboard</span></a><a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded font-body-md text-body-md text-on-primary-container hover:bg-primary-container hover:text-on-primary transition-colors" data-path="bvb-floor-map" href="#"><span class="material-symbols-outlined text-lg">domain</span><span class="truncate">BVB Floor Map</span></a><a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded font-body-md text-body-md text-on-primary-container hover:bg-primary-container hover:text-on-primary transition-colors" data-path="student-application-terms" href="#"><span class="material-symbols-outlined text-lg">assignment</span><span class="truncate">Student Application & Terms</span></a><a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded font-body-md text-body-md text-on-primary-container hover:bg-primary-container hover:text-on-primary transition-colors" data-path="hostel-office-registry" href="#"><span class="material-symbols-outlined text-lg">badge</span><span class="truncate">Hostel Office Registry</span></a><a aria-current="page" class="flex items-center gap-space-sm px-space-sm py-space-xs transition-colors bg-primary-container text-on-primary font-label-lg rounded" data-path="admin-allocation-control" href="#"><span class="material-symbols-outlined text-lg">tune</span><span class="truncate">Admin Allocation Control</span></a><a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded font-body-md text-body-md text-on-primary-container hover:bg-primary-container hover:text-on-primary transition-colors" data-path="roommate-coordination" href="#"><span class="material-symbols-outlined text-lg">group_add</span><span class="truncate">Roommate Coordination</span></a><a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded font-body-md text-body-md text-on-primary-container hover:bg-primary-container hover:text-on-primary transition-colors" data-path="central-complaint-inbox" href="#"><span class="material-symbols-outlined text-lg">mark_email_unread</span><span class="truncate">Central Complaint Inbox</span></a><a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded font-body-md text-body-md text-on-primary-container hover:bg-primary-container hover:text-on-primary transition-colors" data-path="room-change-window" href="#"><span class="material-symbols-outlined text-lg">swap_horiz</span><span class="truncate">Room Change Window</span></a></nav></div><div class="p-space-md bg-primary-container/30 m-space-sm rounded flex flex-col gap-space-xs"><div class="flex items-center justify-between text-on-primary-container"><span class="font-label-sm text-label-sm uppercase tracking-wider">Active Session</span><span class="material-symbols-outlined text-sm text-secondary-fixed">verified</span></div><div class="font-label-md text-label-md text-on-primary font-medium truncate">BVB-F2 Turn 14/90</div><div class="w-full bg-primary-container h-1.5 rounded overflow-hidden"><div class="bg-secondary-fixed h-full w-[45%]"></div></div></div></aside><div class="pl-72"><header class="fixed top-0 left-72 right-0 h-16 bg-surface/95 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-40 flex items-center justify-between px-space-lg"><div class="flex items-center gap-space-md"><div class="flex items-center gap-space-xs text-on-surface-variant font-label-md text-label-md"><span class="truncate">Campus Hostels</span><span class="material-symbols-outlined text-sm">chevron_right</span><span class="truncate">BVB Residency</span><span class="material-symbols-outlined text-sm">chevron_right</span><span class="text-on-surface font-semibold truncate">Allocation Console</span></div><span class="hidden lg:inline-flex items-center gap-1.5 px-space-sm py-0.5 rounded bg-surface-container-high font-label-sm text-label-sm text-on-surface"><span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>BVB Block · Floor 2 Pilot · AY 2024–25</span></div><div class="flex items-center gap-space-md"><div class="hidden md:flex items-center gap-space-xs px-space-sm py-1 rounded bg-secondary-container/40 text-on-secondary-container font-label-sm text-label-sm"><span class="material-symbols-outlined text-sm text-secondary">hourglass_top</span><span>Your Turn Window: 18m Left</span></div><button aria-label="Notifications" class="relative p-space-xs text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded transition-colors"><span class="material-symbols-outlined text-xl">notifications</span><span class="absolute top-1 right-1 w-2 h-2 rounded-full bg-error"></span></button><div class="flex items-center gap-space-sm pl-space-sm"><div class="flex flex-col text-right hidden sm:block"><span class="font-label-lg text-label-lg text-on-surface leading-tight">Saugat</span><span class="font-label-sm text-label-sm text-on-surface-variant">1SI21CS094 · 6th Sem</span></div><img alt="Profile" class="w-8 h-8 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDVdz_tEsKn-hWfPsQUo2SFLOj4hZoAe55UP5xl0h-L9PWFgfIgXg0FbUTw-zPrpXWm55TMtUDp76aEaJqEoWQ47t8P8nRJN-ZEj3t3IPLcTDGbpxq_g7eKD8_p_IPJQ8QaGcbdovxAFf3QHECMQVH3WyHnkOKq7lEouyva5dJUoG-nKEu8C2UMRGT8M0bjeGr-W4pZf8hqMcQ4v7YnudsgN02LfBMeofMoRZXR1y5XvhDZQxCt8XdaIA"/><div class="flex items-center px-space-xs py-1 rounded bg-surface-container font-label-sm text-label-sm text-on-surface"><span class="truncate hidden md:inline">Student View</span><span class="material-symbols-outlined text-sm text-on-surface-variant">arrow_drop_down</span></div></div></div></header><main class="w-full pt-16 bg-surface min-h-screen"><div class="flex flex-col w-full">
+<!-- Top Utility Context Bar -->
+<div class="w-full bg-surface-container-low px-space-lg py-space-sm flex flex-col md:flex-row md:items-center justify-between gap-space-sm">
+<div class="flex items-center gap-space-sm">
+<div class="w-2.5 h-2.5 rounded-full bg-secondary animate-pulse"></div>
+<span class="font-label-lg text-label-lg text-on-surface">Administrative Master Allocation Operations</span>
+<span class="text-on-surface-variant font-label-md text-label-md">·</span>
+<span class="font-label-md text-label-md text-on-surface-variant">Session ID: <code class="font-mono text-primary font-semibold">SIT-BVB-24F2-PH1</code></span>
+</div>
+<div class="flex items-center gap-space-md">
+<div class="flex items-center gap-space-xs font-label-md text-label-md text-on-surface-variant">
+<span class="material-symbols-outlined text-sm">schedule</span>
+<span>Gateway Timestamp: <strong class="text-on-surface">15-Jul-2024 11:28:44 IST</strong></span>
+</div>
+<div class="flex items-center gap-space-xs font-label-md text-label-md bg-secondary-fixed/50 text-on-secondary-fixed-variant px-space-sm py-0.5 rounded">
+<span class="material-symbols-outlined text-sm">shield</span>
+<span>Warden Hash: #BVB-9804-KSH</span>
+</div>
+</div>
+</div>
+<div class="p-space-lg flex flex-col gap-space-xl">
+<!-- SECTION 1: EXECUTIVE METRICS BAR (BVB Block Floor 2 Pilot) -->
+<section class="flex flex-col gap-space-md">
+<div class="flex flex-col sm:flex-row sm:items-end justify-between gap-space-xs">
+<div>
+<span class="font-label-sm text-label-sm text-secondary font-bold tracking-widest uppercase">Floor 2 Pilot Status Bar</span>
+<h1 class="font-headline-lg text-headline-lg text-primary tracking-tight">Admin Allocation Control Console</h1>
+</div>
+<div class="flex items-center gap-space-sm">
+<div class="px-space-sm py-1 rounded bg-surface-container-high flex items-center gap-space-xs text-on-surface font-label-sm text-label-sm">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span>Cycle Active — Phase 1 Priority Run</span>
+</div>
+<button class="px-space-sm py-1 rounded bg-primary text-on-primary font-label-sm text-label-sm flex items-center gap-1 shadow-sm hover:bg-primary-container transition-all" onclick="document.getElementById('audit-drawer').classList.remove('translate-x-full')">
+<span class="material-symbols-outlined text-sm">history_edu</span>
+<span>Audit Trail Log</span>
+</button>
+</div>
+</div>
+<!-- Bento Metric Strip -->
+<div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-space-sm">
+<!-- Total Synthetic Cohort -->
+<div class="bg-surface-container-lowest p-space-md rounded shadow-sm flex flex-col justify-between">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Total Cohort</span>
+<span class="material-symbols-outlined text-primary-container text-base">group</span>
+</div>
+<div class="mt-space-sm">
+<div class="font-headline-lg text-headline-lg text-primary leading-none">30</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant mt-1">Synthetic records</div>
+</div>
+</div>
+<!-- Eligible & Verified -->
+<div class="bg-surface-container-lowest p-space-md rounded shadow-sm flex flex-col justify-between">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-secondary font-bold uppercase tracking-wider">Fee Verified</span>
+<span class="material-symbols-outlined text-secondary text-base">verified_user</span>
+</div>
+<div class="mt-space-sm">
+<div class="font-headline-lg text-headline-lg text-secondary leading-none">24</div>
+<div class="font-body-sm text-body-sm text-secondary font-medium mt-1">100% reconciled</div>
+</div>
+</div>
+<!-- Under Review / Incomplete -->
+<div class="bg-surface-container-lowest p-space-md rounded shadow-sm flex flex-col justify-between">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-tertiary-fixed-variant uppercase tracking-wider">Pending Rev.</span>
+<span class="material-symbols-outlined text-on-tertiary-fixed-variant text-base">pending_actions</span>
+</div>
+<div class="mt-space-sm">
+<div class="font-headline-lg text-headline-lg text-tertiary-container leading-none">06</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant mt-1">Holds / Incomplete</div>
+</div>
+</div>
+<!-- Total Configured Seats -->
+<div class="bg-surface-container-lowest p-space-md rounded shadow-sm flex flex-col justify-between">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Configured Beds</span>
+<span class="material-symbols-outlined text-primary-container text-base">bed</span>
+</div>
+<div class="mt-space-sm">
+<div class="font-headline-lg text-headline-lg text-primary leading-none">72</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant mt-1">Rooms 201–272</div>
+</div>
+</div>
+<!-- Occupied Seats -->
+<div class="bg-surface-container-lowest p-space-md rounded shadow-sm flex flex-col justify-between">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Occupied</span>
+<span class="material-symbols-outlined text-on-surface-variant text-base">how_to_reg</span>
+</div>
+<div class="mt-space-sm">
+<div class="font-headline-lg text-headline-lg text-on-surface leading-none">12</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant mt-1">Allocated & confirmed</div>
+</div>
+</div>
+<!-- Available Seats -->
+<div class="bg-surface-container-lowest p-space-md rounded shadow-sm flex flex-col justify-between">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-secondary uppercase tracking-wider">Available</span>
+<span class="material-symbols-outlined text-secondary text-base">meeting_room</span>
+</div>
+<div class="mt-space-sm">
+<div class="font-headline-lg text-headline-lg text-secondary leading-none">56</div>
+<div class="font-body-sm text-body-sm text-secondary font-medium mt-1">Open for selection</div>
+</div>
+</div>
+<!-- Maintenance / Blocked -->
+<div class="bg-surface-container-lowest p-space-md rounded shadow-sm flex flex-col justify-between">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-error uppercase tracking-wider">Blocked</span>
+<span class="material-symbols-outlined text-error text-base">block</span>
+</div>
+<div class="mt-space-sm">
+<div class="font-headline-lg text-headline-lg text-error leading-none">04</div>
+<div class="font-body-sm text-body-sm text-error font-medium mt-1">BVB Maintenance</div>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 2: CYCLE READINESS & PRE-FLIGHT VERIFICATION PANEL + REAL-TIME CONTROL TOOLBAR -->
+<section class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg">
+<!-- Pre-Flight Verification Checklist Card (5 Cols) -->
+<div class="lg:col-span-5 bg-surface-container-lowest p-space-lg rounded shadow-sm flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-space-md">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-secondary">fact_check</span>
+<h2 class="font-headline-sm text-headline-sm text-primary">Pre-Flight Certification</h2>
+</div>
+<span class="px-space-sm py-0.5 rounded bg-secondary-container/40 text-on-secondary-container font-label-sm text-label-sm">5/5 Passed</span>
+</div>
+<ul class="flex flex-col gap-space-sm">
+<li class="flex items-start gap-space-sm p-space-sm rounded bg-surface-container-low">
+<span class="material-symbols-outlined text-secondary text-lg mt-0.5">check_circle</span>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface font-semibold">Hostel Fee Reconciliation</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">100% verified for active cohort (Finance ERP synchronized).</span>
+</div>
+</li>
+<li class="flex items-start gap-space-sm p-space-sm rounded bg-surface-container-low">
+<span class="material-symbols-outlined text-secondary text-lg mt-0.5">check_circle</span>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface font-semibold">BVB Floor 2 Inventory Frozen</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">72 provisional seats certified; 4 tagged for electrical maintenance.</span>
+</div>
+</li>
+<li class="flex items-start gap-space-sm p-space-sm rounded bg-surface-container-low">
+<span class="material-symbols-outlined text-secondary text-lg mt-0.5">check_circle</span>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface font-semibold">Priority Queue Sequenced</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Chronological payment timestamp ordering locked by warden keys.</span>
+</div>
+</li>
+<li class="flex items-start gap-space-sm p-space-sm rounded bg-surface-container-low">
+<span class="material-symbols-outlined text-secondary text-lg mt-0.5">check_circle</span>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface font-semibold">Roommate Groups Synced</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">4 intent clusters validated for paired or triple room lock.</span>
+</div>
+</li>
+<li class="flex items-start gap-space-sm p-space-sm rounded bg-surface-container-low">
+<span class="material-symbols-outlined text-secondary text-lg mt-0.5">check_circle</span>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface font-semibold">Warden Oversight Mandate</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Digitally approved by <strong>Dr. K. Shivakumar</strong> (Chief Warden, BVB Block).</span>
+</div>
+</li>
+</ul>
+</div>
+<div class="mt-space-md pt-space-sm flex items-center justify-between text-on-surface-variant font-label-sm text-label-sm bg-surface-container-high/40 p-space-xs rounded">
+<span>Lock State: Master Ledger Immutable</span>
+<span class="font-mono text-primary font-bold">SHA256: e82b...491a</span>
+</div>
+</div>
+<!-- Real-Time Cycle Control Action Toolbar (7 Cols) -->
+<div class="lg:col-span-7 bg-surface-container-lowest p-space-lg rounded shadow-sm flex flex-col justify-between">
+<div class="flex flex-col gap-space-md">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-xs">
+<div class="flex items-center gap-space-sm">
+<span class="p-2 rounded bg-primary text-on-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-lg">tune</span>
+</span>
+<div>
+<h2 class="font-headline-sm text-headline-sm text-primary">Live Turn Engine</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Executing sequential priority allotment slots</p>
+</div>
+</div>
+<div class="px-space-md py-1 rounded bg-secondary-container/40 text-on-secondary-container font-headline-sm text-headline-sm font-bold flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-secondary animate-ping"></span>
+<span>Turn 14 of 24</span>
+</div>
+</div>
+<!-- Active Turn Live Card -->
+<div class="p-space-md rounded bg-surface-container-low flex flex-col md:flex-row items-center justify-between gap-space-md">
+<div class="flex items-center gap-space-md w-full md:w-auto">
+<div class="relative">
+<img class="w-14 h-14 rounded-full object-cover" data-alt="Official portrait photograph of an Indian engineering student at Siddaganga Institute of Technology, calm and confident expression, neutral academic indoor background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA6CDdLsTp1yLE3NE8zdlRNqoGl9V8G3Eb5U_9AYaMTAKTZsEl_ihjSRV-tAh3bBxstAufy89l8CGfagWeoZghVPU9CwOhB45bDr2QWSdrymEtJfkgd5rEKclWyTvitrLZxtT4m5ByotUPC8cEBR5dVpB8hqAwM_HF_XWZ9Bp4hBb_M6UtXmpqaaubk9_EB1PptXpL1l3pwZs8npenUsPNdYo1m2k4m9XbgrcmXMXafbTxtp7UPPXEXwA"/>
+<div class="absolute -bottom-1 -right-1 bg-secondary text-on-secondary rounded-full p-0.5">
+<span class="material-symbols-outlined text-xs">timer</span>
+</div>
+</div>
+<div class="flex flex-col">
+<div class="flex items-center gap-space-xs">
+<span class="font-headline-sm text-headline-sm text-primary">Saugat</span>
+<span class="px-1.5 py-0.5 rounded bg-primary-container text-on-primary font-label-sm text-label-sm">USN: 1SI21CS094</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant">6th Semester · Computer Science & Engineering</span>
+<span class="font-label-sm text-label-sm text-secondary font-medium">Currently browsing: Room 202 Wing A</span>
+</div>
+</div>
+<!-- Timer Block -->
+<div class="flex flex-col items-end w-full md:w-auto p-space-sm bg-surface-container-lowest rounded shadow-sm">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">Turn Window Remaining</span>
+<div class="font-headline-xl text-headline-xl text-primary font-mono tracking-tight" id="live-timer">03:42</div>
+<div class="w-full bg-surface-container-high h-1.5 rounded overflow-hidden mt-1">
+<div class="bg-secondary h-full w-[65%]" id="timer-bar"></div>
+</div>
+</div>
+</div>
+<!-- Controls Button Strip -->
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-space-xs pt-space-xs">
+<button class="px-space-sm py-2 rounded bg-surface-container-high text-on-surface font-label-md text-label-md font-semibold hover:bg-surface-container-highest transition-colors flex items-center justify-center gap-1.5 shadow-sm" onclick="togglePause(this)">
+<span class="material-symbols-outlined text-base">pause_circle</span>
+<span id="pause-label">Pause Cycle</span>
+</button>
+<button class="px-space-sm py-2 rounded bg-surface-container-high text-on-surface font-label-md text-label-md font-semibold hover:bg-surface-container-highest transition-colors flex items-center justify-center gap-1.5 shadow-sm" onclick="extendTurn()">
+<span class="material-symbols-outlined text-base">more_time</span>
+<span>+2 Min Extension</span>
+</button>
+<button class="px-space-sm py-2 rounded bg-error-container text-on-error-container font-label-md text-label-md font-semibold hover:bg-error hover:text-on-error transition-colors flex items-center justify-center gap-1.5 shadow-sm" onclick="triggerEmergencyHalt()">
+<span class="material-symbols-outlined text-base">emergency_home</span>
+<span>Emergency Halt</span>
+</button>
+<button class="px-space-sm py-2 rounded bg-secondary text-on-secondary font-label-md text-label-md font-semibold hover:bg-on-secondary-container transition-colors flex items-center justify-center gap-1.5 shadow-sm" onclick="openPublishModal()">
+<span class="material-symbols-outlined text-base">publish</span>
+<span>Publish Allotment</span>
+</button>
+</div>
+</div>
+<!-- Telemetry Notice -->
+<div class="mt-space-md p-space-sm rounded bg-primary-container/10 flex items-center justify-between text-on-primary-container font-body-sm text-body-sm">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-sm text-primary">info</span>
+<span class="text-on-surface">Auto-skip triggers automatically when turn expiration crosses 00:00.</span>
+</div>
+<span class="font-mono text-label-sm text-label-sm text-on-surface-variant">Ping: 14ms · SIT LAN</span>
+</div>
+</div>
+</section>
+<!-- SECTION 3: LIVE ALLOCATION QUEUE & PARTICIPANT MANAGEMENT TABLE -->
+<section class="bg-surface-container-lowest rounded shadow-sm p-space-lg flex flex-col gap-space-md">
+<!-- Filter Bar & Search -->
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-space-md pb-space-xs">
+<div class="flex flex-col">
+<h2 class="font-headline-md text-headline-md text-primary">Participant Cohort Management</h2>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Real-time prioritized student roster based on fee reconciliation queue.</span>
+</div>
+<div class="flex flex-wrap items-center gap-space-xs">
+<!-- Filter Tabs -->
+<div class="flex items-center bg-surface-container p-0.5 rounded overflow-x-auto text-nowrap">
+<button class="tab-btn px-space-sm py-1 rounded bg-surface-container-lowest text-primary font-label-md text-label-md font-semibold shadow-xs" onclick="filterQueue('all')">All (30)</button>
+<button class="tab-btn px-space-sm py-1 rounded text-on-surface-variant hover:text-on-surface font-label-md text-label-md" onclick="filterQueue('active')">Active Turn (1)</button>
+<button class="tab-btn px-space-sm py-1 rounded text-on-surface-variant hover:text-on-surface font-label-md text-label-md" onclick="filterQueue('next')">Next in Line (5)</button>
+<button class="tab-btn px-space-sm py-1 rounded text-on-surface-variant hover:text-on-surface font-label-md text-label-md" onclick="filterQueue('allocated')">Allocated (12)</button>
+<button class="tab-btn px-space-sm py-1 rounded text-on-surface-variant hover:text-on-surface font-label-md text-label-md" onclick="filterQueue('disqualified')">Pending / Hold (6)</button>
+</div>
+<div class="relative">
+<input class="h-9 px-space-md pl-9 rounded bg-surface-container-low font-body-sm text-body-sm text-on-surface placeholder:text-on-surface-variant focus:outline-none focus:bg-surface-container-lowest transition-all" id="student-search" oninput="searchStudents()" placeholder="Search USN or Name..." type="text"/>
+<span class="material-symbols-outlined absolute left-2.5 top-2 text-on-surface-variant text-base">search</span>
+</div>
+</div>
+</div>
+<!-- Data Table Container -->
+<div class="overflow-x-auto w-full">
+<table class="w-full text-left" id="cohort-table">
+<thead>
+<tr class="bg-surface-container-low text-on-surface-variant font-label-md text-label-md uppercase tracking-wider">
+<th class="py-space-sm px-space-md">Rank</th>
+<th class="py-space-sm px-space-md">USN & Candidate</th>
+<th class="py-space-sm px-space-md">Branch / Sem</th>
+<th class="py-space-sm px-space-md">Fee Reconciled Timestamp</th>
+<th class="py-space-sm px-space-md">Seat Allotment</th>
+<th class="py-space-sm px-space-md">Cycle Status</th>
+<th class="py-space-sm px-space-md text-right">Administrative Action</th>
+</tr>
+</thead>
+<tbody class="font-body-md text-body-md divide-y-0 text-on-surface">
+<!-- Row 1: Active Turn (Rank 14) -->
+<tr class="bg-primary/5 hover:bg-primary/10 transition-colors" data-status="active">
+<td class="py-space-md px-space-md font-mono font-bold text-primary">#14</td>
+<td class="py-space-md px-space-md">
+<div class="flex items-center gap-space-sm">
+<div class="w-7 h-7 rounded-full bg-primary text-on-primary flex items-center justify-center font-label-sm text-label-sm font-bold">SG</div>
+<div class="flex flex-col">
+<span class="font-semibold text-primary leading-tight">Saugat</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant font-mono">1SI21CS094</span>
+</div>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<span class="text-on-surface">6th Sem CSE</span>
+</td>
+<td class="py-space-md px-space-md font-mono text-body-sm text-on-surface-variant">12-Jul-2024 09:14:22 IST</td>
+<td class="py-space-md px-space-md">
+<span class="inline-flex items-center gap-1 text-secondary font-semibold font-mono text-label-md text-label-md">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary animate-ping"></span>
+                  In Selection...
+                </span>
+</td>
+<td class="py-space-md px-space-md">
+<span class="px-space-sm py-0.5 rounded bg-secondary-container/60 text-on-secondary-container font-label-sm text-label-sm font-bold inline-flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">hourglass_bottom</span>
+                  Active Turn
+                </span>
+</td>
+<td class="py-space-md px-space-md text-right">
+<div class="inline-flex items-center gap-1">
+<button class="p-1.5 rounded hover:bg-surface-container text-on-surface-variant hover:text-on-surface" onclick="showAudit('Saugat', '1SI21CS094')" title="View Audit Log">
+<span class="material-symbols-outlined text-base">quick_reference</span>
+</button>
+<button class="p-1.5 rounded hover:bg-surface-container text-on-surface-variant hover:text-on-surface" onclick="openForceModal('1SI21CS094', 'Saugat')" title="Force Override">
+<span class="material-symbols-outlined text-base">rule_settings</span>
+</button>
+<button class="p-1.5 rounded hover:bg-surface-container text-on-surface-variant hover:text-on-surface" onclick="alert('Notification SMS & Portal Ping sent to 1SI21CS094')" title="Notify Student">
+<span class="material-symbols-outlined text-base">notifications_active</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 2: Next in Line (Rank 15) -->
+<tr class="hover:bg-surface-container-low transition-colors" data-status="next">
+<td class="py-space-md px-space-md font-mono text-on-surface-variant">#15</td>
+<td class="py-space-md px-space-md">
+<div class="flex items-center gap-space-sm">
+<div class="w-7 h-7 rounded-full bg-surface-container-high text-on-surface flex items-center justify-center font-label-sm text-label-sm font-bold">AR</div>
+<div class="flex flex-col">
+<span class="font-semibold text-on-surface leading-tight">Ananya R.</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant font-mono">1SI21CS012</span>
+</div>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<span class="text-on-surface">6th Sem CSE</span>
+</td>
+<td class="py-space-md px-space-md font-mono text-body-sm text-on-surface-variant">12-Jul-2024 09:14:45 IST</td>
+<td class="py-space-md px-space-md">
+<span class="text-on-surface-variant font-mono text-body-sm">Waiting...</span>
+</td>
+<td class="py-space-md px-space-md">
+<span class="px-space-sm py-0.5 rounded bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm">
+                  Queued (Next)
+                </span>
+</td>
+<td class="py-space-md px-space-md text-right">
+<div class="inline-flex items-center gap-1">
+<button class="p-1.5 rounded hover:bg-surface-container text-on-surface-variant" onclick="showAudit('Ananya R.', '1SI21CS012')" title="View Audit Log">
+<span class="material-symbols-outlined text-base">quick_reference</span>
+</button>
+<button class="p-1.5 rounded hover:bg-surface-container text-on-surface-variant" onclick="openForceModal('1SI21CS012', 'Ananya R.')" title="Force Override">
+<span class="material-symbols-outlined text-base">rule_settings</span>
+</button>
+<button class="p-1.5 rounded hover:bg-surface-container text-on-surface-variant" onclick="alert('Notification sent.')">
+<span class="material-symbols-outlined text-base">notifications</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 3: Next in Line (Rank 16) -->
+<tr class="hover:bg-surface-container-low transition-colors" data-status="next">
+<td class="py-space-md px-space-md font-mono text-on-surface-variant">#16</td>
+<td class="py-space-md px-space-md">
+<div class="flex items-center gap-space-sm">
+<div class="w-7 h-7 rounded-full bg-surface-container-high text-on-surface flex items-center justify-center font-label-sm text-label-sm font-bold">MK</div>
+<div class="flex flex-col">
+<span class="font-semibold text-on-surface leading-tight">Manoj Kumar N</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant font-mono">1SI21IS044</span>
+</div>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<span class="text-on-surface">6th Sem ISE</span>
+</td>
+<td class="py-space-md px-space-md font-mono text-body-sm text-on-surface-variant">12-Jul-2024 09:15:02 IST</td>
+<td class="py-space-md px-space-md">
+<span class="text-on-surface-variant font-mono text-body-sm">Waiting...</span>
+</td>
+<td class="py-space-md px-space-md">
+<span class="px-space-sm py-0.5 rounded bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm">
+                  Queued (#3)
+                </span>
+</td>
+<td class="py-space-md px-space-md text-right">
+<div class="inline-flex items-center gap-1">
+<button class="p-1.5 rounded hover:bg-surface-container text-on-surface-variant" onclick="showAudit('Manoj Kumar N', '1SI21IS044')"><span class="material-symbols-outlined text-base">quick_reference</span></button>
+<button class="p-1.5 rounded hover:bg-surface-container text-on-surface-variant" onclick="openForceModal('1SI21IS044', 'Manoj Kumar N')"><span class="material-symbols-outlined text-base">rule_settings</span></button>
+<button class="p-1.5 rounded hover:bg-surface-container text-on-surface-variant" onclick="alert('Notification sent.')"><span class="material-symbols-outlined text-base">notifications</span></button>
+</div>
+</td>
+</tr>
+<!-- Row 4: Allocated (Rank 01) -->
+<tr class="hover:bg-surface-container-low transition-colors" data-status="allocated">
+<td class="py-space-md px-space-md font-mono text-on-surface-variant">#01</td>
+<td class="py-space-md px-space-md">
+<div class="flex items-center gap-space-sm">
+<div class="w-7 h-7 rounded-full bg-secondary/10 text-secondary flex items-center justify-center font-label-sm text-label-sm font-bold">PG</div>
+<div class="flex flex-col">
+<span class="font-semibold text-on-surface leading-tight">Prajwal Gowda</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant font-mono">1SI21EC071</span>
+</div>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<span class="text-on-surface">6th Sem ECE</span>
+</td>
+<td class="py-space-md px-space-md font-mono text-body-sm text-on-surface-variant">12-Jul-2024 09:00:10 IST</td>
+<td class="py-space-md px-space-md">
+<span class="font-mono font-bold text-primary px-space-sm py-0.5 rounded bg-surface-container-high text-body-sm">BVB-201-A</span>
+</td>
+<td class="py-space-md px-space-md">
+<span class="px-space-sm py-0.5 rounded bg-secondary-container/40 text-secondary font-label-sm text-label-sm font-bold">
+                  Allocated
+                </span>
+</td>
+<td class="py-space-md px-space-md text-right">
+<div class="inline-flex items-center gap-1">
+<button class="p-1.5 rounded hover:bg-surface-container text-on-surface-variant" onclick="showAudit('Prajwal Gowda', '1SI21EC071')"><span class="material-symbols-outlined text-base">quick_reference</span></button>
+<button class="p-1.5 rounded hover:bg-surface-container text-on-surface-variant" onclick="openForceModal('1SI21EC071', 'Prajwal Gowda')"><span class="material-symbols-outlined text-base">rule_settings</span></button>
+<button class="p-1.5 rounded opacity-40 cursor-not-allowed text-on-surface-variant"><span class="material-symbols-outlined text-base">check</span></button>
+</div>
+</td>
+</tr>
+<!-- Row 5: Allocated (Rank 02) -->
+<tr class="hover:bg-surface-container-low transition-colors" data-status="allocated">
+<td class="py-space-md px-space-md font-mono text-on-surface-variant">#02</td>
+<td class="py-space-md px-space-md">
+<div class="flex items-center gap-space-sm">
+<div class="w-7 h-7 rounded-full bg-secondary/10 text-secondary flex items-center justify-center font-label-sm text-label-sm font-bold">SK</div>
+<div class="flex flex-col">
+<span class="font-semibold text-on-surface leading-tight">Shreya Kulkarni</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant font-mono">1SI21CS119</span>
+</div>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<span class="text-on-surface">6th Sem CSE</span>
+</td>
+<td class="py-space-md px-space-md font-mono text-body-sm text-on-surface-variant">12-Jul-2024 09:00:24 IST</td>
+<td class="py-space-md px-space-md">
+<span class="font-mono font-bold text-primary px-space-sm py-0.5 rounded bg-surface-container-high text-body-sm">BVB-201-B</span>
+</td>
+<td class="py-space-md px-space-md">
+<span class="px-space-sm py-0.5 rounded bg-secondary-container/40 text-secondary font-label-sm text-label-sm font-bold">
+                  Allocated
+                </span>
+</td>
+<td class="py-space-md px-space-md text-right">
+<div class="inline-flex items-center gap-1">
+<button class="p-1.5 rounded hover:bg-surface-container text-on-surface-variant" onclick="showAudit('Shreya Kulkarni', '1SI21CS119')"><span class="material-symbols-outlined text-base">quick_reference</span></button>
+<button class="p-1.5 rounded hover:bg-surface-container text-on-surface-variant" onclick="openForceModal('1SI21CS119', 'Shreya Kulkarni')"><span class="material-symbols-outlined text-base">rule_settings</span></button>
+<button class="p-1.5 rounded opacity-40 cursor-not-allowed text-on-surface-variant"><span class="material-symbols-outlined text-base">check</span></button>
+</div>
+</td>
+</tr>
+<!-- Row 6: Allocated (Rank 03) -->
+<tr class="hover:bg-surface-container-low transition-colors" data-status="allocated">
+<td class="py-space-md px-space-md font-mono text-on-surface-variant">#03</td>
+<td class="py-space-md px-space-md">
+<div class="flex items-center gap-space-sm">
+<div class="w-7 h-7 rounded-full bg-secondary/10 text-secondary flex items-center justify-center font-label-sm text-label-sm font-bold">VB</div>
+<div class="flex flex-col">
+<span class="font-semibold text-on-surface leading-tight">Varun Bhaskar</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant font-mono">1SI21ME032</span>
+</div>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<span class="text-on-surface">6th Sem ME</span>
+</td>
+<td class="py-space-md px-space-md font-mono text-body-sm text-on-surface-variant">12-Jul-2024 09:01:15 IST</td>
+<td class="py-space-md px-space-md">
+<span class="font-mono font-bold text-primary px-space-sm py-0.5 rounded bg-surface-container-high text-body-sm">BVB-203-A</span>
+</td>
+<td class="py-space-md px-space-md">
+<span class="px-space-sm py-0.5 rounded bg-secondary-container/40 text-secondary font-label-sm text-label-sm font-bold">
+                  Allocated
+                </span>
+</td>
+<td class="py-space-md px-space-md text-right">
+<div class="inline-flex items-center gap-1">
+<button class="p-1.5 rounded hover:bg-surface-container text-on-surface-variant" onclick="showAudit('Varun Bhaskar', '1SI21ME032')"><span class="material-symbols-outlined text-base">quick_reference</span></button>
+<button class="p-1.5 rounded hover:bg-surface-container text-on-surface-variant" onclick="openForceModal('1SI21ME032', 'Varun Bhaskar')"><span class="material-symbols-outlined text-base">rule_settings</span></button>
+<button class="p-1.5 rounded opacity-40 cursor-not-allowed text-on-surface-variant"><span class="material-symbols-outlined text-base">check</span></button>
+</div>
+</td>
+</tr>
+<!-- Row 7: Disqualified / Pending Review -->
+<tr class="hover:bg-surface-container-low transition-colors" data-status="disqualified">
+<td class="py-space-md px-space-md font-mono text-error">--</td>
+<td class="py-space-md px-space-md">
+<div class="flex items-center gap-space-sm">
+<div class="w-7 h-7 rounded-full bg-error-container text-error flex items-center justify-center font-label-sm text-label-sm font-bold">DR</div>
+<div class="flex flex-col">
+<span class="font-semibold text-on-surface leading-tight">Deepak Rao</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant font-mono">1SI21CV018</span>
+</div>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<span class="text-on-surface">6th Sem Civil</span>
+</td>
+<td class="py-space-md px-space-md font-mono text-body-sm text-error">Pending Verification</td>
+<td class="py-space-md px-space-md">
+<span class="text-on-surface-variant font-mono text-body-sm">Locked</span>
+</td>
+<td class="py-space-md px-space-md">
+<span class="px-space-sm py-0.5 rounded bg-error-container text-error font-label-sm text-label-sm font-bold">
+                  Fee Discrepancy
+                </span>
+</td>
+<td class="py-space-md px-space-md text-right">
+<div class="inline-flex items-center gap-1">
+<button class="p-1.5 rounded hover:bg-surface-container text-on-surface-variant" onclick="showAudit('Deepak Rao', '1SI21CV018')"><span class="material-symbols-outlined text-base">quick_reference</span></button>
+<button class="px-space-sm py-1 rounded bg-surface-container-high text-primary font-label-sm text-label-sm" onclick="alert('Sent to Finance ERP Desk for clearance')">Clear Hold</button>
+</div>
+</td>
+</tr>
+<!-- Row 8: Disqualified / Incomplete -->
+<tr class="hover:bg-surface-container-low transition-colors" data-status="disqualified">
+<td class="py-space-md px-space-md font-mono text-on-tertiary-fixed-variant">--</td>
+<td class="py-space-md px-space-md">
+<div class="flex items-center gap-space-sm">
+<div class="w-7 h-7 rounded-full bg-tertiary-fixed text-on-tertiary-fixed flex items-center justify-center font-label-sm text-label-sm font-bold">NM</div>
+<div class="flex flex-col">
+<span class="font-semibold text-on-surface leading-tight">Nikhil M.S.</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant font-mono">1SI21EE055</span>
+</div>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<span class="text-on-surface">6th Sem EEE</span>
+</td>
+<td class="py-space-md px-space-md font-mono text-body-sm text-on-surface-variant">12-Jul-2024 10:20:11 IST</td>
+<td class="py-space-md px-space-md">
+<span class="text-on-surface-variant font-mono text-body-sm">Awaiting Doc</span>
+</td>
+<td class="py-space-md px-space-md">
+<span class="px-space-sm py-0.5 rounded bg-tertiary-fixed/60 text-on-tertiary-fixed-variant font-label-sm text-label-sm font-bold">
+                  Anti-Ragging Doc Missing
+                </span>
+</td>
+<td class="py-space-md px-space-md text-right">
+<div class="inline-flex items-center gap-1">
+<button class="p-1.5 rounded hover:bg-surface-container text-on-surface-variant" onclick="showAudit('Nikhil M.S.', '1SI21EE055')"><span class="material-symbols-outlined text-base">quick_reference</span></button>
+<button class="px-space-sm py-1 rounded bg-surface-container-high text-primary font-label-sm text-label-sm" onclick="alert('SMS Reminder sent to parent phone.')">Remind</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="flex items-center justify-between pt-space-xs text-on-surface-variant font-label-sm text-label-sm border-0">
+<span>Showing 8 of 30 synthetic pilot participants (Cohort restricted to SIT Tumakuru campus LAN)</span>
+<div class="flex items-center gap-1">
+<button class="px-space-sm py-1 rounded bg-surface-container font-label-sm text-label-sm text-on-surface">Page 1 of 4</button>
+</div>
+</div>
+</section>
+<!-- Floor Bed Matrix Visual (Mini Wing View for Floor 2) -->
+<section class="bg-surface-container-lowest rounded shadow-sm p-space-lg flex flex-col gap-space-md">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-xs">
+<div>
+<h2 class="font-headline-sm text-headline-sm text-primary">Floor 2 Pilot Wing Layout Reference (Provisional 72 Beds)</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Live visual state of pilot rooms 201 through 212 (Wing A sample preview)</p>
+</div>
+<div class="flex items-center gap-space-md text-label-sm text-label-sm">
+<div class="flex items-center gap-1"><span class="w-3 h-3 rounded-xs bg-surface-container-highest"></span> Available</div>
+<div class="flex items-center gap-1"><span class="w-3 h-3 rounded-xs bg-primary"></span> Occupied</div>
+<div class="flex items-center gap-1"><span class="w-3 h-3 rounded-xs bg-secondary"></span> Active Target</div>
+<div class="flex items-center gap-1"><span class="w-3 h-3 rounded-xs bg-error"></span> Maintenance</div>
+</div>
+</div>
+<!-- Matrix of Rooms -->
+<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-space-sm pt-space-xs">
+<!-- Room 201 (Allocated) -->
+<div class="bg-surface-container-low p-space-sm rounded flex flex-col gap-1">
+<div class="flex items-center justify-between">
+<span class="font-label-md text-label-md text-primary font-bold">Room 201</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Triple</span>
+</div>
+<div class="grid grid-cols-3 gap-1 mt-1">
+<div class="h-6 rounded bg-primary text-on-primary font-label-sm text-label-sm flex items-center justify-center font-bold" title="Bed A: Prajwal Gowda">A</div>
+<div class="h-6 rounded bg-primary text-on-primary font-label-sm text-label-sm flex items-center justify-center font-bold" title="Bed B: Shreya Kulkarni">B</div>
+<div class="h-6 rounded bg-surface-container-highest text-on-surface font-label-sm text-label-sm flex items-center justify-center font-bold" title="Bed C: Available">C</div>
+</div>
+</div>
+<!-- Room 202 (Active Target) -->
+<div class="bg-secondary-container/20 p-space-sm rounded flex flex-col gap-1 shadow-sm">
+<div class="flex items-center justify-between">
+<span class="font-label-md text-label-md text-secondary font-bold">Room 202</span>
+<span class="font-label-sm text-label-sm text-secondary font-semibold">Active Turn</span>
+</div>
+<div class="grid grid-cols-3 gap-1 mt-1">
+<div class="h-6 rounded bg-surface-container-highest text-on-surface font-label-sm text-label-sm flex items-center justify-center font-bold">A</div>
+<div class="h-6 rounded bg-surface-container-highest text-on-surface font-label-sm text-label-sm flex items-center justify-center font-bold">B</div>
+<div class="h-6 rounded bg-secondary text-on-secondary font-label-sm text-label-sm flex items-center justify-center font-bold animate-pulse" title="Saugat Intent Target">C*</div>
+</div>
+</div>
+<!-- Room 203 (Partial) -->
+<div class="bg-surface-container-low p-space-sm rounded flex flex-col gap-1">
+<div class="flex items-center justify-between">
+<span class="font-label-md text-label-md text-primary font-bold">Room 203</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Triple</span>
+</div>
+<div class="grid grid-cols-3 gap-1 mt-1">
+<div class="h-6 rounded bg-primary text-on-primary font-label-sm text-label-sm flex items-center justify-center font-bold" title="Bed A: Varun Bhaskar">A</div>
+<div class="h-6 rounded bg-surface-container-highest text-on-surface font-label-sm text-label-sm flex items-center justify-center font-bold">B</div>
+<div class="h-6 rounded bg-surface-container-highest text-on-surface font-label-sm text-label-sm flex items-center justify-center font-bold">C</div>
+</div>
+</div>
+<!-- Room 204 (Vacant) -->
+<div class="bg-surface-container-low p-space-sm rounded flex flex-col gap-1">
+<div class="flex items-center justify-between">
+<span class="font-label-md text-label-md text-primary font-bold">Room 204</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Triple</span>
+</div>
+<div class="grid grid-cols-3 gap-1 mt-1">
+<div class="h-6 rounded bg-surface-container-highest text-on-surface font-label-sm text-label-sm flex items-center justify-center font-bold">A</div>
+<div class="h-6 rounded bg-surface-container-highest text-on-surface font-label-sm text-label-sm flex items-center justify-center font-bold">B</div>
+<div class="h-6 rounded bg-surface-container-highest text-on-surface font-label-sm text-label-sm flex items-center justify-center font-bold">C</div>
+</div>
+</div>
+<!-- Room 205 (Maintenance) -->
+<div class="bg-error-container/30 p-space-sm rounded flex flex-col gap-1">
+<div class="flex items-center justify-between">
+<span class="font-label-md text-label-md text-error font-bold">Room 205</span>
+<span class="font-label-sm text-label-sm text-error">Blocked</span>
+</div>
+<div class="grid grid-cols-3 gap-1 mt-1">
+<div class="h-6 rounded bg-error text-on-error font-label-sm text-label-sm flex items-center justify-center font-bold">A</div>
+<div class="h-6 rounded bg-error text-on-error font-label-sm text-label-sm flex items-center justify-center font-bold">B</div>
+<div class="h-6 rounded bg-error text-on-error font-label-sm text-label-sm flex items-center justify-center font-bold">C</div>
+</div>
+</div>
+<!-- Room 206 (Vacant) -->
+<div class="bg-surface-container-low p-space-sm rounded flex flex-col gap-1">
+<div class="flex items-center justify-between">
+<span class="font-label-md text-label-md text-primary font-bold">Room 206</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Triple</span>
+</div>
+<div class="grid grid-cols-3 gap-1 mt-1">
+<div class="h-6 rounded bg-surface-container-highest text-on-surface font-label-sm text-label-sm flex items-center justify-center font-bold">A</div>
+<div class="h-6 rounded bg-surface-container-highest text-on-surface font-label-sm text-label-sm flex items-center justify-center font-bold">B</div>
+<div class="h-6 rounded bg-surface-container-highest text-on-surface font-label-sm text-label-sm flex items-center justify-center font-bold">C</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- SECTION 4: CONFIRMATION & OVERRIDE MODAL DRAWER (Administrative Safety) -->
+<div class="fixed inset-y-0 right-0 w-full max-w-md bg-surface-container-lowest shadow-2xl z-50 transform translate-x-full transition-transform duration-300 ease-in-out flex flex-col" id="audit-drawer">
+<div class="p-space-lg bg-primary text-on-primary flex items-center justify-between">
+<div class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-secondary-fixed">security</span>
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-primary">Institutional Audit Ledger</h3>
+<p class="font-body-sm text-body-sm text-on-primary-container">Immutable chronological cycle record</p>
+</div>
+</div>
+<button class="p-1 rounded text-on-primary-container hover:text-on-primary hover:bg-primary-container" onclick="document.getElementById('audit-drawer').classList.add('translate-x-full')">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+<!-- Drawer Content -->
+<div class="flex-1 p-space-lg overflow-y-auto flex flex-col gap-space-md">
+<div class="bg-surface-container-low p-space-md rounded">
+<span class="font-label-sm text-label-sm text-secondary font-bold uppercase">Subject Record</span>
+<div class="font-headline-sm text-headline-sm text-primary mt-1" id="drawer-subject-name">Saugat (1SI21CS094)</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">Branch: 6th Sem Computer Science & Eng.</div>
+</div>
+<div class="flex flex-col gap-space-sm">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase font-bold tracking-wider">Event Timeline</span>
+<div class="relative pl-6 flex flex-col gap-space-md before:absolute before:left-2 before:top-2 before:bottom-2 before:w-0.5 before:bg-surface-container-high">
+<!-- Item 1 -->
+<div class="relative">
+<span class="absolute -left-6 top-1 w-2.5 h-2.5 rounded-full bg-secondary"></span>
+<div class="font-label-md text-label-md text-on-surface font-semibold">Turn Granted (Slot 14)</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">System allocated turn window of 05:00 minutes. Student active on portal.</div>
+<span class="font-mono text-label-sm text-label-sm text-on-surface-variant">15-Jul-2024 11:25:02 IST</span>
+</div>
+<!-- Item 2 -->
+<div class="relative">
+<span class="absolute -left-6 top-1 w-2.5 h-2.5 rounded-full bg-primary"></span>
+<div class="font-label-md text-label-md text-on-surface font-semibold">Room 202-C Pinned for Selection</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">Student initiated reservation lock. Awaiting student final OTP confirmation.</div>
+<span class="font-mono text-label-sm text-label-sm text-on-surface-variant">15-Jul-2024 11:26:19 IST</span>
+</div>
+<!-- Item 3 -->
+<div class="relative">
+<span class="absolute -left-6 top-1 w-2.5 h-2.5 rounded-full bg-primary-container"></span>
+<div class="font-label-md text-label-md text-on-surface font-semibold">Bank Transaction Reconciled</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">Axis Bank Gateway reference #AXIS-8829104 verified by Accounts Desk.</div>
+<span class="font-mono text-label-sm text-label-sm text-on-surface-variant">12-Jul-2024 09:14:22 IST</span>
+</div>
+</div>
+</div>
+</div>
+<div class="p-space-lg bg-surface-container-low flex items-center justify-between gap-space-sm">
+<button class="w-full py-2 rounded bg-surface-container-highest text-on-surface font-label-md text-label-md font-semibold hover:bg-surface-dim transition-colors" onclick="document.getElementById('audit-drawer').classList.add('translate-x-full')">Dismiss</button>
+<button class="w-full py-2 rounded bg-primary text-on-primary font-label-md text-label-md font-semibold hover:bg-primary-container transition-colors" onclick="alert('Exporting signed PDF certificate to Warden Desk')">Download PDF</button>
+</div>
+</div>
+<!-- Administrative Override / Force Action Modal Dialog -->
+<div class="fixed inset-0 bg-primary/60 backdrop-blur-xs z-50 flex items-center justify-center p-space-md hidden" id="force-modal">
+<div class="bg-surface-container-lowest max-w-lg w-full rounded shadow-2xl overflow-hidden flex flex-col">
+<div class="p-space-lg bg-primary-container text-on-primary flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-secondary-fixed">warning</span>
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-primary">Administrative Seat Allocation Override</h3>
+<span class="font-body-sm text-body-sm text-on-primary-container">Dual Warden Authorization Protocol</span>
+</div>
+</div>
+<div class="p-space-lg flex flex-col gap-space-md">
+<div class="p-space-sm bg-error-container/40 rounded text-on-error-container font-body-sm text-body-sm">
+<strong class="font-semibold">Notice:</strong> Manual force assignments bypass the student's turn countdown and permanently reserve the selected bed unit on BVB Floor 2.
+        </div>
+<div class="flex flex-col gap-space-xs">
+<label class="font-label-sm text-label-sm text-on-surface-variant uppercase font-semibold">Target Participant</label>
+<input class="h-10 px-space-md rounded bg-surface-container-low font-body-md text-body-md text-on-surface font-semibold cursor-not-allowed" id="force-student-display" readonly="" type="text"/>
+</div>
+<div class="grid grid-cols-2 gap-space-sm">
+<div class="flex flex-col gap-space-xs">
+<label class="font-label-sm text-label-sm text-on-surface-variant uppercase font-semibold">Room Assign</label>
+<select class="h-10 px-space-sm rounded bg-surface-container-low font-body-md text-body-md text-on-surface focus:outline-none">
+<option value="202">Room 202 (Triple)</option>
+<option value="203">Room 203 (Triple)</option>
+<option value="204">Room 204 (Triple)</option>
+<option value="206">Room 206 (Triple)</option>
+</select>
+</div>
+<div class="flex flex-col gap-space-xs">
+<label class="font-label-sm text-label-sm text-on-surface-variant uppercase font-semibold">Bed Choice</label>
+<select class="h-10 px-space-sm rounded bg-surface-container-low font-body-md text-body-md text-on-surface focus:outline-none">
+<option value="A">Bed A</option>
+<option value="B">Bed B</option>
+<option selected="" value="C">Bed C</option>
+</select>
+</div>
+</div>
+<div class="flex flex-col gap-space-xs">
+<label class="font-label-sm text-label-sm text-on-surface-variant uppercase font-semibold">Override Reason Mandate</label>
+<textarea class="p-space-sm rounded bg-surface-container-low font-body-sm text-body-sm text-on-surface placeholder:text-on-surface-variant focus:outline-none" placeholder="e.g. Disability accommodation approved by Warden / System crash compensation" rows="2"></textarea>
+</div>
+<div class="flex flex-col gap-space-xs">
+<label class="font-label-sm text-label-sm text-on-surface-variant uppercase font-semibold">Warden Master Security PIN</label>
+<input class="h-10 px-space-md rounded bg-surface-container-low font-mono text-body-md text-on-surface placeholder:text-on-surface-variant focus:outline-none tracking-widest" maxlength="6" placeholder="Enter 6-digit Warden Key" type="password"/>
+</div>
+</div>
+<div class="p-space-lg bg-surface-container-low flex items-center justify-end gap-space-sm">
+<button class="px-space-md py-2 rounded bg-surface-container-highest text-on-surface font-label-md text-label-md font-semibold hover:bg-surface-dim transition-colors" onclick="closeForceModal()">Cancel</button>
+<button class="px-space-md py-2 rounded bg-primary text-on-primary font-label-md text-label-md font-semibold hover:bg-primary-container transition-colors shadow-sm" onclick="executeOverride()">Authorize & Force Allot</button>
+</div>
+</div>
+</div>
+<!-- Publish Official Allotment Modal -->
+<div class="fixed inset-0 bg-primary/60 backdrop-blur-xs z-50 flex items-center justify-center p-space-md hidden" id="publish-modal">
+<div class="bg-surface-container-lowest max-w-md w-full rounded shadow-2xl overflow-hidden flex flex-col">
+<div class="p-space-lg bg-secondary text-on-secondary flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-secondary-fixed">campaign</span>
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-secondary">Publish Official Floor 2 List</h3>
+<span class="font-body-sm text-body-sm text-on-secondary-container">SIT Residence Administration Notification</span>
+</div>
+</div>
+<div class="p-space-lg flex flex-col gap-space-sm">
+<p class="font-body-md text-body-md text-on-surface">You are about to freeze and publish the preliminary seat allocation report for <strong>BVB Block Floor 2 (Rooms 201-272)</strong>.</p>
+<div class="p-space-sm rounded bg-surface-container-low flex flex-col gap-1 text-on-surface-variant font-label-sm text-label-sm">
+<div class="flex justify-between"><span>Confirmed Allocations:</span> <strong class="text-on-surface">12 Students</strong></div>
+<div class="flex justify-between"><span>Pending / Active Turns:</span> <strong class="text-on-surface">12 Students</strong></div>
+<div class="flex justify-between"><span>Unresolved Hold Flags:</span> <strong class="text-error">06 Students</strong></div>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">An automated circular will be generated and posted on the official SIT Tumakuru Noticeboard portal.</p>
+</div>
+<div class="p-space-lg bg-surface-container-low flex items-center justify-end gap-space-sm">
+<button class="px-space-md py-2 rounded bg-surface-container-highest text-on-surface font-label-md text-label-md font-semibold" onclick="closePublishModal()">Dismiss</button>
+<button class="px-space-md py-2 rounded bg-secondary text-on-secondary font-label-md text-label-md font-semibold hover:bg-on-secondary-container transition-colors shadow-sm" onclick="confirmPublish()">Confirm & Release</button>
+</div>
+</div>
+</div>
+</div>
+<script>
+  let secondsRemaining = 222; // 03:42
+  let timerActive = true;
+  let timerInterval = null;
+
+  function runTimer() {
+    if (timerInterval) clearInterval(timerInterval);
+    timerInterval = setInterval(() => {
+      if (!timerActive) return;
+      if (secondsRemaining > 0) {
+        secondsRemaining--;
+        const mins = String(Math.floor(secondsRemaining / 60)).padStart(2, '0');
+        const secs = String(secondsRemaining % 60).padStart(2, '0');
+        const timerElem = document.getElementById('live-timer');
+        if (timerElem) timerElem.textContent = `${mins}:${secs}`;
+        
+        const bar = document.getElementById('timer-bar');
+        if (bar) {
+          const pct = Math.max(0, Math.min(100, (secondsRemaining / 300) * 100));
+          bar.style.width = pct + '%';
+        }
+      } else {
+        clearInterval(timerInterval);
+        alert('Turn window has expired for USN: 1SI21CS094 (Saugat). Cycle auto-advancing to rank #15 Ananya R.');
+      }
+    }, 1000);
+  }
+  runTimer();
+
+  function togglePause(btn) {
+    timerActive = !timerActive;
+    const label = document.getElementById('pause-label');
+    if (timerActive) {
+      label.textContent = 'Pause Cycle';
+      btn.classList.remove('bg-error', 'text-on-error');
+      btn.classList.add('bg-surface-container-high', 'text-on-surface');
+    } else {
+      label.textContent = 'Resume Cycle';
+      btn.classList.add('bg-error', 'text-on-error');
+      btn.classList.remove('bg-surface-container-high', 'text-on-surface');
+    }
+  }
+
+  function extendTurn() {
+    secondsRemaining += 120;
+    const mins = String(Math.floor(secondsRemaining / 60)).padStart(2, '0');
+    const secs = String(secondsRemaining % 60).padStart(2, '0');
+    document.getElementById('live-timer').textContent = `${mins}:${secs}`;
+    alert('+2:00 Minutes successfully added to current active student turn.');
+  }
+
+  function triggerEmergencyHalt() {
+    timerActive = false;
+    alert('CRITICAL EMERGENCY HALT TRIGGERED: All active student sockets in BVB Block Floor 2 frozen. Database write operations suspended pending Warden Master override key.');
+  }
+
+  function filterQueue(status) {
+    const buttons = document.querySelectorAll('.tab-btn');
+    buttons.forEach(b => {
+      b.classList.remove('bg-surface-container-lowest', 'text-primary', 'shadow-xs');
+      b.classList.add('text-on-surface-variant');
+    });
+    event.currentTarget.classList.add('bg-surface-container-lowest', 'text-primary', 'shadow-xs');
+    event.currentTarget.classList.remove('text-on-surface-variant');
+
+    const rows = document.querySelectorAll('#cohort-table tbody tr');
+    rows.forEach(r => {
+      if (status === 'all') {
+        r.style.display = '';
+      } else if (status === 'active') {
+        r.style.display = r.getAttribute('data-status') === 'active' ? '' : 'none';
+      } else if (status === 'next') {
+        r.style.display = r.getAttribute('data-status') === 'next' ? '' : 'none';
+      } else if (status === 'allocated') {
+        r.style.display = r.getAttribute('data-status') === 'allocated' ? '' : 'none';
+      } else if (status === 'disqualified') {
+        r.style.display = r.getAttribute('data-status') === 'disqualified' ? '' : 'none';
+      }
+    });
+  }
+
+  function searchStudents() {
+    const query = document.getElementById('student-search').value.toLowerCase();
+    const rows = document.querySelectorAll('#cohort-table tbody tr');
+    rows.forEach(row => {
+      const text = row.innerText.toLowerCase();
+      row.style.display = text.includes(query) ? '' : 'none';
+    });
+  }
+
+  function showAudit(name, usn) {
+    document.getElementById('drawer-subject-name').textContent = `${name} (${usn})`;
+    document.getElementById('audit-drawer').classList.remove('translate-x-full');
+  }
+
+  function openForceModal(usn, name) {
+    document.getElementById('force-student-display').value = `${name} — ${usn}`;
+    document.getElementById('force-modal').classList.remove('hidden');
+  }
+
+  function closeForceModal() {
+    document.getElementById('force-modal').classList.add('hidden');
+  }
+
+  function executeOverride() {
+    alert('Overriding procedure confirmed. Warden signature log created. Candidate assigned to bed.');
+    closeForceModal();
+  }
+
+  function openPublishModal() {
+    document.getElementById('publish-modal').classList.remove('hidden');
+  }
+
+  function closePublishModal() {
+    document.getElementById('publish-modal').classList.add('hidden');
+  }
+
+  function confirmPublish() {
+    alert('Official BVB Floor 2 Provisional Allotment published successfully to SIT Campus Portal.');
+    closePublishModal();
+  }
+</script></main></div></body></html>

@@ -22,6 +22,19 @@ Repository Status: Active Development (Modular Monolith)
 10. **Cycle configuration**: Frozen and immutable once state transitions to `READY`. Rule modifications necessitate a new cycle configuration version.
 
 ## 3. Implementation Phases
+- [x] **Phase 15: Roommate Invitation Acceptance to Final Room Allocation Workflow**:
+  - **Single-Confirmation Dialog Architecture (`RoomAllocationConfirmModal.tsx`)**:
+    - Replaced disconnected multi-step navigation with an automatic acknowledgement modal opening immediately upon roommate invitation acceptance (`Accept`).
+    - Resolves the bug where the target seat remained orange ("Intent Reserve") after acceptance while the user was stranded on the floor map.
+    - Dialog displays building, floor, room number, target seat ID, bed availability, and roommate member roster.
+    - Single-click "Confirm Room Allocation" executes the authoritative seat confirmation transaction with no manual re-selection.
+  - **Authoritative Invariants & State Machine**:
+    - Decoupled consent status (`ACCEPTED` membership) from authoritative seat assignment (`CURRENT` allocation in `allocations` table).
+    - Preserves turn window requirements: active turn commits allocation atomically; pending turn saves consent and provides clear turn instructions.
+    - Live floor inventory synchronization immediately marks confirmed seat as occupied (`#C93B3B` or `#1D63B8`) and updates room availability.
+  - **Automated Verification**:
+    - 6 new regression tests in `tests/roommate_acceptance_allocation.test.ts`.
+    - Total 60 tests passing across 9 test suites with 0 TypeScript errors and clean production build.
 - [x] **Phase 14: Stitch UI & Design System Alignment (Steps 1, 2, 3 & 4 Completed)**:
   - **Step 1: Student Application & Responsibility Accord Workspace (`StudentApplicationAccord.tsx`)**:
     - Built institutional onboarding screen matching Stitch `student_application_terms`.
