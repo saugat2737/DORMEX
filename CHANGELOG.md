@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.3.1] - 2026-10-21
+
+- **Streamlined Login Experience & Removal of Redundant Portal Cards (`PortalSelectionView.tsx`)**:
+  - Removed the bulky 3 portal cards grid (Student, Admin, Hostel Office) with descriptive bullet lists in favor of a sleek, focused authentication card.
+  - Centered the login panel with the 3-option toggle segmented control (`Student` | `Admin` | `Hostel Office`) at the top of the form.
+  - Retained institutional ID and password credential authentication with show/hide password toggle, pilot presets, and role enforcement.
+  - Fully verified with 60/60 automated tests passing, 0 TypeScript compiler errors, and clean client build.
+
 ## [2.3.0] - 2026-10-21
 
 - **Interactive 3-Option Toggle Portal Authentication with ID & Password Credentials (`PortalSelectionView.tsx` & `AuthContext.tsx`)**:

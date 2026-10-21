@@ -22,6 +22,11 @@ Repository Status: Active Development (Modular Monolith)
 10. **Cycle configuration**: Frozen and immutable once state transitions to `READY`. Rule modifications necessitate a new cycle configuration version.
 
 ## 3. Implementation Phases
+- [x] **Phase 18: Streamlined Direct Login Experience (PortalSelectionView.tsx)**:
+  - Removed redundant 3-card portal grid and bullet descriptions, centering a clean, focused institutional login card.
+  - Positioned the 3-option toggle (Student | Admin | Hostel Office) directly atop the credential inputs.
+  - Retained verified USN / Staff ID / Office ID credential authentication with show/hide password toggle and pilot presets.
+  - Verified 60/60 tests passing, 0 TypeScript errors, clean production client build.
 - [x] **Phase 17: Interactive 3-Option Toggle Portal Authentication with ID & Password Credentials (`PortalSelectionView.tsx`)**:
   - **3-Option Segmented Portal Switcher**:
     - Embedded a responsive 3-option toggle control allowing instant switching between Student, Admin & Wardens, and Hostel Office portals.
