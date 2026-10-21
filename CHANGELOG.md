@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.0.0] - 2026-10-21
+
+- **Stitch Design System Alignment: Student Application & Responsibility Accord Workspace**:
+  - **Full-Page Split-Screen Accord View (`StudentApplicationAccord.tsx`)**:
+    - Built dedicated institutional accord onboarding screen matching the official Stitch specification (`stitch_dormex_hostel_allocation_platform/student_application_terms`).
+    - **University Accord Top Banner**: Official Accord header with student applicant card (initials badge, priority turn rank, USN, department).
+    - **5-Step Linear Onboarding Progress Stepper**: Structured progress tracking across `01 / Personal & Academic`, `02 / Parent Contact`, `03 / Local Guardian`, `04 / Proctor Verification`, and `05 / Fee & Accord`.
+    - **Sub-section A (Fee Payment & Admission Verification)**: Displays SBI Collect transaction details, reference number, gateway clearance status, payment timestamp, and provisional priority rank.
+    - **Sub-section B (Hostel Responsibility Agreement Clauses)**: Clause-by-clause presentation covering room & fixture care, substance & anti-ragging zero-tolerance directives, non-binding roommate intent rules, 48-hour room change regulations, and key handover/caution deposit clearance.
+    - **Cryptographic Audit Checkbox & Transition**: Integrated agreement checkbox with client state tracking and audit notice. Upon agreement, records acceptance in backend and smoothly transitions student into Step 2 (Floor Map & Turn Allocation).
+    - **Institutional Endorsements & Utility Sidebar**: Live Turn Window clock card (remaining time countdown, animated status bar), Dean/Chief Warden/Health Centre endorsement digests, destination BVB Memorial Block building card with live capacity ratio, and Warden Administrative Office helpdesk directory.
+  - **Student Allocation View Integration**:
+    - Embedded `StudentApplicationAccord` into Tab 1 of `StudentAllocationView.tsx`. Unsigned applicants are guided through the formal accord before accessing floor allocation. Once certified, displays an official signed status card with one-click navigation to the Live Floor Map.
+
 ## [1.9.0] - 2026-10-19
 
 - **Real-Time Notification Center, Audio Chime Feedback & Admin Notice Broadcast**:

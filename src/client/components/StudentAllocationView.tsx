@@ -24,6 +24,7 @@ import {
 } from 'lucide-react';
 import { StudentProfileForm } from './StudentProfileForm.js';
 import { TermsAcknowledgementModal } from './TermsAcknowledgementModal.js';
+import { StudentApplicationAccord } from './StudentApplicationAccord.js';
 
 export const StudentAllocationView: React.FC = () => {
   const { session } = useAuth();
@@ -622,10 +623,39 @@ export const StudentAllocationView: React.FC = () => {
         </div>
       </div>
 
-      {/* Tab 1: Registration, Profile & Terms Status */}
+      {/* Tab 1: Registration, Profile & Terms Status / Stitch Accord */}
       {activeSubTab === 'workflow' && (
         <div className="space-y-6">
-          <StudentProfileForm onProfileUpdated={fetchMyData} />
+          {!termsStatus?.accepted ? (
+            <StudentApplicationAccord
+              onAccordAccepted={() => {
+                fetchMyData();
+                setActiveSubTab('allocation_map');
+              }}
+            />
+          ) : (
+            <div className="space-y-6">
+              <div className="bg-[#E7F2ED]/50 p-4 rounded-xl border border-[#A8D5C2] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-full bg-[#E7F2ED] text-[#1E7B54] border border-[#A8D5C2] flex items-center justify-center font-bold">
+                    ✓
+                  </div>
+                  <div>
+                    <div className="text-xs font-bold text-[#1E7B54]">Hostel Responsibility Accord Signed & Certified</div>
+                    <div className="text-[11px] text-[#627084]">Cryptographically recorded in institutional audit log. Profile edits synchronized.</div>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setActiveSubTab('allocation_map')}
+                  className="px-4 py-2 bg-[#2C8279] hover:bg-[#20635c] text-white text-xs font-bold rounded-lg shadow-xs transition-colors flex items-center gap-1.5"
+                >
+                  <span>Open Floor Map & Turn Allocation</span>
+                  <span>→</span>
+                </button>
+              </div>
+              <StudentProfileForm onProfileUpdated={fetchMyData} />
+            </div>
+          )}
         </div>
       )}
 
