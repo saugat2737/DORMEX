@@ -9,6 +9,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2.0.0] - 2026-10-21
 
+- **Stitch Design System Alignment: Admin Allocation Control Console (`AdminDashboard.tsx`)**:
+  - **Top Context & Telemetry Bar**: Integrated institutional session indicator (`Session ID: SIT-BVB-24F2-PH1`), gateway timestamp, and certified Warden hash (`#BVB-9804-KSH`).
+  - **7-Card Executive Bento Metric Strip**: Displays real-time counts across `Total Cohort (30)`, `Fee Verified (24)`, `Pending Rev. (06)`, `Configured Beds (72)`, `Occupied (12)`, `Available (56)`, and `Blocked (04)`.
+  - **Pre-Flight Certification Checklist**: 5/5 mandatory institutional verification checkpoints (Fee Reconciliation, BVB Floor 2 Inventory Frozen, Priority Queue Sequenced, Roommate Groups Synced, Warden Oversight Mandate) with immutable master ledger SHA-256 seal.
+  - **Live Turn Engine Console**: Displays active slot owner (`Saugat`, USN `1SI21CS094`), target room browsing telemetry (`Room 202 Wing A`), real-time turn countdown timer with animated progress bar, `Pause/Resume Cycle`, `+2 Min Extension`, `Emergency Halt`, and `Publish Allotment` controls.
+  - **Participant Cohort Management Table**: Prioritized student queue with filter tabs (`All`, `Active Turn`, `Next in Line`, `Allocated`, `Pending / Hold`), candidate search, cycle status badges, and quick-action menu (audit log, force override, direct notify).
+  - **Floor 2 Pilot Wing Layout Reference**: 6-column matrix preview of rooms 201–212 with occupied, vacant, active turn target, and maintenance states.
+  - **Dual-Warden Force Override Modal**: Protected administrative seat assignment dialog with target room & bed pickers, mandatory justification text area, and 6-digit Warden Security PIN input.
+  - **Institutional Audit Ledger Slide-Out Drawer**: Detailed candidate dossier event timeline with chronological state changes and one-click PDF export action.
+
 - **Stitch Design System Alignment: Top Priority Status Ribbon & CAD Floor Map Telemetry**:
   - **Live Priority Status Ribbon**:
     - Embedded dedicated top priority status ribbon above the CAD Floor Map in `StudentAllocationView.tsx`.
