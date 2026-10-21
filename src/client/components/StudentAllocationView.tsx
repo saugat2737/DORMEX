@@ -662,6 +662,41 @@ export const StudentAllocationView: React.FC = () => {
       {/* Tab 2: Live Floor Map & Roommate Coordination */}
       {activeSubTab === 'allocation_map' && (
         <div className="space-y-6">
+          {/* Top Priority Status Ribbon from Stitch */}
+          <div className="px-5 py-3 bg-[#07203C] text-white rounded-xl shadow-xs border border-[#17283B] flex flex-wrap items-center justify-between gap-4">
+            <div className="flex items-center gap-3 min-w-0">
+              <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-[#2C8279] text-white text-xs font-bold shrink-0">
+                ✓
+              </span>
+              <div className="flex flex-col min-w-0">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="text-[10px] uppercase font-bold tracking-wider text-[#84d5ca]">
+                    Live Allocation Active
+                  </span>
+                  <span className="text-slate-400 text-xs">/</span>
+                  <span className="text-xs font-bold text-white">
+                    Turn #{myProfile?.assigned_priority || '1'} Allocation Window
+                  </span>
+                </div>
+                <div className="text-[11px] text-slate-300 truncate">
+                  Eligible Candidate: <span className="font-bold text-white">{session?.fullName}</span> (USN: <span className="font-mono">{session?.collegeId}</span> · Priority #{myProfile?.assigned_priority || '1'}) · Active BVB-F2 Window
+                </div>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 bg-[#112947] px-3 py-1.5 rounded-lg border border-[#203653]">
+                <Clock className="w-3.5 h-3.5 text-[#84d5ca] animate-pulse" />
+                <span className="text-xs font-semibold text-white">
+                  Selection Window: <strong className="font-mono text-[#D4B779]">{timeLeft !== null ? `${Math.floor(timeLeft / 60)}m ${String(timeLeft % 60).padStart(2, '0')}s` : 'Active'}</strong>
+                </span>
+              </div>
+              <span className="hidden sm:inline-block px-2.5 py-1 rounded bg-[#203653]/60 text-[10px] font-mono text-slate-300 border border-[#263345]">
+                Node: SIT-BVB-F2-P30
+              </span>
+            </div>
+          </div>
+
           {/* Focused Allocation Status Card with High Contrast */}
           <div className="bg-[#203653] text-white rounded-xl p-6 shadow-sm border border-[#17283B] flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
             <div className="space-y-2">

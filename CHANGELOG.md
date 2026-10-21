@@ -9,6 +9,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2.0.0] - 2026-10-21
 
+- **Stitch Design System Alignment: Top Priority Status Ribbon & CAD Floor Map Telemetry**:
+  - **Live Priority Status Ribbon**:
+    - Embedded dedicated top priority status ribbon above the CAD Floor Map in `StudentAllocationView.tsx`.
+    - Live turn countdown timer with real-time remaining seconds and turn status indicators (`ACTIVE_TURN`, `WAITING`, `EXPIRED`, `CONFIRMED`).
+    - Priority rank telemetry (`Rank #X` of eligible applicants), candidate identifier badge, candidate room/bed selection status, and cluster node attribution (`Cluster Node: BVB-L02-GATEWAY`).
+    - Direct quick-action navigation between `Floor Map` and `Terms & Accord`.
+  - **Level 02 Geometric Layout CAD Overlay**:
+    - Structured architectural CAD viewport header with `Grid Pitch: 1000mm`, `Standard Unit: Single/Double Bed`, and real-time `North [000°]` magnetic alignment indicator.
+    - Added Hallway Corridor Runway & Telemetry bar below the interactive SVG canvas displaying hallway width clearance (`2.4m Corridor Width`), fire exit egress direction, and live ambient occupancy density.
+    - Integrated BVB Heritage Elevation telemetry strip detailing solar water heating status, 10Gbps fiber backbone mesh, and primary substation feeder telemetry.
+
 - **Stitch Design System Alignment: Student Application & Responsibility Accord Workspace**:
   - **Full-Page Split-Screen Accord View (`StudentApplicationAccord.tsx`)**:
     - Built dedicated institutional accord onboarding screen matching the official Stitch specification (`stitch_dormex_hostel_allocation_platform/student_application_terms`).
