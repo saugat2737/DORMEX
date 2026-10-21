@@ -7,6 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.2.0] - 2026-10-21
+
+- **Stitch Design System Alignment: BVB Block Architectural Wings & Interactive Room Inspector Drawer (`StudentAllocationView.tsx`)**:
+  - **Full BVB Floor 2 Geometric Wing Layout**:
+    - Replaced generic SVG map placeholder with the authentic Stitch multi-wing architectural floor plan layout.
+    - **North Wing Corridor (Rooms 201–224)**: Integrated 2-row room grid (`201–212` and `213–224`) with individual bed token indicators (Available `#1E7B54`, Intent `#E06A26`, Occupied `#C93B3B`, Active Selection `#1D63B8`).
+    - **North Corridor Runway**: Added 2.4m central runway banner with Staircase NW-2A and North Sanitization Block indicators.
+    - **Central Quadrangle & Transition Atrium**: Integrated Open Green Central Courtyard & Lightwell representation for vertical ventilation shaft (Levels G–4).
+    - **East Wing Connector Hub (Rooms 249–272)**: Integrated Elevator Block E1 hub view (`249–252`) and corridor extension indicator.
+    - **South Wing Corridor (Rooms 225–248)**: Integrated 2-row room grid (`225–236` and `237–248`) facing SIT campus sports oval with Staircase SW-2B and Fire Exit S2 indicators.
+    - **BVB Block Heritage Elevation Card**: Incorporated external building elevation card with photo asset, `SIT-Mesh-202 Active` wifi telemetry, and solar water supply verification indicators.
+  - **Active Room Inspector Drawer (Right Panel)**:
+    - Dedicated inspector panel displaying classification (provisional 3-seater), exterior exposure, and steel bedstead/study desk furnishings for the selected room.
+    - Real-time **Room Bed Matrix**: Renders individual bed cards with student occupancy details (e.g. Rahul M., USN `1SI21CS082`, locked timestamp).
+    - **Roommate Coordination Intent Warning Modal**: Interactive warning modal triggered when selecting intent beds (e.g. Prajwal K.), giving students choice to choose another seat or continue anyway.
+    - Single-click **Proceed to Seat Confirmation** action and **Save to Roommate Preference Draft** triggers.
+  - **Zero Bug Guarantee & Full Verification**:
+    - 60/60 test pass rate preserved across 9 test suites.
+    - 0 TypeScript compiler errors (`npm run typecheck`).
+    - Clean production client build (`npm run build:client`).
+
 ## [2.1.0] - 2026-10-21
 
 - **Fix Roommate Invitation Acceptance to Final Room Allocation Workflow**:

@@ -22,6 +22,24 @@ Repository Status: Active Development (Modular Monolith)
 10. **Cycle configuration**: Frozen and immutable once state transitions to `READY`. Rule modifications necessitate a new cycle configuration version.
 
 ## 3. Implementation Phases
+- [x] **Phase 16: Stitch UI BVB Floor Map Architectural Wings & Room Inspector Drawer (`StudentAllocationView.tsx`)**:
+  - **Authentic Multi-Wing Floor Layout**:
+    - Replaced generic SVG map canvas with Stitch multi-wing geometric layout:
+      - North Wing Corridor (Rooms 201–224) arranged in two rows (`201–212` and `213–224`) with live bed token dots (available `#1E7B54`, intent `#E06A26`, occupied `#C93B3B`, selected `#1D63B8`).
+      - North Corridor central runway bar with Staircase NW-2A and North Sanitization Block indicators.
+      - Central Quadrangle & Transition Atrium graphic with Open Green Central Courtyard & Lightwell representation.
+      - East Wing Connector Hub (Rooms 249–272) with Elevator Block E1 hub view (`249–252`) and corridor extension banner.
+      - South Wing Corridor (Rooms 225–248) arranged in two rows (`225–236` and `237–248`) facing SIT campus sports oval with Staircase SW-2B and Fire Exit S2 indicators.
+      - BVB Block Heritage Elevation card with external architectural photo, `SIT-Mesh-202 Active` wifi telemetry, and solar water supply verification.
+  - **Active Room Inspector Drawer (Right Panel)**:
+    - Dedicated inspector card displaying room classification (provisional 3-seater), exterior courtyard exposure, and standard steel bedstead/desk furnishings.
+    - Dynamic Bed Matrix rendering live occupant details (e.g. Rahul M., USN `1SI21CS082`, locked timestamp).
+    - Interactive Roommate Coordination Intent Warning modal overlay with "Choose Another Seat" and "Continue Anyway" options.
+    - Action Panel with target bed candidate telemetry, price per semester (`₹34,000 / Sem`), "Proceed to Seat Confirmation" trigger, and "Save to Roommate Preference Draft" action.
+  - **Verification**:
+    - 60/60 automated tests passing across all 9 test suites (`npm test`).
+    - 0 TypeScript compiler errors (`npm run typecheck`).
+    - Clean production client build (`npm run build:client`).
 - [x] **Phase 15: Roommate Invitation Acceptance to Final Room Allocation Workflow**:
   - **Single-Confirmation Dialog Architecture (`RoomAllocationConfirmModal.tsx`)**:
     - Replaced disconnected multi-step navigation with an automatic acknowledgement modal opening immediately upon roommate invitation acceptance (`Accept`).
