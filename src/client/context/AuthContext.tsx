@@ -284,6 +284,9 @@ export const useAuth = () => useContext(AuthContext);
 
 export async function apiFetch(path: string, options: RequestInit = {}, session?: UserSession | null) {
   const headers = new Headers(options.headers || {});
+  if (options.body && typeof options.body === 'string' && !headers.has('Content-Type')) {
+    headers.set('Content-Type', 'application/json');
+  }
   if (session) {
     headers.set('x-user-id', session.userId);
   } else {

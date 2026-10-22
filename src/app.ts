@@ -873,7 +873,15 @@ export async function buildApp(db?: DatabaseService): Promise<FastifyInstance> {
   app.post('/api/mess/menus', async (req: any, reply) => {
     try {
       const actor = await extractActor(req);
-      const menu = await messMenuService.uploadMenu(req.body as any, actor);
+      let payload = req.body;
+      if (typeof payload === 'string') {
+        try {
+          payload = JSON.parse(payload);
+        } catch (e) {
+          return reply.code(400).send({ error: 'VALIDATION_ERROR: Invalid JSON request body' });
+        }
+      }
+      const menu = await messMenuService.uploadMenu((payload || {}) as any, actor);
       return reply.code(201).send(menu);
     } catch (err: any) {
             const code = err.message?.startsWith('FORBIDDEN') ? 403 : 400;
