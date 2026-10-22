@@ -390,7 +390,7 @@ ON student_admissions (academic_year_code, official_priority)
 WHERE official_priority IS NOT NULL;
 
 CREATE UNIQUE INDEX IF NOT EXISTS uq_student_profiles_cohort_priority
-ON student_profiles (admission_batch_year, academic_year, quota_category, assigned_priority)
+ON student_profiles (admission_batch_year, assigned_priority)
 WHERE assigned_priority IS NOT NULL AND admission_batch_year IS NOT NULL;
 
 CREATE TABLE IF NOT EXISTS mess_menus (

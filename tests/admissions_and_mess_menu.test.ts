@@ -329,6 +329,60 @@ describe('DORMEX Admissions & Weekly Mess Menu Suite', () => {
         expect(mRes.rows[0].admission_batch_year).toBeNull();
       }
     });
+
+    it('7d. Confirms assigned_priority enforces batch-wide uniqueness and cannot duplicate across quotas/years in same batch', async () => {
+      // Inserting profile with batch 2026 and assigned_priority 500 works
+      await db.query(`
+        INSERT INTO users (id, college_id, email, full_name, password_hash)
+        VALUES ('usr_p_dup_1', '1SI26CV500', 'cv500@sit.ac.in', 'Student A', 'hash')
+        ON CONFLICT (id) DO NOTHING
+      `);
+      await db.query(`
+        INSERT INTO student_profiles (
+          id, user_id, college_id, full_name, admission_batch_year, academic_year, department, gender, quota_category, eligibility_status, assigned_priority
+        ) VALUES (
+          'prof_p_dup_1', 'usr_p_dup_1', '1SI26CV500', 'Student A', '2026', 1, 'CV', 'MALE', 'GENERAL', 'PENDING', 500
+        ) ON CONFLICT (id) DO NOTHING
+      `);
+
+      // Attempting to insert another student in the SAME batch (2026) with assigned_priority 500
+      // even in a DIFFERENT quota ('MERIT') and academic_year (2) must be REJECTED by uq_student_profiles_cohort_priority
+      let duplicateRejected = false;
+      try {
+        await db.query(`
+          INSERT INTO users (id, college_id, email, full_name, password_hash)
+          VALUES ('usr_p_dup_2', '1SI26CV501', 'cv501@sit.ac.in', 'Student B', 'hash')
+          ON CONFLICT (id) DO NOTHING
+        `);
+        await db.query(`
+          INSERT INTO student_profiles (
+            id, user_id, college_id, full_name, admission_batch_year, academic_year, department, gender, quota_category, eligibility_status, assigned_priority
+          ) VALUES (
+            'prof_p_dup_2', 'usr_p_dup_2', '1SI26CV501', 'Student B', '2026', 2, 'CV', 'FEMALE', 'MERIT', 'PENDING', 500
+          )
+        `);
+      } catch (err: any) {
+        duplicateRejected = true;
+        expect(err.message).toMatch(/duplicate key value|uq_student_profiles_cohort_priority/i);
+      }
+      expect(duplicateRejected).toBe(true);
+
+      // But a student in a DIFFERENT batch (2027) CAN have assigned_priority 500
+      await db.query(`
+        INSERT INTO users (id, college_id, email, full_name, password_hash)
+        VALUES ('usr_p_dup_3', '1SI27CV500', 'cv27_500@sit.ac.in', 'Student C 2027', 'hash')
+        ON CONFLICT (id) DO NOTHING
+      `);
+      const diffBatchRes = await db.query(`
+        INSERT INTO student_profiles (
+          id, user_id, college_id, full_name, admission_batch_year, academic_year, department, gender, quota_category, eligibility_status, assigned_priority
+        ) VALUES (
+          'prof_p_dup_3', 'usr_p_dup_3', '1SI27CV500', 'Student C 2027', '2027', 1, 'CV', 'MALE', 'GENERAL', 'PENDING', 500
+        ) RETURNING id, admission_batch_year, assigned_priority
+      `);
+      expect(diffBatchRes.rows[0].assigned_priority).toBe(500);
+      expect(diffBatchRes.rows[0].admission_batch_year).toBe('2027');
+    });
   });
 
   describe('Part C: Weekly Mess Menu Management', () => {
