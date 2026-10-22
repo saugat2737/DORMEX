@@ -29,6 +29,25 @@ export interface UploadMessMenuInput {
   publish_immediately?: boolean;
 }
 
+function formatMenuRecord(row: any): MessMenuRecord {
+  if (!row) return row;
+  const formatDate = (val: any) => {
+    if (!val) return val;
+    if (val instanceof Date) {
+      const year = val.getFullYear();
+      const month = String(val.getMonth() + 1).padStart(2, '0');
+      const day = String(val.getDate()).padStart(2, '0');
+      return year + '-' + month + '-' + day;
+    }
+    const str = String(val);
+    return str.includes('T') ? str.split('T')[0] : str;
+  };
+  return {
+    ...row,
+    week_start_date: formatDate(row.week_start_date),
+    week_end_date: formatDate(row.week_end_date),
+  };
+}
 export class MessMenuService {
   constructor(private db: DatabaseService) {}
 
@@ -41,8 +60,18 @@ export class MessMenuService {
       throw new Error('FORBIDDEN: Only Hostel Office and administrative staff can upload mess menus');
     }
 
-    if (!input.week_start_date || !input.week_end_date) {
+    const ISO_DATE_REGEX = /^\d{4}-\d{2}-\d{2}$/;
+    if (!input.week_start_date?.trim() || !input.week_end_date?.trim()) {
       throw new Error('VALIDATION_ERROR: Week start and end dates are required');
+    }
+    if (!ISO_DATE_REGEX.test(input.week_start_date.trim())) {
+      throw new Error('VALIDATION_ERROR: Week start date must be a valid date in YYYY-MM-DD format');
+    }
+    if (!ISO_DATE_REGEX.test(input.week_end_date.trim())) {
+      throw new Error('VALIDATION_ERROR: Week end date must be a valid date in YYYY-MM-DD format');
+    }
+    if (input.week_end_date.trim() < input.week_start_date.trim()) {
+      throw new Error('VALIDATION_ERROR: Week end date cannot be earlier than week start date');
     }
 
     if (!input.image_base64 || input.image_base64.trim().length === 0) {
@@ -113,7 +142,7 @@ export class MessMenuService {
       );
     }
 
-    return res.rows[0];
+    return formatMenuRecord(res.rows[0]);
   }
 
   /**
@@ -154,7 +183,7 @@ export class MessMenuService {
       );
     }
 
-    return res.rows[0];
+    return formatMenuRecord(res.rows[0]);
   }
 
   /**
@@ -175,7 +204,7 @@ export class MessMenuService {
       [messScope, today]
     );
 
-    return res.rows[0] || null;
+    return res.rows[0] ? formatMenuRecord(res.rows[0]) : null;
   }
 
   /**
@@ -195,6 +224,6 @@ export class MessMenuService {
     sql += ` ORDER BY week_start_date DESC`;
 
     const res = await this.db.query(sql, params);
-    return res.rows;
+    return res.rows.map(formatMenuRecord);
   }
 }

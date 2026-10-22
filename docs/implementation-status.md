@@ -22,6 +22,14 @@ Repository Status: Active Development (Modular Monolith)
 10. **Cycle configuration**: Frozen and immutable once state transitions to `READY`. Rule modifications necessitate a new cycle configuration version.
 
 ## 3. Implementation Phases
+- [x] **Phase 21: Weekly Mess Menu Payload & Date Validation Hardening**:
+  - Resolved date payload transmission bug where missing Content-Type header left stringified JSON body unparsed by Fastify.
+  - Hardened frontend apiFetch and backend endpoint handler to reliably accept and parse weekly mess menu payloads.
+  - Added strict date-only validation (ISO YYYY-MM-DD), chronological sanity checks, and localized date string preservation on queries.
+  - Expanded test suite with targeted regressions for invalid dates, reversed chronological bounds, and database retrieval.
+  - Verification: 77/77 tests passing across 10 test suites (100% pass rate), 0 TypeScript compiler errors, clean client build.
+
+
 - [x] **Phase 20: Notification Isolation & Targeting, Student Admissions Management & Weekly Mess Menu**:
   - **Notification Privacy Hardening**:
     - Eliminated broadcast leakage of private room allocations and roommate group interactions.

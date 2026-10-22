@@ -126,6 +126,7 @@ export const MessMenuView: React.FC = () => {
     try {
       const res = await apiFetch('/api/mess/menus', {
         method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           week_start_date: form.week_start_date,
           week_end_date: form.week_end_date,

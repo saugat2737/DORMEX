@@ -233,5 +233,124 @@ describe('DORMEX Admissions & Weekly Mess Menu Suite', () => {
       expect(menuNotif).toBeDefined();
       expect(menuNotif.title).toBe('Weekly Mess Menu Published');
     });
+
+    it('13. Rejects missing or invalid week start/end dates with field-specific validation errors', async () => {
+      const tinyPngBase64 = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=';
+      
+      // Missing dates
+      const missingRes = await request(app)
+        .post('/api/mess/menus')
+        .set('x-user-id', 'usr_office')
+        .set('x-role', 'HOSTEL_OFFICE')
+        .send({
+          week_start_date: '',
+          week_end_date: '',
+          image_base64: tinyPngBase64,
+          original_filename: 'menu.png',
+          content_type: 'image/png'
+        });
+      expect(missingRes.status).toBe(400);
+      expect(missingRes.body.error).toBe('VALIDATION_ERROR: Week start and end dates are required');
+
+      // Invalid start date format
+      const invalidStartRes = await request(app)
+        .post('/api/mess/menus')
+        .set('x-user-id', 'usr_office')
+        .set('x-role', 'HOSTEL_OFFICE')
+        .send({
+          week_start_date: 'invalid-date',
+          week_end_date: '2026-10-25',
+          image_base64: tinyPngBase64,
+          original_filename: 'menu.png',
+          content_type: 'image/png'
+        });
+      expect(invalidStartRes.status).toBe(400);
+      expect(invalidStartRes.body.error).toBe('VALIDATION_ERROR: Week start date must be a valid date in YYYY-MM-DD format');
+
+      // Invalid end date format
+      const invalidEndRes = await request(app)
+        .post('/api/mess/menus')
+        .set('x-user-id', 'usr_office')
+        .set('x-role', 'HOSTEL_OFFICE')
+        .send({
+          week_start_date: '2026-10-19',
+          week_end_date: '25-10-2026',
+          image_base64: tinyPngBase64,
+          original_filename: 'menu.png',
+          content_type: 'image/png'
+        });
+      expect(invalidEndRes.status).toBe(400);
+      expect(invalidEndRes.body.error).toBe('VALIDATION_ERROR: Week end date must be a valid date in YYYY-MM-DD format');
+    });
+
+    it('14. Rejects end dates that precede start dates and creates no menu or notification', async () => {
+      const tinyPngBase64 = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=';
+
+      const invertedRes = await request(app)
+        .post('/api/mess/menus')
+        .set('x-user-id', 'usr_office')
+        .set('x-role', 'HOSTEL_OFFICE')
+        .send({
+          week_start_date: '2026-10-25',
+          week_end_date: '2026-10-19',
+          image_base64: tinyPngBase64,
+          original_filename: 'invalid_order_menu.png',
+          content_type: 'image/png',
+          publish_immediately: true
+        });
+
+      expect(invertedRes.status).toBe(400);
+      expect(invertedRes.body.error).toBe('VALIDATION_ERROR: Week end date cannot be earlier than week start date');
+
+      // Verify no notification was published for inverted dates
+      const notifsRes = await request(app)
+        .get('/api/notifications')
+        .set('x-user-id', 'usr_demo_001')
+        .set('x-role', 'STUDENT');
+      const badNotif = notifsRes.body.notifications.find((n: any) => n.message && n.message.includes('2026-10-25 to 2026-10-19'));
+      expect(badNotif).toBeUndefined();
+    });
+
+    it('15. Correctly parses stringified JSON payloads without Content-Type header', async () => {
+      const tinyPngBase64 = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=';
+      const rawString = JSON.stringify({
+        week_start_date: '2026-11-02',
+        week_end_date: '2026-11-08',
+        mess_scope: 'BVB_MESS',
+        image_base64: tinyPngBase64,
+        original_filename: 'nov_week1.png',
+        content_type: 'image/png',
+        description: 'BVB Block First Week of November Menu',
+        publish_immediately: true
+      });
+
+      // Supertest sending raw string body without application/json (defaults to text/plain)
+      const res = await request(app)
+        .post('/api/mess/menus')
+        .set('x-user-id', 'usr_office')
+        .set('x-role', 'HOSTEL_OFFICE')
+        .set('Content-Type', 'text/plain')
+        .send(rawString);
+
+      expect(res.status).toBe(201);
+      const data = res.body;
+      expect(data.week_start_date).toBe('2026-11-02');
+      expect(data.week_end_date).toBe('2026-11-08');
+      expect(data.mess_scope).toBe('BVB_MESS');
+      expect(data.status).toBe('PUBLISHED');
+
+      // Verify published dates and menu metadata persist on subsequent query
+      const listRes = await request(app)
+        .get('/api/mess/menus?scope=BVB_MESS')
+        .set('x-user-id', 'usr_office')
+        .set('x-role', 'HOSTEL_OFFICE');
+      expect(listRes.status).toBe(200);
+      const persisted = listRes.body.find((m: any) => m.id === data.id);
+      expect(persisted).toBeDefined();
+      expect(persisted.week_start_date).toBe('2026-11-02');
+      expect(persisted.week_end_date).toBe('2026-11-08');
+      expect(persisted.mess_scope).toBe('BVB_MESS');
+      expect(persisted.description).toBe('BVB Block First Week of November Menu');
+    });
   });
 });

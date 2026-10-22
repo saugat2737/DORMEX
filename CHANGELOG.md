@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.5.1] - 2026-10-22
+
+- **Fix(mess-menu): Resolve Weekly Mess Menu Form Payload Parsing & Validation Contract**:
+  - Identified root cause of VALIDATION_ERROR: Week start and end dates are required during publish form submission: apiFetch omitted default Content-Type: application/json header when dispatching serialized JSON bodies, causing Fastify to receive raw text without parsing it into req.body properties.
+  - Enhanced apiFetch in src/client/context/AuthContext.tsx to automatically apply Content-Type: application/json when string bodies are supplied without an explicit header.
+  - Added explicit Content-Type: application/json header to src/client/components/MessMenuView.tsx POST /api/mess/menus request.
+  - Hardened src/app.ts endpoint to safely parse stringified JSON request bodies if delivered without content-type metadata.
+  - Enhanced src/operations/messMenuService.ts with strict date validation: YYYY-MM-DD ISO pattern validation, date ordering check (week_end_date >= week_start_date), and clean ISO date-only format serialization avoiding timezone offsets.
+  - Added 3 new regression tests in tests/admissions_and_mess_menu.test.ts verifying date validation, chronological ordering, unheadered JSON body recovery, and database query persistence.
+
 ## [2.5.0] - 2026-10-22
 
 - **Phase 1: Notification Isolation & Targeting**:
