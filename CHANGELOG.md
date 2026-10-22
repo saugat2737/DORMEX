@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.5.3] - 2026-10-22
+
+- **Fix(allocation): Strict Separation of Official Admission Priority and Allocation Pool Priority**:
+  - Decoupled `student_admissions.official_priority` (administrative admissions desk rank, unique per `academic_year_code`) from `student_profiles.assigned_priority` (pool-specific allocation queue rank).
+  - Updated `student_profiles` unique index in schema and migrations from single-cohort constraint to pool-scoped index `uq_student_profiles_pool_priority` on `(academic_year, quota_category, assigned_priority) WHERE assigned_priority IS NOT NULL`.
+  - Allowed distinct allocation pools (e.g. Year 2 General, Year 2 Sports, Year 1 General) to independently hold rank 1 without collision.
+  - Adjusted `StudentAdmissionService.createAdmission` to leave new student profile `assigned_priority` as `NULL` upon initial registration (pending fee verification and allocation pool assignment).
+  - Adjusted `StudentAdmissionService.updateAdmission` so that changes to `official_priority` update `student_admissions.official_priority` without silently altering or overwriting `student_profiles.assigned_priority`.
+  - Verified `StudentRegistryService.recalculatePrioritiesByPayment` assigns chronological ranks 1..N within `(academic_year, quota_category)` pools without modifying `student_admissions.official_priority`.
+  - Added comprehensive automated regression tests demonstrating cross-pool coexistence of rank 1, same-pool duplicate rejection, recalculation isolation, and independent admission updates (83/83 tests passing, 0 TypeScript errors, clean client build).
+
 ## [2.5.2] - 2026-10-22
 
 - **Fix(admission): Batch-Wise Official Priority Uniqueness & Quality Audit**:

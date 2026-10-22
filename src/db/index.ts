@@ -94,6 +94,19 @@ class MemoryDatabaseService implements DatabaseService {
       returns: (this.db.public as any).getType('text'),
       implementation: () => crypto.randomUUID(),
     });
+    this.db.public.registerFunction({
+      name: 'regexp_like',
+      args: [(this.db.public as any).getType('text'), (this.db.public as any).getType('text')],
+      returns: (this.db.public as any).getType('bool'),
+      implementation: (val: string, pattern: string) => {
+        if (!val || !pattern) return false;
+        try {
+          return new RegExp(pattern, 'i').test(val);
+        } catch {
+          return false;
+        }
+      },
+    });
 
     const { Pool } = this.db.adapters.createPg();
     this.adapter = new Pool();
