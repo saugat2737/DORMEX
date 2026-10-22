@@ -422,7 +422,22 @@ export async function runMigrations(db: DatabaseService): Promise<void> {
 
   // Step 2: Ensure student_profiles has admission_batch_year column and update cohort index
   try {
-    await db.query(`ALTER TABLE student_profiles ADD COLUMN IF NOT EXISTS admission_batch_year TEXT NOT NULL DEFAULT '2026'`);
+    await db.query(`ALTER TABLE student_profiles ADD COLUMN IF NOT EXISTS admission_batch_year TEXT`);
+    
+    // Backfill admission_batch_year from student_admissions (split prefix) or extract 4-digit admission year from USN (e.g. 1SI25... -> 2025, 1SI26... -> 2026, 1SI21... -> 2021)
+    await db.query(`
+      UPDATE student_profiles sp
+      SET admission_batch_year = COALESCE(
+        (SELECT SPLIT_PART(sa.academic_year_code, '-', 1) FROM student_admissions sa WHERE sa.college_id = sp.college_id LIMIT 1),
+        CASE 
+          WHEN sp.college_id ~* '^1SI([0-9]{2})' THEN '20' || SUBSTRING(sp.college_id FROM 4 FOR 2)
+          ELSE '2026'
+        END
+      )
+      WHERE sp.admission_batch_year IS NULL;
+    `);
+
+    await db.query(`ALTER TABLE student_profiles ALTER COLUMN admission_batch_year SET DEFAULT '2026'`);
     await db.query(`DROP INDEX IF EXISTS uq_student_profiles_cohort_priority`);
   } catch (err) {
     // Ignore if already applied
