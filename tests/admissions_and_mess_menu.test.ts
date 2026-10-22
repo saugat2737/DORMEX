@@ -2,6 +2,7 @@ import { describe, it, expect, beforeAll } from 'vitest';
 import request from 'supertest';
 import { buildApp } from '../src/app.js';
 import { getDatabaseService, resetDatabaseInstance } from '../src/db/index.js';
+import { StudentRegistryService } from '../src/student/registry.js';
 
 describe('DORMEX Admissions & Weekly Mess Menu Suite', () => {
   let app: any;
@@ -154,7 +155,8 @@ describe('DORMEX Admissions & Weekly Mess Menu Suite', () => {
       expect(profileRes.status).toBe(200);
       expect(profileRes.body.fee_status).toBe('UNPAID');
       expect(profileRes.body.eligibility_status).toBe('PENDING');
-      expect(profileRes.body.assigned_priority).toBe(101);
+      // assigned_priority is NULL until fee verification and queue rank assignment / recalculation
+      expect(profileRes.body.assigned_priority).toBeNull();
     });
 
     it('6. Lists admissions with search and academic year filters', async () => {
@@ -330,58 +332,168 @@ describe('DORMEX Admissions & Weekly Mess Menu Suite', () => {
       }
     });
 
-    it('7d. Confirms assigned_priority enforces batch-wide uniqueness and cannot duplicate across quotas/years in same batch', async () => {
-      // Inserting profile with batch 2026 and assigned_priority 500 works
+    it('7d. Confirms assigned_priority enforces pool-scoped uniqueness and allows rank coexistence across different pools', async () => {
+      // Note: Seed data creates DEMO-001 with (academic_year=2, quota_category='MERIT', assigned_priority=1).
+      // 1. Student in Year 2 GENERAL Pool can have assigned_priority = 1 (different quota_category)
       await db.query(`
         INSERT INTO users (id, college_id, email, full_name, password_hash)
-        VALUES ('usr_p_dup_1', '1SI26CV500', 'cv500@sit.ac.in', 'Student A', 'hash')
+        VALUES ('usr_pool_y2gen_1', '1SI25CS001', 'y2gen1@sit.ac.in', 'Year 2 Gen Candidate', 'hash')
         ON CONFLICT (id) DO NOTHING
       `);
-      await db.query(`
+      const y2GenRes = await db.query(`
         INSERT INTO student_profiles (
           id, user_id, college_id, full_name, admission_batch_year, academic_year, department, gender, quota_category, eligibility_status, assigned_priority
         ) VALUES (
-          'prof_p_dup_1', 'usr_p_dup_1', '1SI26CV500', 'Student A', '2026', 1, 'CV', 'MALE', 'GENERAL', 'PENDING', 500
-        ) ON CONFLICT (id) DO NOTHING
+          'prof_pool_y2gen_1', 'usr_pool_y2gen_1', '1SI25CS001', 'Year 2 Gen Candidate', '2025', 2, 'CSE', 'MALE', 'GENERAL', 'ELIGIBLE', 1
+        ) RETURNING id, academic_year, quota_category, assigned_priority
       `);
+      expect(y2GenRes.rows[0].assigned_priority).toBe(1);
 
-      // Attempting to insert another student in the SAME batch (2026) with assigned_priority 500
-      // even in a DIFFERENT quota ('MERIT') and academic_year (2) must be REJECTED by uq_student_profiles_cohort_priority
+      // 2. Student in Year 2 SPORTS Pool can ALSO have assigned_priority = 1 (different quota_category)
+      await db.query(`
+        INSERT INTO users (id, college_id, email, full_name, password_hash)
+        VALUES ('usr_pool_y2sports_1', '1SI25CS002', 'y2sports1@sit.ac.in', 'Year 2 Sports Candidate', 'hash')
+        ON CONFLICT (id) DO NOTHING
+      `);
+      const sportsRes = await db.query(`
+        INSERT INTO student_profiles (
+          id, user_id, college_id, full_name, admission_batch_year, academic_year, department, gender, quota_category, eligibility_status, assigned_priority
+        ) VALUES (
+          'prof_pool_y2sports_1', 'usr_pool_y2sports_1', '1SI25CS002', 'Year 2 Sports Candidate', '2025', 2, 'CSE', 'FEMALE', 'SPORTS', 'ELIGIBLE', 1
+        ) RETURNING id, academic_year, quota_category, assigned_priority
+      `);
+      expect(sportsRes.rows[0].assigned_priority).toBe(1);
+
+      // 3. Student in Year 1 GENERAL Pool can ALSO have assigned_priority = 1 (different academic_year)
+      await db.query(`
+        INSERT INTO users (id, college_id, email, full_name, password_hash)
+        VALUES ('usr_pool_y1gen_1', '1SI26CS003', 'y1gen1@sit.ac.in', 'Year 1 Gen Candidate', 'hash')
+        ON CONFLICT (id) DO NOTHING
+      `);
+      const y1Res = await db.query(`
+        INSERT INTO student_profiles (
+          id, user_id, college_id, full_name, admission_batch_year, academic_year, department, gender, quota_category, eligibility_status, assigned_priority
+        ) VALUES (
+          'prof_pool_y1gen_1', 'usr_pool_y1gen_1', '1SI26CS003', 'Year 1 Gen Candidate', '2026', 1, 'CSE', 'MALE', 'GENERAL', 'ELIGIBLE', 1
+        ) RETURNING id, academic_year, quota_category, assigned_priority
+      `);
+      expect(y1Res.rows[0].assigned_priority).toBe(1);
+
+      // 4. Duplicate assigned_priority = 1 within the SAME pool (Year 2 GENERAL) must be strictly REJECTED
       let duplicateRejected = false;
       try {
         await db.query(`
           INSERT INTO users (id, college_id, email, full_name, password_hash)
-          VALUES ('usr_p_dup_2', '1SI26CV501', 'cv501@sit.ac.in', 'Student B', 'hash')
+          VALUES ('usr_pool_y2gen_dup', '1SI25CS099', 'y2gen_dup@sit.ac.in', 'Duplicate Gen Candidate', 'hash')
           ON CONFLICT (id) DO NOTHING
         `);
         await db.query(`
           INSERT INTO student_profiles (
             id, user_id, college_id, full_name, admission_batch_year, academic_year, department, gender, quota_category, eligibility_status, assigned_priority
           ) VALUES (
-            'prof_p_dup_2', 'usr_p_dup_2', '1SI26CV501', 'Student B', '2026', 2, 'CV', 'FEMALE', 'MERIT', 'PENDING', 500
+            'prof_pool_y2gen_dup', 'usr_pool_y2gen_dup', '1SI25CS099', 'Duplicate Gen Candidate', '2025', 2, 'CSE', 'MALE', 'GENERAL', 'ELIGIBLE', 1
           )
         `);
       } catch (err: any) {
         duplicateRejected = true;
-        expect(err.message).toMatch(/duplicate key value|uq_student_profiles_cohort_priority/i);
+        expect(err.message).toMatch(/duplicate key value|uq_student_profiles_pool_priority/i);
       }
       expect(duplicateRejected).toBe(true);
+    });
 
-      // But a student in a DIFFERENT batch (2027) CAN have assigned_priority 500
+    it('7e. Recalculating allocation pool priorities renumbers ranks 1..N within pool without altering official admission priorities', async () => {
+      // Create two admitted students with official priority 1 and 2 in student_admissions
+      // Verify payment timestamps in Year 3 General pool
       await db.query(`
         INSERT INTO users (id, college_id, email, full_name, password_hash)
-        VALUES ('usr_p_dup_3', '1SI27CV500', 'cv27_500@sit.ac.in', 'Student C 2027', 'hash')
+        VALUES ('usr_pool_calc_1', '1SI24CS010', 'calc1@sit.ac.in', 'Fee Early Student', 'hash'),
+               ('usr_pool_calc_2', '1SI24CS020', 'calc2@sit.ac.in', 'Fee Later Student', 'hash')
         ON CONFLICT (id) DO NOTHING
       `);
-      const diffBatchRes = await db.query(`
+
+      await db.query(`
+        INSERT INTO student_admissions (
+          id, academic_year_code, college_id, full_name, department, semester, official_priority, admission_status, email, phone
+        ) VALUES 
+          ('adm_calc_1', '2024-2025', '1SI24CS010', 'Fee Early Student', 'CSE', 5, 45, 'REGISTERED', 'calc1@sit.ac.in', '9000000001'),
+          ('adm_calc_2', '2024-2025', '1SI24CS020', 'Fee Later Student', 'CSE', 5, 12, 'REGISTERED', 'calc2@sit.ac.in', '9000000002')
+        ON CONFLICT (id) DO NOTHING
+      `);
+
+      await db.query(`
+        INSERT INTO student_profiles (
+          id, user_id, college_id, full_name, admission_batch_year, academic_year, department, gender, quota_category, eligibility_status, fee_status, fee_payment_timestamp, assigned_priority
+        ) VALUES 
+          ('prof_calc_1', 'usr_pool_calc_1', '1SI24CS010', 'Fee Early Student', '2024', 3, 'CSE', 'MALE', 'GENERAL', 'ELIGIBLE', 'VERIFIED', '2026-08-01T10:00:00Z', NULL),
+          ('prof_calc_2', 'usr_pool_calc_2', '1SI24CS020', 'Fee Later Student', '2024', 3, 'CSE', 'MALE', 'GENERAL', 'ELIGIBLE', 'VERIFIED', '2026-08-01T11:00:00Z', NULL)
+        ON CONFLICT (id) DO NOTHING
+      `);
+
+      // Run priority recalculation for (academic_year = 3, quota_category = 'GENERAL')
+      const regService = new StudentRegistryService(db);
+      const hostActor = {
+        id: 'usr_office',
+        role: 'HOSTEL_OFFICE' as const,
+        permissions: ['student.edit_priority', 'fee.verify']
+      };
+
+      const recalcRes = await regService.recalculatePrioritiesByPayment(3, 'GENERAL', hostActor);
+      expect(recalcRes.updatedCount).toBe(2);
+
+      // Early payment gets rank 1, later payment gets rank 2
+      const prof1 = await db.query(`SELECT assigned_priority FROM student_profiles WHERE id = 'prof_calc_1'`);
+      const prof2 = await db.query(`SELECT assigned_priority FROM student_profiles WHERE id = 'prof_calc_2'`);
+      expect(prof1.rows[0].assigned_priority).toBe(1);
+      expect(prof2.rows[0].assigned_priority).toBe(2);
+
+      // BUT official admission priorities in student_admissions remain untouched (45 and 12)
+      const adm1 = await db.query(`SELECT official_priority FROM student_admissions WHERE id = 'adm_calc_1'`);
+      const adm2 = await db.query(`SELECT official_priority FROM student_admissions WHERE id = 'adm_calc_2'`);
+      expect(adm1.rows[0].official_priority).toBe(45);
+      expect(adm2.rows[0].official_priority).toBe(12);
+    });
+
+    it('7f. Updating official admission priority does not mutate or overwrite student_profiles.assigned_priority', async () => {
+      // Setup admission and profile with known different values
+      await db.query(`
+        INSERT INTO users (id, college_id, email, full_name, password_hash)
+        VALUES ('usr_sep_test', '1SI25IS050', 'sep@sit.ac.in', 'Separation Test Student', 'hash')
+        ON CONFLICT (id) DO NOTHING
+      `);
+      await db.query(`
+        INSERT INTO student_admissions (
+          id, academic_year_code, college_id, full_name, department, semester, official_priority, admission_status, email, phone
+        ) VALUES 
+          ('adm_sep_test', '2025-2026', '1SI25IS050', 'Separation Test Student', 'ISE', 3, 88, 'REGISTERED', 'sep@sit.ac.in', '9000000050')
+        ON CONFLICT (id) DO NOTHING
+      `);
+      await db.query(`
         INSERT INTO student_profiles (
           id, user_id, college_id, full_name, admission_batch_year, academic_year, department, gender, quota_category, eligibility_status, assigned_priority
-        ) VALUES (
-          'prof_p_dup_3', 'usr_p_dup_3', '1SI27CV500', 'Student C 2027', '2027', 1, 'CV', 'MALE', 'GENERAL', 'PENDING', 500
-        ) RETURNING id, admission_batch_year, assigned_priority
+        ) VALUES 
+          ('prof_sep_test', 'usr_sep_test', '1SI25IS050', 'Separation Test Student', '2025', 2, 'ISE', 'FEMALE', 'SPORTS', 'ELIGIBLE', 3)
+        ON CONFLICT (id) DO NOTHING
       `);
-      expect(diffBatchRes.rows[0].assigned_priority).toBe(500);
-      expect(diffBatchRes.rows[0].admission_batch_year).toBe('2027');
+
+      // Update official priority from 88 to 89 via admission service API
+      const updateRes = await request(app)
+        .put('/api/admissions/adm_sep_test')
+        .set('x-user-id', 'usr_office')
+        .set('x-role', 'HOSTEL_OFFICE')
+        .send({
+          official_priority: 89,
+        });
+
+      expect(updateRes.status).toBe(200);
+      expect(updateRes.body.official_priority).toBe(89);
+
+      // Verify official priority updated in student_admissions
+      const admCheck = await db.query(`SELECT official_priority FROM student_admissions WHERE id = 'adm_sep_test'`);
+      expect(admCheck.rows[0].official_priority).toBe(89);
+
+      // Verify student_profiles.assigned_priority was NOT mutated (still 3)
+      const profCheck = await db.query(`SELECT assigned_priority FROM student_profiles WHERE id = 'prof_sep_test'`);
+      expect(profCheck.rows[0].assigned_priority).toBe(3);
     });
   });
 

@@ -22,6 +22,20 @@ Repository Status: Active Development (Modular Monolith)
 10. **Cycle configuration**: Frozen and immutable once state transitions to `READY`. Rule modifications necessitate a new cycle configuration version.
 
 ## 3. Implementation Phases
+- [x] **Phase 23: Strict Separation of Admission Priority from Allocation Pool Queue Rank**:
+  - **Data Model & Schema Alignment**:
+    - Decoupled `student_admissions.official_priority` (Hostel Office administrative admissions desk intake priority) from `student_profiles.assigned_priority` (allocation queue rank within an allocation pool).
+    - Replaced `uq_student_profiles_cohort_priority` with `uq_student_profiles_pool_priority` on `(academic_year, quota_category, assigned_priority) WHERE assigned_priority IS NOT NULL`.
+    - Allows multiple distinct pools (e.g. Year 2 General vs Year 2 Merit vs Year 1 General) to independently have Rank 1 concurrent entries.
+  - **Service Lifecycle Updates**:
+    - `StudentAdmissionService.createAdmission`: registers new student profiles with `assigned_priority = NULL` and `eligibility_status = 'PENDING'`, leaving allocation ranks unassigned until fee verification or recalculation.
+    - `StudentAdmissionService.updateAdmission`: updates `student_admissions.official_priority` without corrupting or overwriting `student_profiles.assigned_priority`.
+    - `StudentRegistryService.recalculatePrioritiesByPayment`: renumbers verified students chronologically within their specific pool `(academic_year, quota_category)` without mutating authoritative `student_admissions.official_priority`.
+  - **Verification**:
+    - 83/83 automated tests passing across 10 test suites (`npm test`).
+    - 0 TypeScript compiler errors (`npm run typecheck`).
+    - Clean production client build (`npm run build:client`).
+
 - [x] **Phase 22: Batch-Wise Admission Priority & Quality Audit Hardening**:
   - **Batch-Scoped Official Priority Uniqueness**:
     - Replaced global uniqueness rule `uq_admissions_official_priority` with batch-scoped composite unique index `uq_admissions_batch_official_priority` on `(academic_year_code, official_priority)`.

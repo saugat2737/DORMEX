@@ -181,7 +181,9 @@ export class StudentAdmissionService {
       // Derive admission batch year (e.g. '2026-2027' -> '2026', '2027-2028' -> '2027')
       const batchYearPart = batchYear.split('-')[0].trim() || batchYear;
 
-      // Create student_profile with PENDING eligibility and UNPAID fee (does NOT falsely grant allocation eligibility)
+      // Create student_profile with PENDING eligibility, UNPAID fee, and NULL assigned_priority.
+      // Official admission priority belongs strictly to student_admissions.official_priority.
+      // assigned_priority is reserved for allocation pool queue rank (assigned upon fee verification / recalculation).
       await client.query(
         `INSERT INTO student_profiles (
            id, user_id, college_id, full_name, admission_batch_year, academic_year, department, gender,
@@ -190,12 +192,11 @@ export class StudentAdmissionService {
            parent_name, parent_relationship, parent_phone, parent_email,
            fee_status, profile_submitted
          ) VALUES (
-           $1, $2, $3, $4, $5, $6, $7, 'MALE', 'GENERAL', 'PENDING', $8,
-           $9, $10, $11, $12, $13, $14, $15, 'UNPAID', FALSE
+           $1, $2, $3, $4, $5, $6, $7, 'MALE', 'GENERAL', 'PENDING', NULL,
+           $8, $9, $10, $11, $12, $13, $14, 'UNPAID', FALSE
          )
          ON CONFLICT (id) DO UPDATE 
            SET admission_batch_year = EXCLUDED.admission_batch_year,
-               assigned_priority = EXCLUDED.assigned_priority,
                proctor_user_id = COALESCE(EXCLUDED.proctor_user_id, student_profiles.proctor_user_id),
                proctor_name = COALESCE(EXCLUDED.proctor_name, student_profiles.proctor_name),
                proctor_department = COALESCE(EXCLUDED.proctor_department, student_profiles.proctor_department),
@@ -209,7 +210,6 @@ export class StudentAdmissionService {
           batchYearPart,
           input.semester ? Math.ceil(input.semester / 2) : 1,
           input.department.trim(),
-          priority,
           input.proctor_user_id || null,
           proctorName,
           proctorDept,
@@ -329,11 +329,9 @@ export class StudentAdmissionService {
           throw new Error(`DUPLICATE_PRIORITY: Official priority #${targetPriority} is already assigned to student ${existP.rows[0].college_id} in admission batch ${targetBatch}`);
         }
 
-        // Sync with student_profile assigned_priority
-        await client.query(
-          `UPDATE student_profiles SET assigned_priority = $1, updated_at = CURRENT_TIMESTAMP WHERE college_id = $2`,
-          [targetPriority, current.college_id]
-        );
+        // Official priority in student_admissions is authoritative and distinct from
+        // pool allocation rank in student_profiles.assigned_priority.
+        // We do NOT overwrite assigned_priority during official admission updates.
       }
 
       // Proctor lookup if updated

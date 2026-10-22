@@ -389,9 +389,9 @@ CREATE UNIQUE INDEX IF NOT EXISTS uq_admissions_batch_official_priority
 ON student_admissions (academic_year_code, official_priority) 
 WHERE official_priority IS NOT NULL;
 
-CREATE UNIQUE INDEX IF NOT EXISTS uq_student_profiles_cohort_priority
-ON student_profiles (admission_batch_year, assigned_priority)
-WHERE assigned_priority IS NOT NULL AND admission_batch_year IS NOT NULL;
+CREATE UNIQUE INDEX IF NOT EXISTS uq_student_profiles_pool_priority
+ON student_profiles (academic_year, quota_category, assigned_priority)
+WHERE assigned_priority IS NOT NULL;
 
 CREATE TABLE IF NOT EXISTS mess_menus (
     id TEXT PRIMARY KEY,
@@ -456,6 +456,7 @@ export async function runMigrations(db: DatabaseService): Promise<void> {
     }
 
     await db.query(`DROP INDEX IF EXISTS uq_student_profiles_cohort_priority`);
+    await db.query(`DROP INDEX IF EXISTS uq_student_profiles_pool_priority`);
   } catch (err) {
     // Ignore if already applied
   }
