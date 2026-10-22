@@ -436,12 +436,24 @@ export async function runMigrations(db: DatabaseService): Promise<void> {
         AND student_profiles.admission_batch_year IS NULL;
     `);
 
-    await db.query(`
-      UPDATE student_profiles
-      SET admission_batch_year = '20' || SUBSTRING(college_id FROM 4 FOR 2)
-      WHERE admission_batch_year IS NULL 
-        AND UPPER(college_id) LIKE '1SI_______';
-    `);
+    // 2. Strict institutional SIT USN pattern: 1si<2-digit year><2-char dept><3-digit sequence> -> '20' || YY
+    // Checks standard POSIX regex pattern '^1SI[0-9]{2}[A-Z]{2}[0-9]{3}$'
+    try {
+      await db.query(`
+        UPDATE student_profiles
+        SET admission_batch_year = '20' || SUBSTRING(college_id FROM 4 FOR 2)
+        WHERE admission_batch_year IS NULL 
+          AND college_id ~* '^1SI[0-9]{2}[A-Z]{2}[0-9]{3}$';
+      `);
+    } catch {
+      // In-memory test engine fallback via registered regexp_like function
+      await db.query(`
+        UPDATE student_profiles
+        SET admission_batch_year = '20' || SUBSTRING(college_id FROM 4 FOR 2)
+        WHERE admission_batch_year IS NULL 
+          AND regexp_like(college_id, '^1SI[0-9]{2}[A-Z]{2}[0-9]{3}$');
+      `);
+    }
 
     await db.query(`DROP INDEX IF EXISTS uq_student_profiles_cohort_priority`);
   } catch (err) {

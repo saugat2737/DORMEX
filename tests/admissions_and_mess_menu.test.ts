@@ -261,7 +261,30 @@ describe('DORMEX Admissions & Weekly Mess Menu Suite', () => {
         ) ON CONFLICT (id) DO NOTHING
       `);
 
-      // Run migration backfill logic again (testing rerun idempotency)
+      // 4. Test malformed lookalike USNs that must remain NULL (unresolved)
+      const malformedCases = [
+        { id: 'prof_malformed_yr', usn: '1SIXXCS101', desc: 'non-numeric year' },
+        { id: 'prof_malformed_dept', usn: '1SI2512101', desc: 'numeric department' },
+        { id: 'prof_malformed_suf', usn: '1SI25CS10X', desc: 'non-numeric suffix' },
+        { id: 'prof_malformed_len', usn: '1SI25CS10', desc: 'short length' },
+      ];
+
+      for (const m of malformedCases) {
+        await db.query(`
+          INSERT INTO users (id, college_id, email, full_name, password_hash)
+          VALUES ('usr_${m.id}', '${m.usn}', '${m.id}@sit.ac.in', '${m.desc}', 'hash')
+          ON CONFLICT (id) DO NOTHING
+        `);
+        await db.query(`
+          INSERT INTO student_profiles (
+            id, user_id, college_id, full_name, academic_year, department, gender, quota_category, eligibility_status
+          ) VALUES (
+            '${m.id}', 'usr_${m.id}', '${m.usn}', '${m.desc}', 1, 'CSE', 'MALE', 'GENERAL', 'PENDING'
+          ) ON CONFLICT (id) DO NOTHING
+        `);
+      }
+
+      // Run migration backfill logic again (testing rerun idempotency with strict regex)
       await db.query(`
         UPDATE student_profiles
         SET admission_batch_year = SUBSTRING(sa.academic_year_code FROM 1 FOR 4)
@@ -270,12 +293,21 @@ describe('DORMEX Admissions & Weekly Mess Menu Suite', () => {
           AND student_profiles.admission_batch_year IS NULL;
       `);
 
-      await db.query(`
-        UPDATE student_profiles
-        SET admission_batch_year = '20' || SUBSTRING(college_id FROM 4 FOR 2)
-        WHERE admission_batch_year IS NULL 
-          AND UPPER(college_id) LIKE '1SI_______';
-      `);
+      try {
+        await db.query(`
+          UPDATE student_profiles
+          SET admission_batch_year = '20' || SUBSTRING(college_id FROM 4 FOR 2)
+          WHERE admission_batch_year IS NULL 
+            AND college_id ~* '^1SI[0-9]{2}[A-Z]{2}[0-9]{3}$';
+        `);
+      } catch {
+        await db.query(`
+          UPDATE student_profiles
+          SET admission_batch_year = '20' || SUBSTRING(college_id FROM 4 FOR 2)
+          WHERE admission_batch_year IS NULL 
+            AND regexp_like(college_id, '^1SI[0-9]{2}[A-Z]{2}[0-9]{3}$');
+        `);
+      }
 
       // Verify direct USN was derived cleanly as '2023'
       const derivedRes = await db.query(
@@ -288,6 +320,14 @@ describe('DORMEX Admissions & Weekly Mess Menu Suite', () => {
         `SELECT admission_batch_year FROM student_profiles WHERE id = 'prof_test_unknown_backfill'`
       );
       expect(unknownRes.rows[0].admission_batch_year).toBeNull();
+
+      // Verify all malformed cases remain strictly NULL
+      for (const m of malformedCases) {
+        const mRes = await db.query(
+          `SELECT admission_batch_year FROM student_profiles WHERE id = '${m.id}'`
+        );
+        expect(mRes.rows[0].admission_batch_year).toBeNull();
+      }
     });
   });
 
