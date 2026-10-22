@@ -22,6 +22,22 @@ Repository Status: Active Development (Modular Monolith)
 10. **Cycle configuration**: Frozen and immutable once state transitions to `READY`. Rule modifications necessitate a new cycle configuration version.
 
 ## 3. Implementation Phases
+- [x] **Phase 22: Batch-Wise Admission Priority & Quality Audit Hardening**:
+  - **Batch-Scoped Official Priority Uniqueness**:
+    - Replaced global uniqueness rule `uq_admissions_official_priority` with batch-scoped composite unique index `uq_admissions_batch_official_priority` on `(academic_year_code, official_priority)`.
+    - Added `admission_batch_year` column to `student_profiles` and updated cohort unique index to `(admission_batch_year, academic_year, quota_category, assigned_priority)`.
+    - Updated backend `StudentAdmissionService.createAdmission` and `updateAdmission` to authoritatively validate priority within the student's admission batch (`academic_year_code`).
+    - Updated `StudentAdmissionManagementView.tsx` labels and helper texts to communicate batch-scoped priority semantics.
+    - Added regression tests proving same-batch rejection and cross-batch acceptance.
+  - **Comprehensive Codebase & Architectural Audit**:
+    - Compiled `docs/quality-audit.md` covering all 20 modules, persistent models, authorization rules, and external dependencies.
+    - Verified all 12 prior audit hypotheses against real codebase implementations.
+    - Formulated 10 high-impact product roadmap features with effort, priority, risk, and acceptance criteria.
+  - **Verification**:
+    - 79/79 automated tests passing across 10 test suites (`npm test`).
+    - 0 TypeScript compiler errors (`npm run typecheck`).
+    - Clean production client build (`npm run build:client`).
+
 - [x] **Phase 21: Weekly Mess Menu Payload & Date Validation Hardening**:
   - Resolved date payload transmission bug where missing Content-Type header left stringified JSON body unparsed by Fastify.
   - Hardened frontend apiFetch and backend endpoint handler to reliably accept and parse weekly mess menu payloads.

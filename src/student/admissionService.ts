@@ -52,7 +52,8 @@ export class StudentAdmissionService {
 
   /**
    * Register a new admitted candidate into hostel records.
-   * Validates official_priority uniqueness globally and links with user/student_profile.
+   * Validates official_priority uniqueness within the specified academic_year_code (admission batch)
+   * and links with user/student_profile.
    */
   async createAdmission(input: CreateAdmissionInput, actor: AuthActor) {
     if (!can(actor, 'student.manage')) {
@@ -73,6 +74,7 @@ export class StudentAdmissionService {
     }
 
     const collegeId = input.college_id.trim().toUpperCase();
+    const batchYear = input.academic_year_code.trim();
 
     return this.db.transaction(async (client) => {
       // 1. Authoritative check for existing USN across admissions and users
@@ -84,21 +86,13 @@ export class StudentAdmissionService {
         throw new Error(`DUPLICATE_USN: An admission record with USN ${collegeId} already exists`);
       }
 
-      // 2. Authoritative check for official priority uniqueness across admissions and active student profiles
+      // 2. Authoritative check for official priority uniqueness within the admission batch (academic_year_code)
       const existPriorityAdmission = await client.query(
-        `SELECT id, college_id FROM student_admissions WHERE official_priority = $1`,
-        [priority]
+        `SELECT id, college_id FROM student_admissions WHERE academic_year_code = $1 AND official_priority = $2`,
+        [batchYear, priority]
       );
       if (existPriorityAdmission.rows.length > 0) {
-        throw new Error(`DUPLICATE_PRIORITY: Official priority #${priority} is already assigned to student ${existPriorityAdmission.rows[0].college_id}`);
-      }
-
-      const existPriorityProfile = await client.query(
-        `SELECT id, college_id FROM student_profiles WHERE assigned_priority = $1`,
-        [priority]
-      );
-      if (existPriorityProfile.rows.length > 0) {
-        throw new Error(`DUPLICATE_PRIORITY: Official priority #${priority} is already claimed in student registry by ${existPriorityProfile.rows[0].college_id}`);
+        throw new Error(`DUPLICATE_PRIORITY: Official priority #${priority} is already assigned to student ${existPriorityAdmission.rows[0].college_id} in admission batch ${batchYear}`);
       }
 
       // 3. Resolve proctor details if proctor_user_id provided
@@ -184,20 +178,24 @@ export class StudentAdmissionService {
         [`ur_${userId}`, userId, studentRoleId]
       );
 
+      // Derive admission batch year (e.g. '2026-2027' -> '2026', '2027-2028' -> '2027')
+      const batchYearPart = batchYear.split('-')[0].trim() || batchYear;
+
       // Create student_profile with PENDING eligibility and UNPAID fee (does NOT falsely grant allocation eligibility)
       await client.query(
         `INSERT INTO student_profiles (
-           id, user_id, college_id, full_name, academic_year, department, gender,
+           id, user_id, college_id, full_name, admission_batch_year, academic_year, department, gender,
            quota_category, eligibility_status, assigned_priority,
            proctor_user_id, proctor_name, proctor_department,
            parent_name, parent_relationship, parent_phone, parent_email,
            fee_status, profile_submitted
          ) VALUES (
-           $1, $2, $3, $4, $5, $6, 'MALE', 'GENERAL', 'PENDING', $7,
-           $8, $9, $10, $11, $12, $13, $14, 'UNPAID', FALSE
+           $1, $2, $3, $4, $5, $6, $7, 'MALE', 'GENERAL', 'PENDING', $8,
+           $9, $10, $11, $12, $13, $14, $15, 'UNPAID', FALSE
          )
          ON CONFLICT (id) DO UPDATE 
-           SET assigned_priority = EXCLUDED.assigned_priority,
+           SET admission_batch_year = EXCLUDED.admission_batch_year,
+               assigned_priority = EXCLUDED.assigned_priority,
                proctor_user_id = COALESCE(EXCLUDED.proctor_user_id, student_profiles.proctor_user_id),
                proctor_name = COALESCE(EXCLUDED.proctor_name, student_profiles.proctor_name),
                proctor_department = COALESCE(EXCLUDED.proctor_department, student_profiles.proctor_department),
@@ -208,6 +206,7 @@ export class StudentAdmissionService {
           userId,
           collegeId,
           input.full_name.trim(),
+          batchYearPart,
           input.semester ? Math.ceil(input.semester / 2) : 1,
           input.department.trim(),
           priority,
@@ -312,31 +311,28 @@ export class StudentAdmissionService {
       if (exist.rows.length === 0) throw new Error('NOT_FOUND: Admission record not found');
       const current = exist.rows[0];
 
-      // If official priority changed, validate uniqueness globally
-      if (input.official_priority !== undefined && input.official_priority !== current.official_priority) {
-        const pNum = Number(input.official_priority);
-        if (!pNum || pNum < 1) throw new Error('VALIDATION_ERROR: Priority must be a positive integer');
+      const targetBatch = input.academic_year_code || current.academic_year_code;
+      const targetPriority = input.official_priority !== undefined ? Number(input.official_priority) : current.official_priority;
+
+      // If official priority or admission batch changed, validate uniqueness within that batch
+      if (
+        (input.official_priority !== undefined && input.official_priority !== current.official_priority) ||
+        (input.academic_year_code !== undefined && input.academic_year_code !== current.academic_year_code)
+      ) {
+        if (!targetPriority || targetPriority < 1) throw new Error('VALIDATION_ERROR: Priority must be a positive integer');
 
         const existP = await client.query(
-          `SELECT id, college_id FROM student_admissions WHERE official_priority = $1 AND id != $2`,
-          [pNum, id]
+          `SELECT id, college_id FROM student_admissions WHERE academic_year_code = $1 AND official_priority = $2 AND id != $3`,
+          [targetBatch, targetPriority, id]
         );
         if (existP.rows.length > 0) {
-          throw new Error(`DUPLICATE_PRIORITY: Official priority #${pNum} is already assigned to student ${existP.rows[0].college_id}`);
-        }
-
-        const existProfP = await client.query(
-          `SELECT id, college_id FROM student_profiles WHERE assigned_priority = $1 AND college_id != $2`,
-          [pNum, current.college_id]
-        );
-        if (existProfP.rows.length > 0) {
-          throw new Error(`DUPLICATE_PRIORITY: Official priority #${pNum} is already claimed in registry by ${existProfP.rows[0].college_id}`);
+          throw new Error(`DUPLICATE_PRIORITY: Official priority #${targetPriority} is already assigned to student ${existP.rows[0].college_id} in admission batch ${targetBatch}`);
         }
 
         // Sync with student_profile assigned_priority
         await client.query(
           `UPDATE student_profiles SET assigned_priority = $1, updated_at = CURRENT_TIMESTAMP WHERE college_id = $2`,
-          [pNum, current.college_id]
+          [targetPriority, current.college_id]
         );
       }
 
