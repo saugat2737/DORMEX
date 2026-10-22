@@ -31,7 +31,8 @@ System-wide administration and forceful allocation override.
 ## 3. Priority rules
 
 - Lower number = earlier/higher priority.
-- Priority is scoped to the appropriate allocation cycle/pool.
+- Official admission priority is assigned by the Hostel Office and is unique **per admission batch** (e.g. 2026-2027 and 2027-2028 can each have priority #1, but two students in 2026-2027 cannot share #1).
+- Derived allocation priority/rank is calculated per allocation cycle/pool based on verified fee payment timestamp with college USN as the deterministic tie-breaker.
 - Different years and quotas may have different priority structures.
 - Special cases must be configurable.
 - Client-supplied priority is never authoritative.

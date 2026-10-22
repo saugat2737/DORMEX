@@ -85,8 +85,8 @@ describe('DORMEX Admissions & Weekly Mess Menu Suite', () => {
       expect(res.body.error).toContain('DUPLICATE_USN');
     });
 
-    it('4. Rejects duplicate official priority number globally', async () => {
-      // 101 is already claimed by 1SI26CS101
+    it('4. Rejects duplicate official priority number within the same admission batch', async () => {
+      // 101 is already claimed by 1SI26CS101 in batch 2026-2027
       const res = await request(app)
         .post('/api/admissions')
         .set('x-user-id', 'usr_office')
@@ -96,13 +96,52 @@ describe('DORMEX Admissions & Weekly Mess Menu Suite', () => {
           college_id: '1SI26CS102',
           full_name: 'Kiran Kumar',
           department: 'Civil Engineering',
-          official_priority: 101, // duplicate priority
+          official_priority: 101, // duplicate priority in same batch
           email: 'kiran.cv@sit.ac.in',
           phone: '+91 94481 99999',
         });
 
       expect(res.status).toBe(400);
       expect(res.body.error).toContain('DUPLICATE_PRIORITY');
+    });
+
+    it('4b. Permits the same official priority number in a different admission batch', async () => {
+      // 101 can be reused in batch 2027-2028
+      const res = await request(app)
+        .post('/api/admissions')
+        .set('x-user-id', 'usr_office')
+        .set('x-role', 'HOSTEL_OFFICE')
+        .send({
+          academic_year_code: '2027-2028',
+          college_id: '1SI27CS001',
+          full_name: 'Aditi Sharma',
+          department: 'Computer Science & Engineering',
+          official_priority: 101, // same priority allowed in different batch
+          email: 'aditi.27@sit.ac.in',
+          phone: '+91 94481 88888',
+        });
+
+      expect(res.status).toBe(201);
+      expect(res.body.official_priority).toBe(101);
+      expect(res.body.academic_year_code).toBe('2027-2028');
+
+      // But another candidate in 2027-2028 cannot claim 101
+      const res2 = await request(app)
+        .post('/api/admissions')
+        .set('x-user-id', 'usr_office')
+        .set('x-role', 'HOSTEL_OFFICE')
+        .send({
+          academic_year_code: '2027-2028',
+          college_id: '1SI27CS002',
+          full_name: 'Rohan Verma',
+          department: 'Information Science & Engineering',
+          official_priority: 101, // rejected: duplicate in 2027-2028
+          email: 'rohan.27@sit.ac.in',
+          phone: '+91 94481 77777',
+        });
+
+      expect(res2.status).toBe(400);
+      expect(res2.body.error).toContain('DUPLICATE_PRIORITY');
     });
 
     it('5. Integrates admission record without falsely granting fee-verified or allocation-eligible status', async () => {
@@ -148,6 +187,42 @@ describe('DORMEX Admissions & Weekly Mess Menu Suite', () => {
       expect(updateRes.status).toBe(200);
       expect(updateRes.body.admission_status).toBe('DOCS_PENDING');
       expect(updateRes.body.notes).toContain('hostel fee challan pending');
+    });
+
+    it('7b. Revalidates batch-wise priority on update and preserves number when editing without conflict', async () => {
+      const list = await request(app)
+        .get('/api/admissions?search=Prajwal')
+        .set('x-user-id', 'usr_office')
+        .set('x-role', 'HOSTEL_OFFICE');
+
+      const prajwal = list.body[0];
+
+      // Updating non-priority fields keeps the same priority without self-conflict
+      const updateSelfRes = await request(app)
+        .put(`/api/admissions/${prajwal.id}`)
+        .set('x-user-id', 'usr_office')
+        .set('x-role', 'HOSTEL_OFFICE')
+        .send({
+          official_priority: prajwal.official_priority,
+          full_name: 'Prajwal H. Gowda',
+        });
+
+      expect(updateSelfRes.status).toBe(200);
+      expect(updateSelfRes.body.full_name).toBe('Prajwal H. Gowda');
+      expect(updateSelfRes.body.official_priority).toBe(prajwal.official_priority);
+
+      // Attempting to change batch to 2027-2028 where priority 101 is already taken by 1SI27CS001 must fail
+      const conflictBatchRes = await request(app)
+        .put(`/api/admissions/${prajwal.id}`)
+        .set('x-user-id', 'usr_office')
+        .set('x-role', 'HOSTEL_OFFICE')
+        .send({
+          academic_year_code: '2027-2028',
+          official_priority: 101,
+        });
+
+      expect(conflictBatchRes.status).toBe(400);
+      expect(conflictBatchRes.body.error).toContain('DUPLICATE_PRIORITY');
     });
   });
 

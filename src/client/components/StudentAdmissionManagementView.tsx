@@ -225,7 +225,7 @@ export const StudentAdmissionManagementView: React.FC = () => {
             </div>
             <h1 className="text-2xl font-black text-[#203653] tracking-tight">Student Admission Management</h1>
             <p className="text-xs text-[#627084] mt-1">
-              Register newly admitted hostel candidates, enforce authoritative global priority numbers, assign faculty proctors, and initialize baseline student profiles.
+              Register newly admitted hostel candidates, enforce authoritative batch-wise priority numbers, assign faculty proctors, and initialize baseline student profiles.
             </p>
           </div>
 
@@ -286,7 +286,7 @@ export const StudentAdmissionManagementView: React.FC = () => {
                 </div>
                 <div>
                   <h3 className="text-sm font-bold text-[#203653]">Academic & Institutional Priority</h3>
-                  <p className="text-[11px] text-[#627084]">Official academic year, department, USN, and globally unique priority rank.</p>
+                  <p className="text-[11px] text-[#627084]">Official admission cohort, department, USN, and batch-wise unique priority rank.</p>
                 </div>
               </div>
 
@@ -362,7 +362,7 @@ export const StudentAdmissionManagementView: React.FC = () => {
                 <div>
                   <div className="flex items-center justify-between mb-1.5">
                     <label className="text-xs font-bold text-[#203653]">Official Priority Number *</label>
-                    <span className="text-[10px] text-[#2C8279] font-bold">Unique Across Campus</span>
+                    <span className="text-[10px] text-[#2C8279] font-bold">Unique Within Batch</span>
                   </div>
                   <input
                     type="number"
@@ -373,7 +373,7 @@ export const StudentAdmissionManagementView: React.FC = () => {
                     onChange={(e) => setForm({ ...form, official_priority: e.target.value })}
                     className="w-full text-xs font-bold bg-[#F7F6F1] border border-[#D5DCDF] rounded-lg px-3.5 py-2.5 text-[#203653] focus:outline-none focus:border-[#2C8279]"
                   />
-                  <p className="text-[10px] text-[#627084] mt-1">Authoritative unique key; checked against admissions & registry.</p>
+                  <p className="text-[10px] text-[#627084] mt-1">Authoritative unique priority within admission batch ({form.academic_year_code}).</p>
                 </div>
               </div>
             </div>

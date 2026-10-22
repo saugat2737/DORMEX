@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.5.2] - 2026-10-22
+
+- **Fix(admission): Batch-Wise Official Priority Uniqueness & Quality Audit**:
+  - Replaced global `official_priority` unique constraint on `student_admissions` with batch-scoped composite unique index `uq_admissions_batch_official_priority` on `(academic_year_code, official_priority)`.
+  - Added `admission_batch_year` column to `student_profiles` and updated composite index `uq_student_profiles_cohort_priority` to `(admission_batch_year, academic_year, quota_category, assigned_priority)`.
+  - Updated `src/student/admissionService.ts`:
+    - `createAdmission` authoritatively validates priority uniqueness within `academic_year_code` (e.g. 2026-2027 and 2027-2028 can both have priority #1).
+    - `updateAdmission` validates uniqueness within the updated/current batch while preventing false self-conflicts during edit.
+    - Preserved student profile integration with default `PENDING` eligibility and `UNPAID` fee status.
+  - Updated `src/client/components/StudentAdmissionManagementView.tsx` with batch-scoped uniqueness badges, helper descriptions, and revalidation logic.
+  - Added regression test cases in `tests/admissions_and_mess_menu.test.ts` verifying same-batch priority rejection, different-batch priority acceptance, and update revalidation.
+  - Completed comprehensive 20-module codebase audit in `docs/quality-audit.md` and formulated 10-item prioritized roadmap.
+  - Total test suite expanded to 79 tests (100% passing).
+
 ## [2.5.1] - 2026-10-22
 
 - **Fix(mess-menu): Resolve Weekly Mess Menu Form Payload Parsing & Validation Contract**:

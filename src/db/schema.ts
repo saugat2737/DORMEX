@@ -47,7 +47,8 @@ CREATE TABLE IF NOT EXISTS student_profiles (
     user_id TEXT UNIQUE NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     college_id TEXT UNIQUE NOT NULL,
     full_name TEXT NOT NULL,
-    academic_year INT NOT NULL, -- 1, 2, 3, 4
+    admission_batch_year TEXT NOT NULL DEFAULT '2026', -- Institutional admission cohort/batch year (e.g. '2026')
+    academic_year INT NOT NULL, -- 1, 2, 3, 4 (Current study year)
     department TEXT NOT NULL,
     gender TEXT NOT NULL,
     quota_category TEXT NOT NULL, -- 'GENERAL', 'MERIT', 'SPORTS', 'PWD', 'NRI'
@@ -384,12 +385,12 @@ CREATE TABLE IF NOT EXISTS student_admissions (
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE UNIQUE INDEX IF NOT EXISTS uq_admissions_official_priority 
-ON student_admissions (official_priority) 
+CREATE UNIQUE INDEX IF NOT EXISTS uq_admissions_batch_official_priority 
+ON student_admissions (academic_year_code, official_priority) 
 WHERE official_priority IS NOT NULL;
 
 CREATE UNIQUE INDEX IF NOT EXISTS uq_student_profiles_cohort_priority
-ON student_profiles (academic_year, quota_category, assigned_priority)
+ON student_profiles (admission_batch_year, academic_year, quota_category, assigned_priority)
 WHERE assigned_priority IS NOT NULL;
 
 CREATE TABLE IF NOT EXISTS mess_menus (
@@ -412,6 +413,36 @@ CREATE TABLE IF NOT EXISTS mess_menus (
 `;
 
 export async function runMigrations(db: DatabaseService): Promise<void> {
+  // Step 1: Migration fix for admission priority index - drop legacy global unique index if present
+  try {
+    await db.query(`DROP INDEX IF EXISTS uq_admissions_official_priority`);
+  } catch (err) {
+    // Ignore if not exists or in-memory adapter doesn't complain
+  }
+
+  // Step 2: Ensure student_profiles has admission_batch_year column and update cohort index
+  try {
+    await db.query(`ALTER TABLE student_profiles ADD COLUMN IF NOT EXISTS admission_batch_year TEXT`);
+    
+    // Backfill admission_batch_year from student_admissions (split prefix) or extract 4-digit admission year from USN (e.g. 1SI25... -> 2025, 1SI26... -> 2026, 1SI21... -> 2021)
+    await db.query(`
+      UPDATE student_profiles sp
+      SET admission_batch_year = COALESCE(
+        (SELECT SPLIT_PART(sa.academic_year_code, '-', 1) FROM student_admissions sa WHERE sa.college_id = sp.college_id LIMIT 1),
+        CASE 
+          WHEN sp.college_id ~* '^1SI([0-9]{2})' THEN '20' || SUBSTRING(sp.college_id FROM 4 FOR 2)
+          ELSE '2026'
+        END
+      )
+      WHERE sp.admission_batch_year IS NULL;
+    `);
+
+    await db.query(`ALTER TABLE student_profiles ALTER COLUMN admission_batch_year SET DEFAULT '2026'`);
+    await db.query(`DROP INDEX IF EXISTS uq_student_profiles_cohort_priority`);
+  } catch (err) {
+    // Ignore if already applied
+  }
+
   const statements = SCHEMA_SQL
     .split(';')
     .map(s => s.trim())
