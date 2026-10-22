@@ -43,16 +43,23 @@ export class StudentRegistryService {
         [`ur_${userId}`, userId, roleId]
       );
 
+      // Derive admission batch year if USN matches institutional pattern
+      let admissionBatchYear: string | null = null;
+      if (/^1SI[0-9]{2}[A-Z]{2}[0-9]{3}$/i.test(input.college_id)) {
+        admissionBatchYear = `20${input.college_id.substring(3, 5)}`;
+      }
+
       // Create authoritative student profile
       await client.query(
         `INSERT INTO student_profiles (
-          id, user_id, college_id, full_name, academic_year, department, gender, quota_category, eligibility_status, proctor_user_id
-        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
+          id, user_id, college_id, full_name, admission_batch_year, academic_year, department, gender, quota_category, eligibility_status, proctor_user_id
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`,
         [
           profileId,
           userId,
           input.college_id,
           input.full_name,
+          admissionBatchYear,
           input.academic_year,
           input.department,
           input.gender,

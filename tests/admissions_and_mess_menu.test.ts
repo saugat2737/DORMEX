@@ -224,6 +224,71 @@ describe('DORMEX Admissions & Weekly Mess Menu Suite', () => {
       expect(conflictBatchRes.status).toBe(400);
       expect(conflictBatchRes.body.error).toContain('DUPLICATE_PRIORITY');
     });
+
+    it('7c. Migration and profile backfill: assigns defensible cohort from admission or valid USN, never defaulting to fabricated year', async () => {
+      // 1. Student with verified admission record (e.g. 1SI26CS101 -> '2026')
+      const admProfile = await db.query(
+        `SELECT college_id, admission_batch_year FROM student_profiles WHERE college_id = '1SI26CS101'`
+      );
+      expect(admProfile.rows.length).toBe(1);
+      expect(admProfile.rows[0].admission_batch_year).toBe('2026');
+
+      // 2. Student with valid USN but NO admission record (e.g. 1SI23ME045 -> '2023')
+      await db.query(`
+        INSERT INTO users (id, college_id, email, full_name, password_hash)
+        VALUES ('usr_test_usn_backfill', '1SI23ME045', 'usn23@sit.ac.in', 'Direct USN Student', 'hash')
+        ON CONFLICT (id) DO NOTHING
+      `);
+      await db.query(`
+        INSERT INTO student_profiles (
+          id, user_id, college_id, full_name, academic_year, department, gender, quota_category, eligibility_status
+        ) VALUES (
+          'prof_test_usn_backfill', 'usr_test_usn_backfill', '1SI23ME045', 'Direct USN Student', 3, 'ME', 'MALE', 'GENERAL', 'PENDING'
+        ) ON CONFLICT (id) DO NOTHING
+      `);
+
+      // 3. Student with non-standard USN and NO admission record (e.g. DEMO-099)
+      await db.query(`
+        INSERT INTO users (id, college_id, email, full_name, password_hash)
+        VALUES ('usr_test_unknown_backfill', 'DEMO-099', 'unknown@sit.ac.in', 'Unknown Cohort Student', 'hash')
+        ON CONFLICT (id) DO NOTHING
+      `);
+      await db.query(`
+        INSERT INTO student_profiles (
+          id, user_id, college_id, full_name, academic_year, department, gender, quota_category, eligibility_status
+        ) VALUES (
+          'prof_test_unknown_backfill', 'usr_test_unknown_backfill', 'DEMO-099', 'Unknown Cohort Student', 1, 'CSE', 'MALE', 'GENERAL', 'PENDING'
+        ) ON CONFLICT (id) DO NOTHING
+      `);
+
+      // Run migration backfill logic again (testing rerun idempotency)
+      await db.query(`
+        UPDATE student_profiles
+        SET admission_batch_year = SUBSTRING(sa.academic_year_code FROM 1 FOR 4)
+        FROM student_admissions sa
+        WHERE student_profiles.college_id = sa.college_id
+          AND student_profiles.admission_batch_year IS NULL;
+      `);
+
+      await db.query(`
+        UPDATE student_profiles
+        SET admission_batch_year = '20' || SUBSTRING(college_id FROM 4 FOR 2)
+        WHERE admission_batch_year IS NULL 
+          AND UPPER(college_id) LIKE '1SI_______';
+      `);
+
+      // Verify direct USN was derived cleanly as '2023'
+      const derivedRes = await db.query(
+        `SELECT admission_batch_year FROM student_profiles WHERE id = 'prof_test_usn_backfill'`
+      );
+      expect(derivedRes.rows[0].admission_batch_year).toBe('2023');
+
+      // Verify unknown/non-matching format remained NULL, proving NO fabricated 2026 fallback
+      const unknownRes = await db.query(
+        `SELECT admission_batch_year FROM student_profiles WHERE id = 'prof_test_unknown_backfill'`
+      );
+      expect(unknownRes.rows[0].admission_batch_year).toBeNull();
+    });
   });
 
   describe('Part C: Weekly Mess Menu Management', () => {
