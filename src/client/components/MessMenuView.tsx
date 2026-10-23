@@ -37,7 +37,10 @@ export const MessMenuView: React.FC = () => {
 
   const [activeMenu, setActiveMenu] = useState<MessMenuRecord | null>(null);
   const [menuHistory, setMenuHistory] = useState<MessMenuRecord[]>([]);
+  const [selectedScope, setSelectedScope] = useState<string>('ALL');
+  const [selectedMenuId, setSelectedMenuId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState<string | null>(null);
   const [fullscreenImage, setFullscreenImage] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'current' | 'history' | 'manage'>(isStaff ? 'manage' : 'current');
 
@@ -54,24 +57,37 @@ export const MessMenuView: React.FC = () => {
   const [uploading, setUploading] = useState(false);
   const [msg, setMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
-  const fetchActiveMenu = async () => {
+  const fetchActiveMenu = async (scopeParam?: string) => {
     setLoading(true);
+    setFetchError(null);
     try {
-      const res = await apiFetch('/api/mess/menu/active');
+      const scopeToUse = scopeParam !== undefined ? scopeParam : selectedScope;
+      const url = scopeToUse === 'ALL' 
+        ? '/api/mess/menu/active' 
+        : `/api/mess/menu/active?scope=${encodeURIComponent(scopeToUse)}`;
+      const res = await apiFetch(url);
       if (res.ok) {
         const data = await res.json();
         setActiveMenu(data);
+      } else {
+        const data = await res.json().catch(() => ({}));
+        setFetchError(data.error || 'Failed to load weekly mess menu');
       }
-    } catch (err) {
+    } catch (err: any) {
       console.debug('Failed to load active menu:', err);
+      setFetchError(err.message || 'Network error fetching active mess menu');
     } finally {
       setLoading(false);
     }
   };
 
-  const fetchMenuHistory = async () => {
+  const fetchMenuHistory = async (scopeParam?: string) => {
     try {
-      const res = await apiFetch('/api/mess/menus');
+      const scopeToUse = scopeParam !== undefined ? scopeParam : selectedScope;
+      const url = scopeToUse === 'ALL' 
+        ? '/api/mess/menus' 
+        : `/api/mess/menus?scope=${encodeURIComponent(scopeToUse)}`;
+      const res = await apiFetch(url);
       if (res.ok) {
         const data = await res.json();
         setMenuHistory(data);
@@ -82,9 +98,9 @@ export const MessMenuView: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchActiveMenu();
-    fetchMenuHistory();
-  }, []);
+    fetchActiveMenu(selectedScope);
+    fetchMenuHistory(selectedScope);
+  }, [selectedScope]);
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -257,87 +273,147 @@ export const MessMenuView: React.FC = () => {
           </div>
         )}
 
+        {/* Global Scope & Week Selector Bar */}
+        <div className="bg-white rounded-xl border border-[#E2E6E8] p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xs">
+          <div className="flex flex-wrap items-center gap-3">
+            <span className="text-xs font-bold text-[#203653] flex items-center gap-1.5">
+              <Utensils className="w-4 h-4 text-[#2C8279]" />
+              <span>Dining Hall Scope:</span>
+            </span>
+            <select
+              value={selectedScope}
+              onChange={(e) => {
+                setSelectedScope(e.target.value);
+                setSelectedMenuId(null);
+              }}
+              className="text-xs bg-[#F7F6F1] border border-[#D5DCDF] rounded-lg px-3 py-1.5 font-semibold text-[#203653] focus:outline-none focus:border-[#2C8279]"
+            >
+              <option value="ALL">All Campus Dining Halls</option>
+              <option value="CAMPUS_CENTRAL">Campus Central Dining Hall</option>
+              <option value="BVB_MESS">BVB Block Dining Hall</option>
+            </select>
+          </div>
+
+          {activeTab === 'current' && menuHistory.length > 0 && (
+            <div className="flex flex-wrap items-center gap-3">
+              <span className="text-xs font-bold text-[#203653] flex items-center gap-1.5">
+                <Calendar className="w-4 h-4 text-[#2C8279]" />
+                <span>Selected Week:</span>
+              </span>
+              <select
+                value={selectedMenuId || (activeMenu?.id ?? '')}
+                onChange={(e) => setSelectedMenuId(e.target.value)}
+                className="text-xs bg-[#F7F6F1] border border-[#D5DCDF] rounded-lg px-3 py-1.5 font-semibold text-[#203653] focus:outline-none focus:border-[#2C8279]"
+              >
+                {menuHistory.map((m) => (
+                  <option key={m.id} value={m.id}>
+                    {m.week_start_date} to {m.week_end_date} ({m.mess_scope.replace('_', ' ')})
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+        </div>
+
         {/* Tab 1: Current Week Published Menu */}
-        {activeTab === 'current' && (
-          <div className="bg-white rounded-2xl border border-[#E2E6E8] p-8 shadow-xs">
-            {loading ? (
-              <div className="py-20 text-center text-[#627084] space-y-2">
-                <RefreshCw className="w-8 h-8 animate-spin mx-auto text-[#2C8279]" />
-                <p className="text-xs font-medium">Fetching weekly mess notice board...</p>
-              </div>
-            ) : activeMenu ? (
-              <div className="space-y-6">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#E2E6E8] pb-4">
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#2C8279]/15 text-[#2C8279]">
-                        <Sparkles className="w-3 h-3" />
-                        <span>Active Published Menu</span>
-                      </span>
-                      <span className="text-[11px] font-semibold text-[#627084]">
-                        Scope: {activeMenu.mess_scope.replace('_', ' ')}
+        {activeTab === 'current' && (() => {
+          const displayedMenu = (selectedMenuId ? menuHistory.find(m => m.id === selectedMenuId) : null) || activeMenu;
+
+          return (
+            <div className="bg-white rounded-2xl border border-[#E2E6E8] p-8 shadow-xs">
+              {loading ? (
+                <div className="py-20 text-center text-[#627084] space-y-2">
+                  <RefreshCw className="w-8 h-8 animate-spin mx-auto text-[#2C8279]" />
+                  <p className="text-xs font-medium">Fetching weekly mess notice board...</p>
+                </div>
+              ) : fetchError ? (
+                <div className="py-20 text-center text-rose-700 space-y-3">
+                  <div className="w-12 h-12 rounded-full bg-rose-50 flex items-center justify-center mx-auto text-rose-600">
+                    <AlertCircle className="w-6 h-6" />
+                  </div>
+                  <h3 className="text-sm font-bold text-rose-900">Failed to load weekly mess menu</h3>
+                  <p className="text-xs text-rose-600 max-w-sm mx-auto">{fetchError}</p>
+                  <button
+                    onClick={() => { fetchActiveMenu(); fetchMenuHistory(); }}
+                    className="mt-2 px-4 py-2 bg-[#2C8279] text-white text-xs font-bold rounded-lg shadow-xs hover:bg-[#203653]"
+                  >
+                    Retry Request
+                  </button>
+                </div>
+              ) : displayedMenu ? (
+                <div className="space-y-6">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#E2E6E8] pb-4">
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#2C8279]/15 text-[#2C8279]">
+                          <Sparkles className="w-3 h-3" />
+                          <span>Published Mess Menu</span>
+                        </span>
+                        <span className="text-[11px] font-semibold text-[#627084]">
+                          Scope: {displayedMenu.mess_scope.replace('_', ' ')}
+                        </span>
+                      </div>
+                      <h2 className="text-lg font-black text-[#203653] mt-1.5">
+                        Week of {displayedMenu.week_start_date} to {displayedMenu.week_end_date}
+                      </h2>
+                      {displayedMenu.description && (
+                        <p className="text-xs text-[#627084] mt-0.5">{displayedMenu.description}</p>
+                      )}
+                    </div>
+
+                    <button
+                      onClick={() => setFullscreenImage(displayedMenu.image_url)}
+                      className="px-4 py-2 rounded-lg bg-[#2C8279] text-white text-xs font-bold hover:bg-[#203653] transition-colors flex items-center gap-2 shadow-xs shrink-0 self-start sm:self-auto"
+                    >
+                      <ZoomIn className="w-4 h-4" />
+                      <span>View Full Menu</span>
+                    </button>
+                  </div>
+
+                  {/* Readable Menu Image Container */}
+                  <div 
+                    onClick={() => setFullscreenImage(displayedMenu.image_url)}
+                    className="group relative rounded-xl border border-[#E2E6E8] bg-[#F7F6F1] overflow-hidden cursor-pointer max-h-[600px] flex items-center justify-center"
+                  >
+                    <img
+                      src={displayedMenu.image_url}
+                      alt="Weekly Mess Menu Board"
+                      className="max-h-[580px] w-auto object-contain transition-transform duration-200 group-hover:scale-[1.01]"
+                    />
+                    <div className="absolute inset-0 bg-[#07203C]/0 group-hover:bg-[#07203C]/20 transition-all flex items-center justify-center opacity-0 group-hover:opacity-100">
+                      <span className="bg-white/90 text-[#203653] text-xs font-bold px-3 py-1.5 rounded-lg shadow-md flex items-center gap-1.5">
+                        <ZoomIn className="w-4 h-4" /> Click to enlarge
                       </span>
                     </div>
-                    <h2 className="text-lg font-black text-[#203653] mt-1.5">
-                      Week of {activeMenu.week_start_date} to {activeMenu.week_end_date}
-                    </h2>
-                    {activeMenu.description && (
-                      <p className="text-xs text-[#627084] mt-0.5">{activeMenu.description}</p>
-                    )}
                   </div>
 
-                  <button
-                    onClick={() => setFullscreenImage(activeMenu.image_url)}
-                    className="px-4 py-2 rounded-lg bg-[#2C8279] text-white text-xs font-bold hover:bg-[#203653] transition-colors flex items-center gap-2 shadow-xs shrink-0 self-start sm:self-auto"
-                  >
-                    <ZoomIn className="w-4 h-4" />
-                    <span>View Full Menu</span>
-                  </button>
-                </div>
-
-                {/* Readable Menu Image Container */}
-                <div 
-                  onClick={() => setFullscreenImage(activeMenu.image_url)}
-                  className="group relative rounded-xl border border-[#E2E6E8] bg-[#F7F6F1] overflow-hidden cursor-pointer max-h-[600px] flex items-center justify-center"
-                >
-                  <img
-                    src={activeMenu.image_url}
-                    alt="Weekly Mess Menu Board"
-                    className="max-h-[580px] w-auto object-contain transition-transform duration-200 group-hover:scale-[1.01]"
-                  />
-                  <div className="absolute inset-0 bg-[#07203C]/0 group-hover:bg-[#07203C]/20 transition-all flex items-center justify-center opacity-0 group-hover:opacity-100">
-                    <span className="bg-white/90 text-[#203653] text-xs font-bold px-3 py-1.5 rounded-lg shadow-md flex items-center gap-1.5">
-                      <ZoomIn className="w-4 h-4" /> Click to enlarge
-                    </span>
+                  <div className="text-[11px] text-[#627084] flex items-center justify-between border-t border-[#E2E6E8] pt-3">
+                    <span>File: {displayedMenu.original_filename} ({Math.round(displayedMenu.file_size_bytes / 1024)} KB)</span>
+                    <span>Published: {displayedMenu.published_at ? new Date(displayedMenu.published_at).toLocaleString() : 'N/A'}</span>
                   </div>
                 </div>
-
-                <div className="text-[11px] text-[#627084] flex items-center justify-between border-t border-[#E2E6E8] pt-3">
-                  <span>File: {activeMenu.original_filename} ({Math.round(activeMenu.file_size_bytes / 1024)} KB)</span>
-                  <span>Published: {activeMenu.published_at ? new Date(activeMenu.published_at).toLocaleString() : 'N/A'}</span>
+              ) : (
+                <div className="py-20 text-center text-[#627084] space-y-3">
+                  <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center mx-auto text-[#627084]">
+                    <Utensils className="w-6 h-6" />
+                  </div>
+                  <h3 className="text-sm font-bold text-[#203653]">No mess menu published for this week yet</h3>
+                  <p className="text-xs text-[#627084] max-w-sm mx-auto">
+                    The Hostel Office has not published a notice board photo for this dining hall and period. Please check back shortly.
+                  </p>
+                  {isStaff && (
+                    <button
+                      onClick={() => setActiveTab('manage')}
+                      className="mt-3 px-4 py-2 bg-[#2C8279] text-white text-xs font-bold rounded-lg shadow-xs"
+                    >
+                      Upload Menu Now
+                    </button>
+                  )}
                 </div>
-              </div>
-            ) : (
-              <div className="py-20 text-center text-[#627084] space-y-3">
-                <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center mx-auto text-[#627084]">
-                  <Utensils className="w-6 h-6" />
-                </div>
-                <h3 className="text-sm font-bold text-[#203653]">No mess menu published for this week yet</h3>
-                <p className="text-xs text-[#627084] max-w-sm mx-auto">
-                  The Hostel Office has not published a notice board photo for the current period. Please check back shortly.
-                </p>
-                {isStaff && (
-                  <button
-                    onClick={() => setActiveTab('manage')}
-                    className="mt-3 px-4 py-2 bg-[#2C8279] text-white text-xs font-bold rounded-lg shadow-xs"
-                  >
-                    Upload Menu Now
-                  </button>
-                )}
-              </div>
-            )}
-          </div>
-        )}
+              )}
+            </div>
+          );
+        })()}
 
         {/* Tab 2: Menu Archive / Historical Weeks */}
         {activeTab === 'history' && (

@@ -7,6 +7,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.5.4] - 2026-10-23
+
+- **Fix(mess-menu): Resolve Weekly Mess Menu Student Portal Visibility, Multi-Scope Querying & Timezone Boundaries**:
+  - **Root Cause Identified**:
+    1. Active menu query ordering prioritized only the current day or strictly descending start dates, which failed to cleanly retrieve upcoming future published menus (e.g. next week published on Friday/weekend) before the week's first day.
+    2. Scope filtering was fixed to 'CAMPUS_CENTRAL' without support for student scope selection or all-hall querying, causing menus uploaded under block dining halls (e.g. `BVB_MESS`) to remain hidden from students viewing the active menu.
+    3. `MessMenuView.tsx` lacked dining hall scope switching and weekly menu selection controls in the student viewer, remaining stuck on `CAMPUS_CENTRAL` even when multiple weeks or hall menus were available.
+    4. Date serialization in `formatMenuRecord` used local date methods (`val.getDate()`), which caused 1-day backward timezone boundary shifts in Western hemisphere timezones when formatting UTC SQL `DATE` objects.
+  - **Backend & Service Hardening**:
+    - Enhanced `src/operations/messMenuService.ts`:
+      - Updated `formatMenuRecord` to use UTC-safe getters (`getUTCFullYear`, `getUTCMonth`, `getUTCDate`) preventing date boundary shifts.
+      - Refactored `getActiveMenu` to accept an optional `targetDate` and order by active coverage first (`CASE WHEN week_start_date <= today AND week_end_date >= today THEN 0`), upcoming menus second (`WHEN week_start_date > today THEN 1`), and past menus third, properly retrieving both current and upcoming published menus.
+    - Updated `src/app.ts` `GET /api/mess/menu/active` route to accept optional `scope` and `date` query parameters.
+  - **Frontend UI & Viewer Enhancements**:
+    - Updated `src/client/components/MessMenuView.tsx`:
+      - Added Dining Hall Scope selector (`All Campus Dining Halls`, `Campus Central Dining Hall`, `BVB Block Dining Hall`).
+      - Added Selected Week dropdown in the Current Week tab allowing students to switch between published weeks.
+      - Added explicit error and retry UI state (`Failed to load weekly mess menu`) so failed network requests do not misleadingly display "No mess menu published".
+      - Maintained seamless re-fetching on scope change and immediate synchronization upon new upload/publish.
+  - **Automated Verification**:
+    - Added regression tests in `tests/admissions_and_mess_menu.test.ts` verifying scope-filtered student retrieval, target date querying, and non-duplicating status updates.
+    - Added full end-to-end integration test in `tests/frontend_integration.test.ts` verifying the complete admin upload to student retrieval and render pipeline.
+    - 87/87 tests passing across 10 test suites (100% pass rate), 0 TypeScript compiler errors, clean client build.
+
 ## [2.5.3] - 2026-10-22
 
 - **Fix(allocation): Strict Separation of Official Admission Priority and Allocation Pool Priority**:
