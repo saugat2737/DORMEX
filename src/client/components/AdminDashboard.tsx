@@ -284,13 +284,13 @@ export const AdminDashboard: React.FC = () => {
     try {
       // Find candidate seat ID
       const targetSeatLabel = `seat_bvb_2_${forceRoomChoice}_${forceBedChoice.toLowerCase()}`;
-      const res = await apiFetch('/api/admin/force-override', {
+      const res = await apiFetch('/api/admin/allocations/force-override', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           cycleId: 'cyc_bvb_pilot_2026',
           studentId: forceTargetStudent.id,
-          targetSeatId: targetSeatLabel,
+          seatId: targetSeatLabel,
           reason: `Dual-Warden Override: ${forceReason.trim()}`,
         }),
       });

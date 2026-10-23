@@ -22,6 +22,16 @@ Repository Status: Active Development (Modular Monolith)
 10. **Cycle configuration**: Frozen and immutable once state transitions to `READY`. Rule modifications necessitate a new cycle configuration version.
 
 ## 3. Implementation Phases
+- [x] **Phase 25: Comprehensive Testing, Contract Alignment & Quality Assurance Mission**:
+  - **Defect Resolution**:
+    - Resolved API contract mismatch on Super Admin dual-warden force allocation override in `AdminDashboard.tsx` to route `/api/admin/allocations/force-override` with payload key `seatId`.
+    - Corrected column name mapping in occupancy CSV export from `row.seat_number` to `row.seat_label` in `src/app.ts`.
+  - **Testing & Verification**:
+    - Introduced new regression suite `tests/qa_verification.test.ts` with 4 targeted test cases.
+    - Test Suite: 91/91 tests passing across 11 test files (100% pass rate).
+    - TypeScript: 0 compilation errors (`tsc --noEmit`).
+    - Client Build: Clean production build with Vite/Rolldown.
+
 - [x] **Phase 24: Weekly Mess Menu Student Portal Visibility & Multi-Scope Integration**:
   - **Issue Resolved**: Manual mess menu uploads by Hostel Office were succeeding on the server, but failed to appear in the student portal due to:
     1. Scope rigidity (`CAMPUS_CENTRAL` default with no UI scope selector, hiding menus uploaded for specific block mess scopes like `BVB_MESS`).
