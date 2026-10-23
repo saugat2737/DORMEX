@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.5.5] - 2026-10-24
+
+- **Fix(admin & qa): Administrative Route Alignment, CSV Occupancy Export & QA Regression Suite**:
+  - **Identified API & UI Contract Mismatches**:
+    1. AdminDashboard component invoked `/api/admin/force-override` with payload property `targetSeatId`, whereas Fastify backend registered `/api/admin/allocations/force-override` expecting `seatId`. Aligned frontend caller to canonical `/api/admin/allocations/force-override` route with exact key `seatId`.
+    2. Administrative occupancy report CSV export endpoint in `src/app.ts` mapped `row.seat_number` which was undefined on SQL result rows (`seat_label` is the canonical column), causing CSV downloads to serialize `"undefined"` instead of the actual bed label (`"A"`, `"B"`). Fixed to `row.seat_label`.
+  - **Automated QA & Regression Verification**:
+    - Created comprehensive regression test suite in `tests/qa_verification.test.ts` verifying:
+      - Super Admin force-override route execution, atomic student reassignment, and audit logging.
+      - Authorization boundaries rejecting unauthorized students attempting force overrides.
+      - Occupancy CSV report generation serializing valid seat labels and preventing undefined outputs.
+      - Access control preventing unauthorized actors from pulling sensitive administrative occupancy data.
+    - 91/91 automated tests passing across 11 test suites (100% pass rate).
+    - 0 TypeScript compiler errors (`npm run typecheck`).
+    - Clean production client build (`npm run build:client`).
+
 ## [2.5.4] - 2026-10-23
 
 - **Fix(mess-menu): Resolve Weekly Mess Menu Student Portal Visibility, Multi-Scope Querying & Timezone Boundaries**:

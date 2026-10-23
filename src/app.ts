@@ -261,7 +261,7 @@ export async function buildApp(db?: DatabaseService): Promise<FastifyInstance> {
           row.floor_number,
           `"${row.room_number}"`,
           `"${row.room_type || 'STANDARD'}"`,
-          `"${row.seat_number}"`,
+          `"${row.seat_label}"`,
           `"${row.seat_status}"`,
           row.allocation_status ? '"YES"' : '"NO"',
           `"${row.student_usn || ''}"`,
