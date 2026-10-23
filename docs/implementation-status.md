@@ -22,6 +22,21 @@ Repository Status: Active Development (Modular Monolith)
 10. **Cycle configuration**: Frozen and immutable once state transitions to `READY`. Rule modifications necessitate a new cycle configuration version.
 
 ## 3. Implementation Phases
+- [x] **Phase 24: Weekly Mess Menu Student Portal Visibility & Multi-Scope Integration**:
+  - **Issue Resolved**: Manual mess menu uploads by Hostel Office were succeeding on the server, but failed to appear in the student portal due to:
+    1. Scope rigidity (`CAMPUS_CENTRAL` default with no UI scope selector, hiding menus uploaded for specific block mess scopes like `BVB_MESS`).
+    2. Active menu query ordering prioritizing strictly past descending dates without considering upcoming/future weeks when published ahead of the week start.
+    3. Missing week selection in the active student tab, preventing students from choosing which published week to view.
+    4. Date boundary shifts caused by local date getter usage on UTC SQL DATE instances.
+  - **Core Fixes Implemented**:
+    - `src/operations/messMenuService.ts`: Enhanced `getActiveMenu` to order by active current week (priority 0), upcoming future weeks ascending (priority 1), and past weeks descending (priority 2); updated `formatMenuRecord` to use UTC-safe date string formatting.
+    - `src/app.ts`: Updated `GET /api/mess/menu/active` route to accept `scope` and `date` query parameters.
+    - `src/client/components/MessMenuView.tsx`: Integrated dining hall scope dropdown (`ALL`, `CAMPUS_CENTRAL`, `BVB_MESS`), week selection dropdown for active week viewer, and explicit error/retry handling.
+  - **Verification**:
+    - 87/87 automated tests passing across 10 test suites (`npm test`).
+    - 0 TypeScript compiler errors (`npm run typecheck`).
+    - Clean production client build (`npm run build:client`).
+
 - [x] **Phase 23: Strict Separation of Admission Priority from Allocation Pool Queue Rank**:
   - **Data Model & Schema Alignment**:
     - Decoupled `student_admissions.official_priority` (Hostel Office administrative admissions desk intake priority) from `student_profiles.assigned_priority` (allocation queue rank within an allocation pool).

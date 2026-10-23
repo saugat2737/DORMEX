@@ -698,5 +698,73 @@ describe('DORMEX Admissions & Weekly Mess Menu Suite', () => {
       expect(persisted.mess_scope).toBe('BVB_MESS');
       expect(persisted.description).toBe('BVB Block First Week of November Menu');
     });
+
+    it('16. Allows student portal to query active menu by scope and retrieve upcoming/future menu', async () => {
+      // Query active menu for BVB_MESS as student
+      const bvbActiveRes = await request(app)
+        .get('/api/mess/menu/active?scope=BVB_MESS')
+        .set('x-user-id', 'usr_demo_001')
+        .set('x-role', 'STUDENT');
+
+      expect(bvbActiveRes.status).toBe(200);
+      expect(bvbActiveRes.body).toBeDefined();
+      expect(bvbActiveRes.body.mess_scope).toBe('BVB_MESS');
+      expect(bvbActiveRes.body.week_start_date).toBe('2026-11-02');
+      expect(bvbActiveRes.body.week_end_date).toBe('2026-11-08');
+    });
+
+    it('17. Retrieves target week menu by date query parameter for students', async () => {
+      // Query specific date covered by BVB_MESS
+      const dateRes = await request(app)
+        .get('/api/mess/menu/active?scope=BVB_MESS&date=2026-11-05')
+        .set('x-user-id', 'usr_demo_001')
+        .set('x-role', 'STUDENT');
+
+      expect(dateRes.status).toBe(200);
+      expect(dateRes.body.week_start_date).toBe('2026-11-02');
+      expect(dateRes.body.week_end_date).toBe('2026-11-08');
+    });
+
+    it('18. Updating menu status preserves existing records without duplicating weeks', async () => {
+      const tinyPngBase64 = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=';
+
+      // Create draft menu
+      const draftRes = await request(app)
+        .post('/api/mess/menus')
+        .set('x-user-id', 'usr_office')
+        .set('x-role', 'HOSTEL_OFFICE')
+        .send({
+          week_start_date: '2026-11-09',
+          week_end_date: '2026-11-15',
+          mess_scope: 'CAMPUS_CENTRAL',
+          image_base64: tinyPngBase64,
+          original_filename: 'nov_week2.png',
+          content_type: 'image/png',
+          description: 'November Week 2 Draft Menu',
+          publish_immediately: false
+        });
+
+      expect(draftRes.status).toBe(201);
+      expect(draftRes.body.status).toBe('DRAFT');
+
+      // Publish draft menu via PUT status
+      const publishRes = await request(app)
+        .put(`/api/mess/menus/${draftRes.body.id}/status`)
+        .set('x-user-id', 'usr_office')
+        .set('x-role', 'HOSTEL_OFFICE')
+        .send({ status: 'PUBLISHED' });
+
+      expect(publishRes.status).toBe(200);
+      expect(publishRes.body.status).toBe('PUBLISHED');
+
+      // Verify no duplicate record exists
+      const listRes = await request(app)
+        .get('/api/mess/menus?scope=CAMPUS_CENTRAL')
+        .set('x-user-id', 'usr_office')
+        .set('x-role', 'HOSTEL_OFFICE');
+
+      const matches = listRes.body.filter((m: any) => m.id === draftRes.body.id);
+      expect(matches.length).toBe(1);
+    });
   });
 });

@@ -905,7 +905,8 @@ export async function buildApp(db?: DatabaseService): Promise<FastifyInstance> {
     try {
       const actor = await extractActor(req);
       const scope = (req.query?.scope as string) || 'CAMPUS_CENTRAL';
-      const menu = await messMenuService.getActiveMenu(scope, actor);
+      const date = req.query?.date as string | undefined;
+      const menu = await messMenuService.getActiveMenu(scope, actor, date);
       return reply.send(menu);
     } catch (err: any) {
       return reply.code(400).send({ error: err.message });

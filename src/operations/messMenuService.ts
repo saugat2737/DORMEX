@@ -34,9 +34,9 @@ function formatMenuRecord(row: any): MessMenuRecord {
   const formatDate = (val: any) => {
     if (!val) return val;
     if (val instanceof Date) {
-      const year = val.getFullYear();
-      const month = String(val.getMonth() + 1).padStart(2, '0');
-      const day = String(val.getDate()).padStart(2, '0');
+      const year = val.getUTCFullYear();
+      const month = String(val.getUTCMonth() + 1).padStart(2, '0');
+      const day = String(val.getUTCDate()).padStart(2, '0');
       return year + '-' + month + '-' + day;
     }
     const str = String(val);
@@ -189,16 +189,28 @@ export class MessMenuService {
   /**
    * Get active published mess menu for students/staff
    */
-  async getActiveMenu(messScope: string = 'CAMPUS_CENTRAL', actor: AuthActor): Promise<MessMenuRecord | null> {
-    // Current date in ISO format YYYY-MM-DD
-    const today = new Date().toISOString().split('T')[0];
+  async getActiveMenu(messScope: string = 'CAMPUS_CENTRAL', actor: AuthActor, targetDate?: string): Promise<MessMenuRecord | null> {
+    // Current date in ISO format YYYY-MM-DD (or explicit target date)
+    const today = targetDate && /^\d{4}-\d{2}-\d{2}$/.test(targetDate.trim())
+      ? targetDate.trim()
+      : new Date().toISOString().split('T')[0];
 
-    // Priority: published menu covering current date, else most recent published menu
+    // Priority:
+    // 1. Published menu covering today's date (active current week)
+    // 2. Upcoming published menu starting after today (earliest upcoming first)
+    // 3. Most recently published past menu (most recent first)
     const res = await this.db.query(
       `SELECT * FROM mess_menus
        WHERE mess_scope = $1 AND status = 'PUBLISHED'
        ORDER BY 
-         CASE WHEN week_start_date <= $2 AND week_end_date >= $2 THEN 0 ELSE 1 END ASC,
+         CASE 
+           WHEN week_start_date <= $2 AND week_end_date >= $2 THEN 0 
+           WHEN week_start_date > $2 THEN 1
+           ELSE 2 
+         END ASC,
+         CASE 
+           WHEN week_start_date > $2 THEN week_start_date 
+         END ASC,
          week_start_date DESC
        LIMIT 1`,
       [messScope, today]

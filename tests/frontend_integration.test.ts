@@ -121,4 +121,60 @@ describe('DORMEX Phase 2: Frontend & Map Integration Verifications', () => {
       expect(pngRes.headers['content-type']).toContain('image/png');
     });
   });
+
+  describe('Vertical Slice D: End-to-End Student Mess Menu Viewer', () => {
+    it('verifies upload-to-student-read flow across scopes and future dates without timezone shifts', async () => {
+      const tinyPngBase64 = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=';
+
+      // 1. Admin uploads and publishes weekly mess menu for upcoming week with scope BVB_MESS
+      const uploadRes = await request(app)
+        .post('/api/mess/menus')
+        .set('x-user-id', 'usr_office')
+        .set('x-role', 'HOSTEL_OFFICE')
+        .send({
+          week_start_date: '2026-11-16',
+          week_end_date: '2026-11-22',
+          mess_scope: 'BVB_MESS',
+          image_base64: tinyPngBase64,
+          original_filename: 'nov_week3_bvb.png',
+          content_type: 'image/png',
+          description: 'Special South Indian menu for November Week 3',
+          publish_immediately: true,
+        });
+
+      expect(uploadRes.status).toBe(201);
+      const menu = uploadRes.body;
+      expect(menu.id).toBeDefined();
+      expect(menu.week_start_date).toBe('2026-11-16');
+      expect(menu.week_end_date).toBe('2026-11-22');
+      expect(menu.status).toBe('PUBLISHED');
+
+      // 2. Student queries active menu for BVB_MESS
+      const studentActiveRes = await request(app)
+        .get('/api/mess/menu/active?scope=BVB_MESS')
+        .set('x-user-id', 'usr_student_1')
+        .set('x-role', 'STUDENT');
+
+      expect(studentActiveRes.status).toBe(200);
+      expect(studentActiveRes.body).toBeDefined();
+      expect(studentActiveRes.body.id).toBe(menu.id);
+      expect(studentActiveRes.body.week_start_date).toBe('2026-11-16');
+      expect(studentActiveRes.body.week_end_date).toBe('2026-11-22');
+      expect(studentActiveRes.body.mess_scope).toBe('BVB_MESS');
+      expect(studentActiveRes.body.image_url).toBe(menu.image_url);
+
+      // 3. Student queries menu list (archive / all published)
+      const studentListRes = await request(app)
+        .get('/api/mess/menus?scope=BVB_MESS')
+        .set('x-user-id', 'usr_student_1')
+        .set('x-role', 'STUDENT');
+
+      expect(studentListRes.status).toBe(200);
+      const retrieved = studentListRes.body.find((m: any) => m.id === menu.id);
+      expect(retrieved).toBeDefined();
+      expect(retrieved.status).toBe('PUBLISHED');
+      expect(retrieved.week_start_date).toBe('2026-11-16');
+      expect(retrieved.week_end_date).toBe('2026-11-22');
+    });
+  });
 });
